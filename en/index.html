@@ -13,6 +13,7 @@
 <link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/">
 <link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
 <style>
 :root{
   --navy:#0A2A4F; --blue:#1E5FA8; --cyan:#4FB3D9;
@@ -110,6 +111,43 @@ footer{background:var(--navy); color:#7E93AC; font-size:12.5px; padding:30px 0 4
 footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
 footer a{color:#7E93AC}
 
+/* ---- Motion ----
+   Defined only inside prefers-reduced-motion: no-preference, so viewers who ask for
+   less motion never receive the hidden initial state. The .js hook is added by script,
+   so content stays visible when scripting is unavailable. */
+@media(prefers-reduced-motion:no-preference){
+  .js section .lead, .js section .intro, .js .card, .js .domain, .js .offer,
+  .js .steps > li, .js .pol > div, .js .stat, .js .stat-note,
+  .js .faq dt, .js .faq dd, .js .scroller,
+  .js .creed blockquote, .js .creed p, .js .mail{
+    opacity:0; transform:translateY(20px);
+    transition:opacity .75s cubic-bezier(.2,.7,.3,1), transform .75s cubic-bezier(.2,.7,.3,1);
+  }
+  .js .in{opacity:1 !important; transform:none !important}
+  .js .card:nth-child(2), .js .domain:nth-child(2), .js .offer:nth-child(2), .js .pol > div:nth-child(2){transition-delay:.09s}
+  .js .card:nth-child(3), .js .domain:nth-child(3), .js .offer:nth-child(3), .js .pol > div:nth-child(3){transition-delay:.18s}
+  .js .domain:nth-child(4){transition-delay:.27s}
+  .js .domain:nth-child(5){transition-delay:.36s}
+  .js .domain:nth-child(6){transition-delay:.45s}
+  .js .steps > li:nth-child(2){transition-delay:.09s}
+  .js .steps > li:nth-child(3){transition-delay:.18s}
+  .js .steps > li:nth-child(4){transition-delay:.27s}
+
+  .js .hero .band{opacity:0; animation:band .5s cubic-bezier(.2,.7,.3,1) forwards}
+  .js .hero .b5{animation-delay:.10s}
+  .js .hero .b4{animation-delay:.21s}
+  .js .hero .b3{animation-delay:.32s}
+  .js .hero .b2{animation-delay:.43s}
+  .js .hero .b1{animation-delay:.54s}
+  .js .hero .wm{opacity:0; animation:wm .6s ease .70s forwards}
+  .js .hero h1, .js .hero > .wrap > p, .js .tagline-en{opacity:0; animation:wm .7s ease forwards}
+  .js .hero h1{animation-delay:.95s}
+  .js .hero > .wrap > p{animation-delay:1.10s}
+  .js .tagline-en{animation-delay:1.25s}
+  @keyframes band{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+  @keyframes wm{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+}
+
 @media(max-width:640px){
   .headbar{height:auto; padding:16px 0; flex-direction:column; align-items:flex-start; gap:12px}
   nav{justify-content:flex-start; gap:8px 16px}
@@ -163,15 +201,15 @@ footer a{color:#7E93AC}
       </defs>
       <g transform="translate(0,6) scale(0.82)">
         <g clip-path="url(#cl2)">
-          <rect x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
-          <rect x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
-          <rect x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
-          <rect x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
-          <rect x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
+          <rect class="band b1" x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
+          <rect class="band b2" x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
+          <rect class="band b3" x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
+          <rect class="band b4" x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
+          <rect class="band b5" x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
         </g>
       </g>
-      <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
-      <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
+      <text class="wm" x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
+      <text class="wm" x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
     </svg>
     <h1>Make the process smart.<br>Make the future sound.</h1>
     <p>We develop technology that makes regulatory compliance verifiable, and we hold and license the intellectual property that work produces.</p>
@@ -373,6 +411,31 @@ footer a{color:#7E93AC}
     <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
   </div>
 </footer>
+
+<script>
+/* Scroll-triggered reveal.
+   Keep this selector identical to the one in the stylesheet above — if the two drift
+   apart, elements can stay hidden permanently. */
+(function(){
+  var SEL = 'section .lead, section .intro, .card, .domain, .offer,'
+          + '.steps > li, .pol > div, .stat, .stat-note,'
+          + '.faq dt, .faq dd, .scroller,'
+          + '.creed blockquote, .creed p, .mail';
+  var els = document.querySelectorAll(SEL);
+  var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+
+  if (!motionOK || !('IntersectionObserver' in window)) {
+    for (var i = 0; i < els.length; i++) els[i].classList.add('in');
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  for (var j = 0; j < els.length; j++) io.observe(els[j]);
+})();
+</script>
 
 </body>
 </html>

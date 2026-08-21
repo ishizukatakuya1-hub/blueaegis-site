@@ -13,6 +13,7 @@
 <link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/">
 <link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
 <style>
 :root{
   --navy:#0A2A4F; --blue:#1E5FA8; --cyan:#4FB3D9;
@@ -128,6 +129,45 @@ footer{background:var(--navy); color:#7E93AC; font-size:12.5px; padding:30px 0 4
 footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
 footer a{color:#7E93AC}
 
+/* ---- 動きの演出 ----
+   すべて prefers-reduced-motion: no-preference の中だけで定義する。
+   動きを望まない利用者には初期状態そのものを与えない（要素が消えたままになる事故を防ぐ）。
+   .js が付くのはスクリプトが動く場合だけなので、JS無効時も内容は常に見える。 */
+@media(prefers-reduced-motion:no-preference){
+  /* スクロール連動フェードイン */
+  .js section .lead, .js section .intro, .js .card, .js .domain, .js .offer,
+  .js .steps > li, .js .pol > div, .js .stat, .js .stat-note,
+  .js .faq dt, .js .faq dd, .js .scroller,
+  .js .creed blockquote, .js .creed p, .js .mail{
+    opacity:0; transform:translateY(20px);
+    transition:opacity .75s cubic-bezier(.2,.7,.3,1), transform .75s cubic-bezier(.2,.7,.3,1);
+  }
+  .js .in{opacity:1 !important; transform:none !important}
+  .js .card:nth-child(2), .js .domain:nth-child(2), .js .offer:nth-child(2), .js .pol > div:nth-child(2){transition-delay:.09s}
+  .js .card:nth-child(3), .js .domain:nth-child(3), .js .offer:nth-child(3), .js .pol > div:nth-child(3){transition-delay:.18s}
+  .js .domain:nth-child(4){transition-delay:.27s}
+  .js .domain:nth-child(5){transition-delay:.36s}
+  .js .domain:nth-child(6){transition-delay:.45s}
+  .js .steps > li:nth-child(2){transition-delay:.09s}
+  .js .steps > li:nth-child(3){transition-delay:.18s}
+  .js .steps > li:nth-child(4){transition-delay:.27s}
+
+  /* ロゴの起動：積層の盾が下から順に積み上がる */
+  .js .hero .band{opacity:0; animation:band .5s cubic-bezier(.2,.7,.3,1) forwards}
+  .js .hero .b5{animation-delay:.10s}
+  .js .hero .b4{animation-delay:.21s}
+  .js .hero .b3{animation-delay:.32s}
+  .js .hero .b2{animation-delay:.43s}
+  .js .hero .b1{animation-delay:.54s}
+  .js .hero .wm{opacity:0; animation:wm .6s ease .70s forwards}
+  .js .hero h1, .js .hero > .wrap > p, .js .tagline-en{opacity:0; animation:wm .7s ease forwards}
+  .js .hero h1{animation-delay:.95s}
+  .js .hero > .wrap > p{animation-delay:1.10s}
+  .js .tagline-en{animation-delay:1.25s}
+  @keyframes band{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+  @keyframes wm{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+}
+
 @media(max-width:640px){
   .headbar{height:auto; padding:16px 0; flex-direction:column; align-items:flex-start; gap:12px}
   nav{justify-content:flex-start; gap:8px 16px}
@@ -181,15 +221,15 @@ footer a{color:#7E93AC}
       </defs>
       <g transform="translate(0,6) scale(0.82)">
         <g clip-path="url(#cl2)">
-          <rect x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
-          <rect x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
-          <rect x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
-          <rect x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
-          <rect x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
+          <rect class="band b1" x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
+          <rect class="band b2" x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
+          <rect class="band b3" x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
+          <rect class="band b4" x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
+          <rect class="band b5" x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
         </g>
       </g>
-      <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
-      <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
+      <text class="wm" x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
+      <text class="wm" x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
     </svg>
     <h1>プロセスをスマートに。<br>未来を堅牢に。</h1>
     <p>規制と技術が交差する領域で、適合性を検証可能にする仕組みを研究開発し、そこから生まれた知的財産を自ら保有・活用しています。</p>
@@ -391,6 +431,31 @@ footer a{color:#7E93AC}
     <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
   </div>
 </footer>
+
+<script>
+/* スクロール連動フェードイン。
+   セレクタは上のCSSと同一に保つこと（片方だけ変えると要素が消えたままになる）。 */
+(function(){
+  var SEL = 'section .lead, section .intro, .card, .domain, .offer,'
+          + '.steps > li, .pol > div, .stat, .stat-note,'
+          + '.faq dt, .faq dd, .scroller,'
+          + '.creed blockquote, .creed p, .mail';
+  var els = document.querySelectorAll(SEL);
+  var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+
+  if (!motionOK || !('IntersectionObserver' in window)) {
+    // 動きを望まない場合、またはObserver非対応の場合は最終状態を即座に与える
+    for (var i = 0; i < els.length; i++) els[i].classList.add('in');
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  for (var j = 0; j < els.length; j++) io.observe(els[j]);
+})();
+</script>
 
 </body>
 </html>
