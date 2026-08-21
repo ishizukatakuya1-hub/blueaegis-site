@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue Aegis株式会社</title>
+<meta name="description" content="Blue Aegis株式会社は、規制対応技術の研究開発と、自ら創出した知的財産の保有・ライセンスを行う会社です。">
+<meta property="og:title" content="Blue Aegis株式会社">
+<meta property="og:description" content="プロセスをスマートに。未来を堅牢に。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://blueaegis.co.jp/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --navy:#0A2A4F; --blue:#1E5FA8; --cyan:#4FB3D9;
+  --slate:#6B7684; --rule:#C7D0DA; --paper:#F7F9FB; --white:#FFFFFF;
+  --maxw:1040px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--white); color:var(--navy);
+  font-family:"Yu Gothic","游ゴシック","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  font-size:16px; line-height:1.9; letter-spacing:.02em;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+
+/* ---- ヘッダー ---- */
+header{
+  position:sticky; top:0; z-index:10;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--rule);
+}
+.headbar{display:flex; align-items:center; justify-content:space-between; height:68px}
+.headbar svg{display:block; height:34px; width:auto}
+nav a{
+  color:var(--slate); text-decoration:none; font-size:14px;
+  margin-left:26px; letter-spacing:.06em; white-space:nowrap;
+}
+nav a:hover{color:var(--blue)}
+
+/* ---- ヒーロー ---- */
+.hero{background:var(--navy); color:var(--white); padding:96px 0 88px}
+.hero svg{display:block; height:46px; width:auto; margin-bottom:38px}
+.hero h1{
+  margin:0 0 26px; font-size:clamp(26px,4.4vw,42px); font-weight:600;
+  line-height:1.55; letter-spacing:.04em;
+}
+.hero p{margin:0; max-width:44em; color:#C3D2E0; font-size:clamp(15px,1.7vw,17px)}
+.tagline-en{
+  margin-top:34px; color:var(--cyan);
+  font-size:13px; letter-spacing:.22em; text-transform:none;
+}
+
+/* ---- セクション ---- */
+section{padding:84px 0; border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+h2{
+  margin:0 0 12px; font-size:13px; font-weight:600;
+  letter-spacing:.24em; color:var(--blue);
+}
+h2 + .lead{margin:0 0 48px; font-size:clamp(20px,2.6vw,27px); font-weight:600; line-height:1.6}
+
+/* ---- 事業内容 ---- */
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:34px}
+.card{border-top:3px solid var(--blue); padding-top:22px}
+.card:nth-child(2){border-color:var(--cyan)}
+.card:nth-child(3){border-color:var(--slate)}
+.card h3{margin:0 0 12px; font-size:17px; font-weight:600; line-height:1.6}
+.card p{margin:0; font-size:14.5px; color:#43536A}
+
+/* ---- 考え方 ---- */
+.creed{background:var(--paper)}
+.creed blockquote{
+  margin:0 0 26px; padding:0 0 0 22px; border-left:3px solid var(--cyan);
+  font-size:clamp(19px,2.5vw,25px); font-weight:600; line-height:1.65;
+}
+.creed p{margin:0; max-width:48em; font-size:15px; color:#43536A}
+
+/* ---- 会社概要 ---- */
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{text-align:left; vertical-align:top; padding:15px 0; border-bottom:1px solid var(--rule)}
+th{width:11em; font-weight:600; color:var(--slate); font-size:13.5px; letter-spacing:.06em}
+td ol{margin:0; padding-left:1.3em}
+td ol li{margin-bottom:4px}
+.scroller{overflow-x:auto}
+
+/* ---- 問い合わせ ---- */
+.contact{background:var(--navy); color:var(--white)}
+.contact h2{color:var(--cyan)}
+.contact .lead{color:var(--white)}
+.contact p{color:#C3D2E0; max-width:46em; font-size:15px}
+.mail{
+  display:inline-block; margin-top:22px; font-size:clamp(17px,2.4vw,22px);
+  color:var(--white); text-decoration:none;
+  border-bottom:2px solid var(--cyan); padding-bottom:4px; letter-spacing:.03em;
+}
+.mail:hover{color:var(--cyan)}
+
+/* ---- フッター ---- */
+footer{background:var(--navy); color:#7E93AC; font-size:12.5px; padding:30px 0 40px}
+footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+
+@media(max-width:640px){
+  nav a{margin-left:16px; font-size:13px}
+  section{padding:62px 0}
+  .hero{padding:68px 0 62px}
+  th{width:7.5em}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <!-- 正式ロゴ（積層の盾＋ワードマーク）／logo_01_横並び_カラー と同一構造 -->
+    <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+      <defs>
+        <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+        <clipPath id="cl1"><use href="#sh1"/></clipPath>
+      </defs>
+      <g transform="translate(0,6) scale(0.82)">
+        <g clip-path="url(#cl1)">
+          <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+          <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+        </g>
+      </g>
+      <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+      <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+    </svg>
+    <nav>
+      <a href="#business">事業内容</a>
+      <a href="#creed">考え方</a>
+      <a href="#company">会社概要</a>
+      <a href="#contact">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <!-- 白抜きロゴ（暗背景用）／logo_03_横並び_白抜き と同一構造 -->
+    <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+      <defs>
+        <path id="sh2" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+        <clipPath id="cl2"><use href="#sh2"/></clipPath>
+      </defs>
+      <g transform="translate(0,6) scale(0.82)">
+        <g clip-path="url(#cl2)">
+          <rect x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
+          <rect x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
+          <rect x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
+          <rect x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
+          <rect x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
+        </g>
+      </g>
+      <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
+      <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
+    </svg>
+    <h1>プロセスをスマートに。<br>未来を堅牢に。</h1>
+    <p>規制と技術が交差する領域で、適合性を検証可能にする仕組みを研究開発し、そこから生まれた知的財産を自ら保有・活用しています。</p>
+    <div class="tagline-en">The Shield for the Intelligent Age</div>
+  </div>
+</div>
+
+<section id="business">
+  <div class="wrap">
+    <h2>BUSINESS</h2>
+    <div class="lead">事業内容</div>
+    <div class="cards">
+      <div class="card">
+        <h3>規制対応技術の研究開発</h3>
+        <p>規制適合性の検証、統制の自動化、監査証跡の生成に関する技術を研究開発しています。人工知能、情報セキュリティ、相続、宇宙などの先進分野を対象としています。</p>
+      </div>
+      <div class="card">
+        <h3>知的財産の保有とライセンス</h3>
+        <p>自ら創出した発明について特許出願を行い、権利の取得・管理・評価を自社で完結させています。取得した権利は、実施許諾または譲渡により提供します。</p>
+      </div>
+      <div class="card">
+        <h3>不動産の管理・運用</h3>
+        <p>賃貸不動産の運営管理、プロパティマネジメント、アセットマネジメントおよび関連するコンサルティングを行っています（宅地建物取引業を除く）。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="creed" class="creed">
+  <div class="wrap">
+    <h2>OUR CREED</h2>
+    <div class="lead">確認できないなら、動かさない。</div>
+    <blockquote>装飾より構造。誇張より証明。</blockquote>
+    <p>規制対応の要点は、正しく動いたことを主張できるかどうかではなく、正しく動いたことを後から検証できるかどうかにあります。私たちは、確認できない状態を「確認できない」と扱い、そのまま先へ進めない設計を基本方針としています。この考え方は、自社の情報発信にも同じく適用しています。証明できる範囲を超えたことは述べません。</p>
+  </div>
+</section>
+
+<section id="company">
+  <div class="wrap">
+    <h2>COMPANY</h2>
+    <div class="lead">会社概要</div>
+    <div class="scroller">
+      <table>
+        <tr><th>商号</th><td>Blue Aegis株式会社（英文表記：Blue Aegis Inc.）</td></tr>
+        <tr><th>設立</th><td>2026年7月7日</td></tr>
+        <tr><th>事業内容</th><td>
+          <ol>
+            <li>規制適合性の検証、コンプライアンス管理の自動化、監査証跡の生成その他の規制対応技術に関するソフトウェア及びシステムの研究開発、提供、運用及びライセンス</li>
+            <li>人工知能、量子暗号、ブロックチェーン、情報セキュリティ、金融、信託、相続、ロボット、宇宙その他先進技術分野における試験研究、技術開発及びコンサルティング</li>
+            <li>知的財産権の取得、保有、管理、譲渡及び使用許諾に関する事業</li>
+            <li>ライセンス契約、共同研究開発契約、技術移転契約その他技術関連契約の交渉、締結及び管理</li>
+            <li>知的財産権の評価、鑑定、監査及びデューデリジェンス</li>
+            <li>不動産の賃貸管理、運営管理、プロパティマネジメント、アセットマネジメント及び不動産関連コンサルティング（宅地建物取引業及び不動産売買業を除く）</li>
+          </ol>
+        </td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2>CONTACT</h2>
+    <div class="lead">お問い合わせ</div>
+    <p>ライセンスに関するご相談、共同研究開発のご提案、その他のお問い合わせは、電子メールにて承ります。</p>
+    <a class="mail" href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div>info@blueaegis.co.jp</div>
+  </div>
+</footer>
+
+</body>
+</html>

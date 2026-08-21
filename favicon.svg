@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128" width="128" height="128">
+<defs>
+<path id="P1f" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+<clipPath id="c1f"><use xlink:href="#P1f"/></clipPath>
+</defs>
+<g transform="translate(10,0) scale(0.9)">
+<g clip-path="url(#c1f)">
+<rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+<rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+<rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+<rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+<rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+</g>
+</g>
+</svg>
