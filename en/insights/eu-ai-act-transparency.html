@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The EU AI Act transparency obligations — what became enforceable on 2 August 2026 | Blue Aegis Inc.</title>
+<meta name="description" content="On 2 August 2026 the EU began enforcing the AI Act transparency obligations: disclosure for interactive AI, deepfake labelling, and machine-readable marking of AI-generated content. Extraterritorial reach, and why labelling alone is not the hard part.">
+<meta property="og:title" content="The EU AI Act transparency obligations — what became enforceable on 2 August 2026">
+<meta property="og:description" content="Disclosure for interactive AI, deepfake labelling, machine-readable marking. Extraterritorial reach, and why labelling alone is not the hard part.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/en/insights/eu-ai-act-transparency.html">
+<link rel="canonical" href="https://blueaegis.co.jp/en/insights/eu-ai-act-transparency.html">
+<link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/insights/eu-ai-act-transparency.html">
+<link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/insights/eu-ai-act-transparency.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../index.html#domains">Domains</a>
+      <a href="../index.html#licensing">Licensing</a>
+      <a href="../index.html#contact">Contact</a>
+      <a class="lang" href="../../insights/eu-ai-act-transparency.html" hreflang="ja">日本語</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>The EU AI Act transparency obligations — what became enforceable on 2 August 2026</h1>
+  <p class="meta">22 August 2026</p>
+
+  <p>On 2 August 2026 the European Commission's AI Office, together with national authorities, began enforcing the AI Act. The transparency obligations that took effect on the same date reach every operator using AI to generate or alter content — including operators who build and run their systems entirely outside the EU.</p>
+
+  <h2>Three obligations, now enforceable</h2>
+
+  <p>The Commission's announcement sets out three in concrete terms.</p>
+
+  <ul>
+    <li><strong>Disclosure for interactive systems</strong> — chatbots and other interactive AI systems must tell users they are dealing with AI, not a human.</li>
+    <li><strong>Deepfake labelling</strong> — images, video, or audio that have been edited or generated using AI must be labelled.</li>
+    <li><strong>Machine-readable marking</strong> — AI-generated or altered content must carry machine-readable marks so that it can be detected more easily.</li>
+  </ul>
+
+  <p>The first two are visible to a person. <strong>The third is different in kind.</strong> Because the requirement is that the mark be machine-readable, a label rendered on screen does not satisfy it. The information has to be carried in the content itself, in a form a machine can read.</p>
+
+  <h2>The reach extends well beyond the EU</h2>
+
+  <p>Article 2(1)(a) applies the Regulation to providers placing AI systems on the market or putting them into service in the Union, <strong>"irrespective of whether those providers are established or located within the Union or in a third country"</strong>.</p>
+
+  <p>Article 2(1)(c) goes further, reaching providers and deployers in a third country <strong>"where the output produced by the AI system is used in the Union"</strong>. The system need never be located in the EU. If its output is used there, the Regulation applies.</p>
+
+  <p>For an operator outside the EU, the question is therefore not where the system runs, but whether any path exists by which its output reaches users in the Union.</p>
+
+  <h2>Labelling is the easy part</h2>
+
+  <p>The difficult part in practice is not meeting the obligation. It is <strong>being able to show, afterwards, that you met it</strong>.</p>
+
+  <blockquote>The content you distributed on a given day did carry a machine-readable mark. Six months later, can you demonstrate that to a third party?</blockquote>
+
+  <p>Implementing a marking function is comparatively straightforward. But compliance is assessed on whether the implementation demonstrably worked, not on whether it was built. Marking can fail during an incident. A configuration change can quietly take one distribution path out of scope. When that happens, the question becomes whether your records let you establish which content, over which period, was affected.</p>
+
+  <p>Under an enforcement regime, an enquiry from an authority or a complaint from a third party is what triggers the demand for an explanation. What you produce at that point is not a specification. It is the operational record.</p>
+
+  <h2>Treating the unverifiable as unverifiable</h2>
+
+  <p>We approach requirements of this kind structurally rather than procedurally. The design principle is not merely to record that marking succeeded, but to <strong>record the state in which marking could not be confirmed as distinct from both success and failure</strong>.</p>
+
+  <p>If an unconfirmed state is quietly treated as "probably fine", the affected range cannot be reconstructed later. If it is recorded as unconfirmed, an investigation at least has a starting point. Much of the intellectual property we hold concerns this structure.</p>
+
+  <h2>Worth checking now</h2>
+
+  <ul>
+    <li>Whether any path exists by which your system's output is used in the Union</li>
+    <li>Whether AI-generated or altered content carries a machine-readable mark</li>
+    <li>Whether a failure to apply that mark is recorded — and if not, whether the affected range could be established afterwards</li>
+    <li>Whether disclosure of AI involvement covers every interactive path, not just the primary one</li>
+  </ul>
+
+  <p>Note that the rules for high-risk AI systems have been deferred to 2 December 2027, and those for systems embedded in regulated products to 2 August 2028. The transparency obligations are being enforced ahead of them.</p>
+
+  <div class="cta">
+    <p>Whether the Regulation applies to you, and what you should be recording if it does — these are good questions to bring us before you have answered them. Working out whether it applies is our job, not yours.</p>
+    <a href="../index.html#contact">Get in touch</a>
+  </div>
+
+  <div class="source">
+    <p><strong>Sources</strong></p>
+    <p>European Commission, "Commission starts enforcing AI Act rules and new transparency requirements" (2 August 2026)<br>
+    <a href="https://digital-strategy.ec.europa.eu/en/news/commission-starts-enforcing-ai-act-rules-and-new-transparency-requirements-2-august" rel="noopener">https://digital-strategy.ec.europa.eu/en/news/commission-starts-enforcing-ai-act-rules-and-new-transparency-requirements-2-august</a></p>
+    <p>Regulation (EU) 2024/1689 (AI Act), Article 2 — Scope</p>
+    <p>This note reflects publicly available material as of 22 August 2026 and is not legal advice. Please confirm the application to your own circumstances with a qualified adviser.</p>
+  </div>
+
+  <p class="backlink"><a href="../index.html">← Back to Blue Aegis</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+
+</body>
+</html>
