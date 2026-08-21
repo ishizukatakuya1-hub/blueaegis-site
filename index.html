@@ -63,6 +63,17 @@ h2{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24em; color
 .intro{margin:0 0 48px; max-width:46em; color:var(--ink); font-size:15px}
 .lead + .cards, .lead + .domains, .lead + .cards3{margin-top:48px}
 
+/* ---- メッセージ ---- */
+.message{border-top:0}
+.message .lead{font-size:clamp(23px,3.3vw,35px); line-height:1.5; margin-bottom:36px}
+.message p{margin:0 0 22px; max-width:38em; font-size:15.5px; color:var(--ink); line-height:2}
+.message p:last-of-type{margin-bottom:0}
+.message .pull{
+  margin:42px 0 0; padding:0 0 0 22px; border-left:3px solid var(--cyan);
+  font-size:clamp(17px,2.2vw,22px); font-weight:600; color:var(--navy);
+  line-height:1.65; max-width:26em;
+}
+
 /* ---- 事業内容 ---- */
 .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:34px}
 .card{border-top:3px solid var(--blue); padding-top:22px}
@@ -138,6 +149,7 @@ footer a{color:#7E93AC}
   .js section .lead, .js section .intro, .js .card, .js .domain, .js .offer,
   .js .steps > li, .js .pol > div, .js .stat, .js .stat-note,
   .js .faq dt, .js .faq dd, .js .scroller,
+  .js .message p, .js .message .pull,
   .js .creed blockquote, .js .creed p, .js .mail{
     opacity:0; transform:translateY(20px);
     transition:opacity .75s cubic-bezier(.2,.7,.3,1), transform .75s cubic-bezier(.2,.7,.3,1);
@@ -237,6 +249,17 @@ footer a{color:#7E93AC}
   </div>
 </div>
 
+<section id="message" class="message">
+  <div class="wrap">
+    <h2>MESSAGE</h2>
+    <div class="lead">知的財産は、事業を前に進めるためにあります。</div>
+    <p>新しい規制が施行されるたび、多くの事業者が「やりたいことを実行できない理由」に直面します。基準を満たしていることを自ら示せなければ、サービスを世に出せず、取引を続けられず、監査を通せない。これは技術の課題であるより、立証の課題です。</p>
+    <p>当社が保有する権利は、その立証を人手の運用ではなく仕組みとして担う技術に対するものです。だからこそ、私たちは権利を自社で囲い込みません。実施される方の手に渡ってはじめて、その技術は止まっていた事業を動かします。</p>
+    <p>私たちは、権利を行使することによってではなく、実施を可能にすることによって収益を得ます。ライセンスの条件を、実施の妨げにならない水準で設計しているのはそのためです。権利範囲を必要以上に広げないのも、同じ理由によります。</p>
+    <div class="pull">お客様の事業が前に進んだとき、私たちの知的財産ははじめて価値を持ちます。</div>
+  </div>
+</section>
+
 <section id="business">
   <div class="wrap">
     <h2>BUSINESS</h2>
@@ -320,7 +343,7 @@ footer a{color:#7E93AC}
   <div class="wrap">
     <h2>LICENSING</h2>
     <div class="lead">ライセンス</div>
-    <p class="intro">保有する権利は、実施を希望される方に提供します。提供の形態は3通りあり、実施の規模や事業の段階に応じて選択いただけます。</p>
+    <p class="intro">規制対応を理由に着手できずにいる企画、監査で証跡を求められている業務、法改正で見直しが必要になったサービス。そうした場面で使っていただくために権利を保有しています。提供の形態は3通りあり、実施の規模や事業の段階に応じて選択いただけます。</p>
     <div class="cards3">
       <div class="offer">
         <h3>実施許諾</h3>
@@ -439,6 +462,7 @@ footer a{color:#7E93AC}
   var SEL = 'section .lead, section .intro, .card, .domain, .offer,'
           + '.steps > li, .pol > div, .stat, .stat-note,'
           + '.faq dt, .faq dd, .scroller,'
+          + '.message p, .message .pull,'
           + '.creed blockquote, .creed p, .mail';
   var els = document.querySelectorAll(SEL);
   var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;

@@ -57,6 +57,16 @@ h2{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24em; color
 .intro{margin:0 0 48px; max-width:42em; color:var(--ink); font-size:15px}
 .lead + .cards, .lead + .domains, .lead + .cards3{margin-top:48px}
 
+.message{border-top:0}
+.message .lead{font-size:clamp(24px,3.4vw,37px); line-height:1.35; margin-bottom:36px}
+.message p{margin:0 0 22px; max-width:36em; font-size:15.5px; color:var(--ink); line-height:1.95}
+.message p:last-of-type{margin-bottom:0}
+.message .pull{
+  margin:42px 0 0; padding:0 0 0 22px; border-left:3px solid var(--cyan);
+  font-size:clamp(17px,2.2vw,23px); font-weight:600; color:var(--navy);
+  line-height:1.5; max-width:24em;
+}
+
 .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:34px}
 .card{border-top:3px solid var(--blue); padding-top:22px}
 .card:nth-child(2){border-color:var(--cyan)}
@@ -119,6 +129,7 @@ footer a{color:#7E93AC}
   .js section .lead, .js section .intro, .js .card, .js .domain, .js .offer,
   .js .steps > li, .js .pol > div, .js .stat, .js .stat-note,
   .js .faq dt, .js .faq dd, .js .scroller,
+  .js .message p, .js .message .pull,
   .js .creed blockquote, .js .creed p, .js .mail{
     opacity:0; transform:translateY(20px);
     transition:opacity .75s cubic-bezier(.2,.7,.3,1), transform .75s cubic-bezier(.2,.7,.3,1);
@@ -217,6 +228,17 @@ footer a{color:#7E93AC}
   </div>
 </div>
 
+<section id="message" class="message">
+  <div class="wrap">
+    <h2>MESSAGE</h2>
+    <div class="lead">Intellectual property exists to move a business forward.</div>
+    <p>Every time a new regulation takes effect, businesses run into a reason they cannot do what they set out to do. Unable to demonstrate that they meet the standard, they cannot launch the service, cannot keep the contract, cannot pass the audit. Less a problem of engineering than a problem of proof.</p>
+    <p>The rights we hold cover technology that carries that burden of proof structurally, rather than through manual process. Which is precisely why we do not keep those rights to ourselves. The technology only moves a stalled business once it is in the hands of the people implementing it.</p>
+    <p>We earn our income by making implementation possible, not by enforcing rights. That is why we set licence terms at a level that does not obstruct implementation, and why we do not claim scope beyond what we need.</p>
+    <div class="pull">Our intellectual property acquires its value at the moment your business moves forward.</div>
+  </div>
+</section>
+
 <section id="business">
   <div class="wrap">
     <h2>BUSINESS</h2>
@@ -300,7 +322,7 @@ footer a{color:#7E93AC}
   <div class="wrap">
     <h2>LICENSING</h2>
     <div class="lead">Working with us</div>
-    <p class="intro">Our rights are available to those who wish to practise them. Three arrangements are available; which one fits depends on the scale of implementation and the stage of your business.</p>
+    <p class="intro">A project stalled on a compliance question. A process where an auditor now wants evidence. A service that needs rethinking because the law changed. These are the situations our rights exist to serve. Three arrangements are available; which one fits depends on the scale of implementation and the stage of your business.</p>
     <div class="cards3">
       <div class="offer">
         <h3>Licence</h3>
@@ -420,6 +442,7 @@ footer a{color:#7E93AC}
   var SEL = 'section .lead, section .intro, .card, .domain, .offer,'
           + '.steps > li, .pol > div, .stat, .stat-note,'
           + '.faq dt, .faq dd, .scroller,'
+          + '.message p, .message .pull,'
           + '.creed blockquote, .creed p, .mail';
   var els = document.querySelectorAll(SEL);
   var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
