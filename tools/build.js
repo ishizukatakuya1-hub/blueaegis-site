@@ -330,6 +330,8 @@ const STATIC_PAGES = [
   { loc: '/en/insights/eu-ai-act-transparency.html',
     alt: { ja: '/insights/eu-ai-act-transparency.html', en: '/en/insights/eu-ai-act-transparency.html' } },
   { loc: '/insights/aml-ekyc-2027.html' },
+  { loc: '/insights/housing-safety-net-postmortem.html' },
+  { loc: '/insights/eudi-wallet-relying-party.html' },
   { loc: '/blog/' },
 ];
 
