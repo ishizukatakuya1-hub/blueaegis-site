@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>犯収法2027年4月改正 ― 非対面の本人確認はどう変わるか｜Blue Aegis株式会社</title>
+<meta name="description" content="2027年4月1日、犯罪収益移転防止法施行規則の改正により非対面の本人確認方式が変わります。ホ方式の廃止、ICチップ読み取りへの移行、改正が3本重なっていること、経過措置がないことを整理します。">
+<meta property="og:title" content="犯収法2027年4月改正 ― 非対面の本人確認はどう変わるか">
+<meta property="og:description" content="ホ方式の廃止、ICチップ読み取りへの移行、改正の積層、経過措置の不在。eKYCの実務論点を整理します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/insights/aml-ekyc-2027.html">
+<link rel="canonical" href="https://blueaegis.co.jp/insights/aml-ekyc-2027.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="index.html">解説</a>
+      <a href="../index.html#domains">技術領域</a>
+      <a href="../index.html#licensing">ライセンス</a>
+      <a href="../index.html#contact">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>犯収法2027年4月改正 ― 非対面の本人確認はどう変わるか</h1>
+  <p class="meta">2026年8月22日</p>
+
+  <p>2027年4月1日、犯罪収益移転防止法施行規則の改正が施行され、非対面での本人確認方法が変わります。長く主流だった「本人確認書類の画像と容貌の画像を送信する方式」が使えなくなり、ICチップの読み取りを軸とした方式に移行します。金融機関、暗号資産交換業者、決済事業者、不動産、士業など、特定事業者に該当する数万社が影響を受けます。</p>
+
+  <h2>何が使えなくなるのか</h2>
+
+  <p>改正の中心は、施行規則第6条第1項第1号に定める非対面方式の整理です。実務で最も広く使われてきた、写真付き本人確認書類の画像を送信させ、あわせて容貌の画像を送信させる方式（いわゆるホ方式）が廃止されます。書類の画像に依拠する方式は、偽変造への耐性が問題視されてきました。</p>
+
+  <p>移行先は、ICチップに記録された情報を読み取って送信させる方式、およびマイナンバーカードの電子証明書を用いる方式が中心となります。券面の画像ではなく、チップに格納された署名付きの情報を用いる形です。</p>
+
+  <h2>改正は1本ではありません</h2>
+
+  <p>実務上見落とされやすいのが、<strong>この改正が複数の命令によって重ねられている</strong>という点です。2025年6月24日公布の共同命令第3号のほか、2026年3月6日公布の命令、同年11月1日公布の命令があり、いずれも関連する内容を含みます。</p>
+
+  <p>つまり「2027年4月1日時点で有効な規定」を知るには、複数の改正命令を重ね合わせた結果を見る必要があります。単一の条文を参照して済む話ではありません。社内規程やベンダーの設定を更新する際、<strong>どの時点のどの版に基づいて作業したのかを記録しておかないと、後から検証できなくなります</strong>。</p>
+
+  <h2>経過措置がありません</h2>
+
+  <p>この改正には経過措置が置かれていません。施行日をもって、旧方式は使えなくなります。</p>
+
+  <blockquote>施行日をまたいで進行中の確認手続は、どちらの規定で判断されるのか。切り替え当日の運用をどう設計するか。</blockquote>
+
+  <p>準備期間が長く設定されている改正ほど、直前まで着手されない傾向があります。ICチップ読み取りへの移行は、アプリケーションの改修だけでなく、読み取りに対応できない利用者への案内、コールセンターの体制、社内規程の改訂まで波及します。2027年4月は、準備の観点ではすでに遠い先ではありません。</p>
+
+  <h2>一次資料に書かれていないことが流布しています</h2>
+
+  <p>この改正に関する解説記事のなかには、「あらかじめ代替手順を定めておく必要がある」という趣旨の記述が見られます。実務上そうしておくのが望ましいのは確かですが、<strong>当社が確認した限り、この要求は一次資料に見当たりません</strong>。</p>
+
+  <p>望ましい運用と、法令が求めている事項は、区別して把握しておく必要があります。両者を混同したまま社内の対応方針を立てると、本来必要な対応が後回しになったり、逆に不要な作業に工数を割いたりすることになります。改正対応を検討する際は、解説記事ではなく公布された命令の本文に当たることをお勧めします。</p>
+
+  <h2>いま確認しておくとよいこと</h2>
+
+  <ul>
+    <li>現在採用している非対面方式が、施行後も存続する方式に該当するか</li>
+    <li>複数の改正命令を重ねた結果として、施行日時点の規定を把握できているか</li>
+    <li>方式の切り替えにあたり、どの版の規定に基づいて設定を変更したかが記録に残るか</li>
+    <li>施行日をまたぐ手続の扱いを、運用として決めてあるか</li>
+    <li>ベンダーに委託している場合、切り替えの時期と範囲について合意ができているか</li>
+  </ul>
+
+  <h2>運用でしのぐか、仕組みで担保するか</h2>
+
+  <p>規定が改正されるたびに、社内の設定を人手で追随させる方法もあります。ただし今回のように改正が積層し、経過措置がなく、対象となる手続が大量にある場合、追随が漏れた箇所を後から特定できるかが問題になります。</p>
+
+  <p>当社は、規制対応の適合性を人手の運用ではなく仕組みとして担保する技術を研究開発し、その成果を特許出願として保有しています。本改正が関係する領域についても、複数の出願を行っています。</p>
+
+  <div class="cta">
+    <p>自社の方式が改正後も使えるのか、切り替えに際して何を記録しておくべきか。判断がつかない段階でのご相談を歓迎します。該当性の判断は当社側で行います。</p>
+    <a href="../index.html#contact">相談する</a>
+  </div>
+
+  <div class="source">
+    <p><strong>出典</strong></p>
+    <p>警察庁 JAFIC「犯罪収益移転防止法 同施行令 同施行規則など」<br>
+    <a href="https://www.npa.go.jp/sosikihanzai/jafic/hourei/hotop.htm" rel="noopener">https://www.npa.go.jp/sosikihanzai/jafic/hourei/hotop.htm</a></p>
+    <p>犯罪による収益の移転防止に関する法律施行規則の一部を改正する命令（令和7年内閣府・総務省・法務省・財務省・厚生労働省・農林水産省・経済産業省・国土交通省令第3号／2025年6月24日公布）ほか</p>
+    <p>本稿は2026年8月22日時点で確認できた公表資料に基づく整理であり、法的助言ではありません。個別の適用可否については専門家にご確認ください。</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← 解説の一覧へ</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+</body>
+</html>
