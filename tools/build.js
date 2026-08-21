@@ -21,7 +21,7 @@ const VALIDATE_ONLY = process.argv.includes('--validate-only');
 
 /* ビルド出力に含めない（生成物・道具・設定） */
 const SKIP = new Set(['content', 'tools', '_site', 'node_modules', '.git', '.github',
-                      'package.json', 'package-lock.json', 'PUBLISHING.md', '.claude']);
+                      'package.json', 'package-lock.json', 'PUBLISHING.md', 'HANDOVER.md', '.claude']);
 
 const errors = [];
 const warnings = [];
