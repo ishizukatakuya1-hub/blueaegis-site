@@ -134,6 +134,33 @@ td ol li{margin-bottom:4px}
 
 /* ---- 問い合わせ ---- */
 .contact{background:var(--paper)}
+.form{display:grid; gap:28px; max-width:44em; margin:0 0 34px}
+.field > span{display:block; font-size:13px; font-weight:600; letter-spacing:.08em; color:var(--slate); margin-bottom:12px}
+.opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px}
+.opt{position:relative}
+.opt input{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer}
+.opt span{
+  display:block; padding:13px 16px; background:var(--white);
+  border:1px solid var(--rule); font-size:14.5px; line-height:1.5; color:var(--ink);
+  transition:border-color .15s, color .15s, box-shadow .15s;
+}
+.opt input:checked + span{border-color:var(--blue); color:var(--navy); box-shadow:inset 0 0 0 1px var(--blue)}
+.opt input:focus-visible + span{outline:2px solid var(--cyan); outline-offset:2px}
+.field textarea, .field input[type=text]{
+  width:100%; padding:13px 16px; background:var(--white);
+  border:1px solid var(--rule); font:inherit; font-size:15px; color:var(--navy);
+}
+.field textarea{min-height:120px; resize:vertical; line-height:1.8}
+.field textarea:focus, .field input[type=text]:focus{outline:2px solid var(--cyan); outline-offset:0; border-color:var(--blue)}
+.send{
+  display:inline-block; padding:16px 34px; background:var(--navy); color:var(--white);
+  border:0; font:inherit; font-size:15.5px; font-weight:600; letter-spacing:.06em;
+  cursor:pointer; transition:background .15s;
+}
+.send:hover{background:var(--blue)}
+.send:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
+.note{margin:18px 0 0; font-size:13px; color:var(--slate); line-height:1.85; max-width:40em}
+.fallback{margin:30px 0 0; padding-top:26px; border-top:1px solid var(--rule); font-size:14px; color:var(--ink)}
 .mail{display:inline-block; margin-top:18px; font-size:clamp(17px,2.4vw,22px); color:var(--navy); text-decoration:none; border-bottom:2px solid var(--cyan); padding-bottom:4px; letter-spacing:.03em}
 .mail:hover{color:var(--blue)}
 
@@ -455,8 +482,49 @@ footer a{color:#7E93AC}
   <div class="wrap">
     <h2>CONTACT</h2>
     <div class="lead">お問い合わせ</div>
-    <p class="intro">ライセンスに関するご相談、共同研究開発のご提案、その他のお問い合わせは、電子メールにて承ります。ご返信は3営業日以内を目安としています。</p>
-    <a class="mail" href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    <p class="intro">該当するかどうか分からない段階でも構いません。むしろその段階でのご相談が最も多く、当社の技術が使えるかどうかの判断は当社側で行います。以下を選んでいただければ、本文を用意した状態でメールが開きます。</p>
+
+    <form class="form" id="inq">
+      <label class="field">
+        <span>ご相談の種類</span>
+        <div class="opts">
+          <div class="opt"><input type="radio" name="kind" value="ライセンスの検討" checked><span>ライセンスの検討</span></div>
+          <div class="opt"><input type="radio" name="kind" value="共同研究開発の相談"><span>共同研究開発の相談</span></div>
+          <div class="opt"><input type="radio" name="kind" value="技術内容の確認"><span>技術内容の確認</span></div>
+          <div class="opt"><input type="radio" name="kind" value="その他"><span>その他</span></div>
+        </div>
+      </label>
+
+      <label class="field">
+        <span>関係する分野</span>
+        <div class="opts">
+          <div class="opt"><input type="radio" name="area" value="人工知能の統治と説明責任" checked><span>人工知能の統治と説明責任</span></div>
+          <div class="opt"><input type="radio" name="area" value="本人確認・電子的な識別"><span>本人確認・電子的な識別</span></div>
+          <div class="opt"><input type="radio" name="area" value="金融商品・暗号資産の規制対応"><span>金融商品・暗号資産</span></div>
+          <div class="opt"><input type="radio" name="area" value="相続・事業承継・士業実務"><span>相続・事業承継・士業実務</span></div>
+          <div class="opt"><input type="radio" name="area" value="通信・宇宙・エネルギー"><span>通信・宇宙・エネルギー</span></div>
+          <div class="opt"><input type="radio" name="area" value="労働・環境・産業安全"><span>労働・環境・産業安全</span></div>
+          <div class="opt"><input type="radio" name="area" value="どれに当たるか分からない"><span>どれに当たるか分からない</span></div>
+        </div>
+      </label>
+
+      <label class="field">
+        <span>貴社名・お名前（任意）</span>
+        <input type="text" name="who" autocomplete="organization">
+      </label>
+
+      <label class="field">
+        <span>ご状況（任意）</span>
+        <textarea name="body" placeholder="例：新しい規制への対応を検討しているが、自社の仕組みで基準を満たしていると示せるか判断がつかない。"></textarea>
+      </label>
+
+      <div><button type="submit" class="send">この内容でメールを作成する</button></div>
+    </form>
+
+    <p class="note">押すとご利用のメールソフトが開き、選んだ内容が本文に入った下書きが作られます。<strong>送信するまで当社には何も届きません。</strong>このページに入力内容が保存されることも、外部に送信されることもありません。</p>
+
+    <p class="fallback">メールソフトが開かない場合は、こちらへ直接お送りください。<br>
+      <a class="mail" href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></p>
   </div>
 </section>
 
@@ -490,6 +558,32 @@ footer a{color:#7E93AC}
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
   for (var j = 0; j < els.length; j++) io.observe(els[j]);
+})();
+
+/* 問い合わせ：選択内容から mailto の下書きを組み立てる。
+   外部サービスを介さないため、送信するまでデータはどこにも渡らない。 */
+(function(){
+  var form = document.getElementById('inq');
+  if (!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = function(n){ var el = form.querySelector('[name="'+n+'"]:checked') || form.querySelector('[name="'+n+'"]'); return el ? el.value.trim() : ''; };
+    var lines = [
+      'ご相談の種類：' + v('kind'),
+      '関係する分野：' + v('area'),
+      '貴社名・お名前：' + (v('who') || '（未記入）'),
+      '',
+      'ご状況：',
+      v('body') || '（未記入）',
+      '',
+      '――――――――――',
+      'このメールは blueaegis.co.jp の問い合わせ欄から作成されました。'
+    ];
+    var url = 'mailto:info@blueaegis.co.jp'
+            + '?subject=' + encodeURIComponent('お問い合わせ：' + v('kind'))
+            + '&body='    + encodeURIComponent(lines.join('\r\n'));
+    window.location.href = url;
+  });
 })();
 </script>
 

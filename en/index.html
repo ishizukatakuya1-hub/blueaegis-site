@@ -116,6 +116,33 @@ td ol li{margin-bottom:4px}
 .scroller{overflow-x:auto}
 
 .contact{background:var(--paper)}
+.form{display:grid; gap:28px; max-width:44em; margin:0 0 34px}
+.field > span{display:block; font-size:13px; font-weight:600; letter-spacing:.08em; color:var(--slate); margin-bottom:12px}
+.opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px}
+.opt{position:relative}
+.opt input{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer}
+.opt span{
+  display:block; padding:13px 16px; background:var(--white);
+  border:1px solid var(--rule); font-size:14.5px; line-height:1.5; color:var(--ink);
+  transition:border-color .15s, color .15s, box-shadow .15s;
+}
+.opt input:checked + span{border-color:var(--blue); color:var(--navy); box-shadow:inset 0 0 0 1px var(--blue)}
+.opt input:focus-visible + span{outline:2px solid var(--cyan); outline-offset:2px}
+.field textarea, .field input[type=text]{
+  width:100%; padding:13px 16px; background:var(--white);
+  border:1px solid var(--rule); font:inherit; font-size:15px; color:var(--navy);
+}
+.field textarea{min-height:120px; resize:vertical; line-height:1.8}
+.field textarea:focus, .field input[type=text]:focus{outline:2px solid var(--cyan); outline-offset:0; border-color:var(--blue)}
+.send{
+  display:inline-block; padding:16px 34px; background:var(--navy); color:var(--white);
+  border:0; font:inherit; font-size:15.5px; font-weight:600; letter-spacing:.06em;
+  cursor:pointer; transition:background .15s;
+}
+.send:hover{background:var(--blue)}
+.send:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
+.note{margin:18px 0 0; font-size:13px; color:var(--slate); line-height:1.85; max-width:40em}
+.fallback{margin:30px 0 0; padding-top:26px; border-top:1px solid var(--rule); font-size:14px; color:var(--ink)}
 .mail{display:inline-block; margin-top:18px; font-size:clamp(17px,2.4vw,22px); color:var(--navy); text-decoration:none; border-bottom:2px solid var(--cyan); padding-bottom:4px}
 .mail:hover{color:var(--blue)}
 
@@ -434,8 +461,49 @@ footer a{color:#7E93AC}
   <div class="wrap">
     <h2>CONTACT</h2>
     <div class="lead">Contact us</div>
-    <p class="intro">For licensing enquiries, joint development proposals, or anything else, please write to us by email. We aim to reply within three business days.</p>
-    <a class="mail" href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    <p class="intro">You do not need to know yet whether our technology applies to you. Most enquiries reach us at exactly that stage, and working out whether it applies is our job, not yours. Choose below and an email will open with the message already drafted.</p>
+
+    <form class="form" id="inq">
+      <label class="field">
+        <span>WHAT BRINGS YOU HERE</span>
+        <div class="opts">
+          <div class="opt"><input type="radio" name="kind" value="Considering a licence" checked><span>Considering a licence</span></div>
+          <div class="opt"><input type="radio" name="kind" value="Joint development"><span>Joint development</span></div>
+          <div class="opt"><input type="radio" name="kind" value="Question about the technology"><span>Question about the technology</span></div>
+          <div class="opt"><input type="radio" name="kind" value="Something else"><span>Something else</span></div>
+        </div>
+      </label>
+
+      <label class="field">
+        <span>RELEVANT DOMAIN</span>
+        <div class="opts">
+          <div class="opt"><input type="radio" name="area" value="AI governance and accountability" checked><span>AI governance and accountability</span></div>
+          <div class="opt"><input type="radio" name="area" value="Identity verification"><span>Identity verification</span></div>
+          <div class="opt"><input type="radio" name="area" value="Financial instruments and crypto-assets"><span>Financial instruments and crypto-assets</span></div>
+          <div class="opt"><input type="radio" name="area" value="Inheritance, succession, legal practice"><span>Inheritance, succession, legal practice</span></div>
+          <div class="opt"><input type="radio" name="area" value="Telecommunications, space, energy"><span>Telecommunications, space, energy</span></div>
+          <div class="opt"><input type="radio" name="area" value="Labour, environment, industrial safety"><span>Labour, environment, industrial safety</span></div>
+          <div class="opt"><input type="radio" name="area" value="Not sure which applies"><span>Not sure which applies</span></div>
+        </div>
+      </label>
+
+      <label class="field">
+        <span>COMPANY AND NAME (OPTIONAL)</span>
+        <input type="text" name="who" autocomplete="organization">
+      </label>
+
+      <label class="field">
+        <span>YOUR SITUATION (OPTIONAL)</span>
+        <textarea name="body" placeholder="For example: we are preparing for a new regulation but cannot tell whether our current system would let us demonstrate compliance."></textarea>
+      </label>
+
+      <div><button type="submit" class="send">Draft this email</button></div>
+    </form>
+
+    <p class="note">This opens your own mail application with the draft prepared. <strong>Nothing reaches us until you send it.</strong> No information is stored on this page or transmitted anywhere.</p>
+
+    <p class="fallback">If your mail application does not open, write to us directly.<br>
+      <a class="mail" href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></p>
   </div>
 </section>
 
@@ -469,6 +537,32 @@ footer a{color:#7E93AC}
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
   for (var j = 0; j < els.length; j++) io.observe(els[j]);
+})();
+
+/* Enquiry: build a mailto draft from the selections.
+   No third-party service is involved, so nothing leaves the browser until the user sends. */
+(function(){
+  var form = document.getElementById('inq');
+  if (!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var v = function(n){ var el = form.querySelector('[name="'+n+'"]:checked') || form.querySelector('[name="'+n+'"]'); return el ? el.value.trim() : ''; };
+    var lines = [
+      'Enquiry type: ' + v('kind'),
+      'Domain: ' + v('area'),
+      'Company / name: ' + (v('who') || '(not given)'),
+      '',
+      'Situation:',
+      v('body') || '(not given)',
+      '',
+      '--------------------',
+      'Sent from the enquiry form at blueaegis.co.jp'
+    ];
+    var url = 'mailto:info@blueaegis.co.jp'
+            + '?subject=' + encodeURIComponent('Enquiry: ' + v('kind'))
+            + '&body='    + encodeURIComponent(lines.join('\r\n'));
+    window.location.href = url;
+  });
 })();
 </script>
 
