@@ -29,29 +29,31 @@ body{
   font-size:16px; line-height:1.8; letter-spacing:.01em;
   -webkit-font-smoothing:antialiased;
 }
-.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 clamp(18px,4vw,24px)}
 
 header{
-  position:sticky; top:0; z-index:10;
+  z-index:10;
   background:rgba(255,255,255,.94); backdrop-filter:blur(8px);
   border-bottom:1px solid var(--rule);
 }
-.headbar{display:flex; align-items:center; justify-content:space-between; gap:16px; height:96px}
-.headbar svg{display:block; height:clamp(42px,5vw,58px); width:auto}
-nav{display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:8px 24px}
-nav a{color:var(--slate); text-decoration:none; font-size:14px; letter-spacing:.04em; white-space:nowrap}
+/* ロゴとナビが1行に収まる幅でのみ固定する */
+@media(min-width:880px){ header{position:sticky; top:0} }
+.headbar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px clamp(16px,2.5vw,24px); min-height:92px; padding:14px clamp(18px,4vw,24px)}
+.headbar svg{display:block; height:clamp(36px,4.8vw,58px); width:auto}
+nav{display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:0 clamp(14px,1.9vw,24px)}
+nav a{color:var(--slate); text-decoration:none; font-size:clamp(13px,1.15vw,14px); letter-spacing:.04em; white-space:nowrap; padding:9px 0}
 nav a:hover{color:var(--blue)}
-nav a.lang{border:1px solid var(--rule); border-radius:2px; padding:3px 10px; font-size:12.5px; letter-spacing:.1em}
+nav a.lang{border:1px solid var(--rule); border-radius:2px; padding:10px 14px; font-size:12.5px; letter-spacing:.1em}
 nav a.lang:hover{border-color:var(--blue)}
 a:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
 
-.hero{background:var(--navy); color:var(--white); padding:96px 0 88px}
+.hero{background:var(--navy); color:var(--white); padding:clamp(58px,8.5vw,96px) 0 clamp(54px,7.5vw,88px)}
 .hero svg{display:block; height:clamp(88px,13vw,156px); width:auto; margin-bottom:52px}
 .hero h1{margin:0 0 26px; font-size:clamp(28px,4.6vw,46px); font-weight:600; line-height:1.35; letter-spacing:-.01em; text-wrap:balance}
 .hero p{margin:0; max-width:40em; color:#C3D2E0; font-size:clamp(15px,1.7vw,17px)}
 .tagline-en{margin-top:34px; color:var(--cyan); font-size:13px; letter-spacing:.22em}
 
-section{padding:84px 0; border-top:1px solid var(--rule)}
+section{padding:clamp(54px,7vw,84px) 0; border-top:1px solid var(--rule)}
 h2{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24em; color:var(--blue)}
 .lead{margin:0 0 20px; font-size:clamp(21px,2.7vw,29px); font-weight:600; line-height:1.4; text-wrap:balance}
 .intro{margin:0 0 48px; max-width:42em; color:var(--ink); font-size:15px}
@@ -159,20 +161,23 @@ footer a{color:#7E93AC}
   @keyframes wm{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
 }
 
-@media(max-width:640px){
-  /* ヘッダーを固定しない。項目が多く、固定すると画面の約2割を常に占有するため */
-  header{position:static}
-  /* padding:16px 0 と書くと .wrap の左右24pxを打ち消し、内容が画面端に貼り付く */
-  .headbar{height:auto; padding:16px 24px; flex-direction:column; align-items:flex-start; gap:10px}
-  nav{justify-content:flex-start; gap:0 18px}
-  nav a{font-size:13.5px; padding:9px 0}   /* 指で押せる高さ（約44px）を確保する */
-  nav a.lang{padding:6px 12px}
-  section{padding:62px 0}
-  .hero{padding:68px 0 62px}
-  /* 表は2列だと内容側が細くなりすぎるため、項目名と内容を縦に積む */
+/* 幅に応じた連続的な調整で足りない、構造そのものを変える必要がある箇所だけを切り替える */
+
+/* ナビが2行以上に折り返す幅では、ロゴの下に左揃えで置く */
+@media(max-width:880px){
+  .headbar{flex-direction:column; align-items:flex-start}
+  nav{justify-content:flex-start}
+}
+
+/* 表は2列だと内容側が細くなりすぎるため、項目名と内容を縦に積む */
+@media(max-width:760px){
   table, tbody, tr, th, td{display:block; width:auto}
   th{width:auto; padding:20px 0 4px; border-bottom:0}
   td{padding:0 0 20px; border-bottom:1px solid var(--rule)}
+}
+
+/* 連番と本文を横に並べる余地がなくなる幅で縦積みにする */
+@media(max-width:600px){
   .steps li{grid-template-columns:1fr; gap:4px}
 }
 </style>
