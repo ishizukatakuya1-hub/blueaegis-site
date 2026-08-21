@@ -9,11 +9,15 @@
 <meta property="og:description" content="プロセスをスマートに。未来を堅牢に。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://blueaegis.co.jp/">
+<link rel="canonical" href="https://blueaegis.co.jp/">
+<link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/">
+<link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
 :root{
   --navy:#0A2A4F; --blue:#1E5FA8; --cyan:#4FB3D9;
   --slate:#6B7684; --rule:#C7D0DA; --paper:#F7F9FB; --white:#FFFFFF;
+  --ink:#43536A;
   --maxw:1040px;
 }
 *{box-sizing:border-box}
@@ -32,35 +36,31 @@ header{
   background:rgba(255,255,255,.94); backdrop-filter:blur(8px);
   border-bottom:1px solid var(--rule);
 }
-.headbar{display:flex; align-items:center; justify-content:space-between; height:96px}
+.headbar{display:flex; align-items:center; justify-content:space-between; gap:16px; height:96px}
 .headbar svg{display:block; height:clamp(42px,5vw,58px); width:auto}
-nav a{
-  color:var(--slate); text-decoration:none; font-size:14px;
-  margin-left:26px; letter-spacing:.06em; white-space:nowrap;
-}
+nav{display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:8px 24px}
+nav a{color:var(--slate); text-decoration:none; font-size:14px; letter-spacing:.06em; white-space:nowrap}
 nav a:hover{color:var(--blue)}
+nav a.lang{
+  border:1px solid var(--rule); border-radius:2px;
+  padding:3px 10px; font-size:12.5px; letter-spacing:.1em;
+}
+nav a.lang:hover{border-color:var(--blue)}
+a:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
 
 /* ---- ヒーロー ---- */
 .hero{background:var(--navy); color:var(--white); padding:96px 0 88px}
 .hero svg{display:block; height:clamp(88px,13vw,156px); width:auto; margin-bottom:52px}
-.hero h1{
-  margin:0 0 26px; font-size:clamp(26px,4.4vw,42px); font-weight:600;
-  line-height:1.55; letter-spacing:.04em;
-}
+.hero h1{margin:0 0 26px; font-size:clamp(26px,4.4vw,42px); font-weight:600; line-height:1.55; letter-spacing:.04em; text-wrap:balance}
 .hero p{margin:0; max-width:44em; color:#C3D2E0; font-size:clamp(15px,1.7vw,17px)}
-.tagline-en{
-  margin-top:34px; color:var(--cyan);
-  font-size:13px; letter-spacing:.22em; text-transform:none;
-}
+.tagline-en{margin-top:34px; color:var(--cyan); font-size:13px; letter-spacing:.22em}
 
 /* ---- セクション ---- */
 section{padding:84px 0; border-top:1px solid var(--rule)}
-section:first-of-type{border-top:0}
-h2{
-  margin:0 0 12px; font-size:13px; font-weight:600;
-  letter-spacing:.24em; color:var(--blue);
-}
-h2 + .lead{margin:0 0 48px; font-size:clamp(20px,2.6vw,27px); font-weight:600; line-height:1.6}
+h2{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24em; color:var(--blue)}
+.lead{margin:0 0 20px; font-size:clamp(20px,2.6vw,27px); font-weight:600; line-height:1.6; text-wrap:balance}
+.intro{margin:0 0 48px; max-width:46em; color:var(--ink); font-size:15px}
+.lead + .cards, .lead + .domains, .lead + .cards3{margin-top:48px}
 
 /* ---- 事業内容 ---- */
 .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:34px}
@@ -68,15 +68,47 @@ h2 + .lead{margin:0 0 48px; font-size:clamp(20px,2.6vw,27px); font-weight:600; l
 .card:nth-child(2){border-color:var(--cyan)}
 .card:nth-child(3){border-color:var(--slate)}
 .card h3{margin:0 0 12px; font-size:17px; font-weight:600; line-height:1.6}
-.card p{margin:0; font-size:14.5px; color:#43536A}
+.card p{margin:0; font-size:14.5px; color:var(--ink)}
+
+/* ---- 技術領域 ---- */
+.domains{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2px; background:var(--rule); border:1px solid var(--rule)}
+.domain{background:var(--white); padding:26px 24px}
+.domain h3{margin:0 0 8px; font-size:15.5px; font-weight:600}
+.domain p{margin:0; font-size:14px; color:var(--ink); line-height:1.8}
+
+/* ---- ポートフォリオ ---- */
+.portfolio{background:var(--paper)}
+.stat{display:flex; align-items:baseline; gap:14px; margin:0 0 8px}
+.stat b{font-size:clamp(46px,8vw,76px); font-weight:600; line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--blue)}
+.stat span{font-size:16px; font-weight:600}
+.stat-note{margin:0 0 40px; font-size:13px; color:var(--slate)}
+.pol{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px}
+.pol h3{margin:0 0 10px; font-size:15.5px; font-weight:600}
+.pol p{margin:0; font-size:14.5px; color:var(--ink)}
+
+/* ---- ライセンス ---- */
+.cards3{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px; margin-bottom:64px}
+.offer{border:1px solid var(--rule); padding:26px 24px}
+.offer h3{margin:0 0 10px; font-size:16px; font-weight:600}
+.offer p{margin:0; font-size:14.5px; color:var(--ink)}
+.steps{list-style:none; counter-reset:s; margin:0 0 64px; padding:0; display:grid; gap:26px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:auto 1fr; gap:20px; align-items:start}
+.steps li::before{
+  content:counter(s,decimal-leading-zero);
+  font-size:13px; font-weight:600; letter-spacing:.1em; color:var(--cyan);
+  font-variant-numeric:tabular-nums; padding-top:3px;
+}
+.steps h3{margin:0 0 6px; font-size:15.5px; font-weight:600}
+.steps p{margin:0; font-size:14.5px; color:var(--ink)}
+.faq{margin:0}
+.faq dt{font-size:15px; font-weight:600; margin-top:28px; padding-top:22px; border-top:1px solid var(--rule)}
+.faq dd{margin:8px 0 0; font-size:14.5px; color:var(--ink)}
 
 /* ---- 考え方 ---- */
-.creed{background:var(--paper)}
-.creed blockquote{
-  margin:0 0 26px; padding:0 0 0 22px; border-left:3px solid var(--cyan);
-  font-size:clamp(19px,2.5vw,25px); font-weight:600; line-height:1.65;
-}
-.creed p{margin:0; max-width:48em; font-size:15px; color:#43536A}
+.creed{background:var(--navy); color:var(--white)}
+.creed h2{color:var(--cyan)}
+.creed blockquote{margin:0 0 26px; padding:0 0 0 22px; border-left:3px solid var(--cyan); font-size:clamp(19px,2.5vw,25px); font-weight:600; line-height:1.65}
+.creed p{margin:0; max-width:48em; font-size:15px; color:#C3D2E0}
 
 /* ---- 会社概要 ---- */
 table{border-collapse:collapse; width:100%; font-size:14.5px}
@@ -87,26 +119,23 @@ td ol li{margin-bottom:4px}
 .scroller{overflow-x:auto}
 
 /* ---- 問い合わせ ---- */
-.contact{background:var(--navy); color:var(--white)}
-.contact h2{color:var(--cyan)}
-.contact .lead{color:var(--white)}
-.contact p{color:#C3D2E0; max-width:46em; font-size:15px}
-.mail{
-  display:inline-block; margin-top:22px; font-size:clamp(17px,2.4vw,22px);
-  color:var(--white); text-decoration:none;
-  border-bottom:2px solid var(--cyan); padding-bottom:4px; letter-spacing:.03em;
-}
-.mail:hover{color:var(--cyan)}
+.contact{background:var(--paper)}
+.mail{display:inline-block; margin-top:18px; font-size:clamp(17px,2.4vw,22px); color:var(--navy); text-decoration:none; border-bottom:2px solid var(--cyan); padding-bottom:4px; letter-spacing:.03em}
+.mail:hover{color:var(--blue)}
 
 /* ---- フッター ---- */
 footer{background:var(--navy); color:#7E93AC; font-size:12.5px; padding:30px 0 40px}
 footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+footer a{color:#7E93AC}
 
 @media(max-width:640px){
-  nav a{margin-left:16px; font-size:13px}
+  .headbar{height:auto; padding:16px 0; flex-direction:column; align-items:flex-start; gap:12px}
+  nav{justify-content:flex-start; gap:8px 16px}
+  nav a{font-size:13px}
   section{padding:62px 0}
   .hero{padding:68px 0 62px}
   th{width:7.5em}
+  .steps li{grid-template-columns:1fr; gap:4px}
 }
 </style>
 </head>
@@ -114,7 +143,6 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 
 <header>
   <div class="wrap headbar">
-    <!-- 正式ロゴ（積層の盾＋ワードマーク）／logo_01_横並び_カラー と同一構造 -->
     <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
       <defs>
         <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
@@ -134,16 +162,18 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
     </svg>
     <nav>
       <a href="#business">事業内容</a>
-      <a href="#creed">考え方</a>
+      <a href="#domains">技術領域</a>
+      <a href="#portfolio">知的財産</a>
+      <a href="#licensing">ライセンス</a>
       <a href="#company">会社概要</a>
       <a href="#contact">お問い合わせ</a>
+      <a class="lang" href="en/" hreflang="en">EN</a>
     </nav>
   </div>
 </header>
 
 <div class="hero">
   <div class="wrap">
-    <!-- 白抜きロゴ（暗背景用）／logo_03_横並び_白抜き と同一構造 -->
     <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
       <defs>
         <path id="sh2" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
@@ -188,6 +218,132 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
   </div>
 </section>
 
+<section id="domains">
+  <div class="wrap">
+    <h2>TECHNOLOGY DOMAINS</h2>
+    <div class="lead">技術領域</div>
+    <p class="intro">新しい規制が施行されるとき、事業者は「基準を満たしていること」を自ら示す必要に迫られます。当社は、その立証を人手の運用ではなく仕組みで担保する技術を、分野を横断して開発しています。</p>
+    <div class="domains">
+      <div class="domain">
+        <h3>人工知能の統治と説明責任</h3>
+        <p>生成物の出所証明、推論の来歴記録、エージェントの権限境界、意思決定の事後検証。</p>
+      </div>
+      <div class="domain">
+        <h3>本人確認・電子的な識別</h3>
+        <p>本人確認手続の適法性検証、電子的な身元証明、属性情報の照合可否の判定。</p>
+      </div>
+      <div class="domain">
+        <h3>金融商品・暗号資産の規制対応</h3>
+        <p>権利の電子的記録、内部者取引の統制、準備金と裏付資産の検証。</p>
+      </div>
+      <div class="domain">
+        <h3>相続・事業承継・士業実務</h3>
+        <p>相続手続の進行管理、独占業務との分界、死後事務の工程制御、承継時の適格性検証。</p>
+      </div>
+      <div class="domain">
+        <h3>通信・宇宙・エネルギー</h3>
+        <p>次世代通信における代理行為の検証、軌道上設備の適合性、鍵の世代交代と破棄の検証。</p>
+      </div>
+      <div class="domain">
+        <h3>労働・環境・産業安全</h3>
+        <p>就業実態の三者照合、施工・作業の適合性検証、資格と作業内容の突合。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio" class="portfolio">
+  <div class="wrap">
+    <h2>PORTFOLIO</h2>
+    <div class="lead">知的財産</div>
+    <p class="intro">当社が保有する特許出願は、すべて自社で創出し、自社で明細書を起案したものです。外部からの取得や買収によるものは含みません。</p>
+    <div class="stat"><b>140</b><span>件超の特許出願</span></div>
+    <p class="stat-note">2026年8月時点・国内出願・自社創出</p>
+    <div class="pol">
+      <div>
+        <h3>創出から権利化まで自社で完結</h3>
+        <p>先行技術調査、明細書および図面の作成、特許庁への手続を自社で行っています。権利範囲の設計に第三者の解釈が入らないため、ライセンス交渉においても技術内容を直接ご説明できます。</p>
+      </div>
+      <div>
+        <h3>権利範囲を広げすぎない</h3>
+        <p>出願時に確認できた範囲を超えて権利を主張しません。無効理由を抱えた広い権利より、確実に成立し実施の可否を明確に判断できる権利のほうが、実施される方にとっても価値があると考えています。</p>
+      </div>
+      <div>
+        <h3>規制の変化に追随する</h3>
+        <p>関係する法令および標準の改正を継続的に監視し、権利の射程が施行後の実務と乖離しないよう出願を設計しています。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="licensing">
+  <div class="wrap">
+    <h2>LICENSING</h2>
+    <div class="lead">ライセンス</div>
+    <p class="intro">保有する権利は、実施を希望される方に提供します。提供の形態は3通りあり、実施の規模や事業の段階に応じて選択いただけます。</p>
+    <div class="cards3">
+      <div class="offer">
+        <h3>実施許諾</h3>
+        <p>権利は当社に残したまま、実施を許諾します。分野や地域を限定した許諾、独占的な許諾のいずれにも対応します。</p>
+      </div>
+      <div class="offer">
+        <h3>譲渡</h3>
+        <p>権利そのものを移転します。事業の中核に関わる技術で、他社への許諾を排除したい場合に適します。</p>
+      </div>
+      <div class="offer">
+        <h3>共同研究開発</h3>
+        <p>既存の権利を基礎として、貴社の事業に合わせた発明を共同で創出します。成果の帰属は事前に取り決めます。</p>
+      </div>
+    </div>
+
+    <div class="lead">ご相談の流れ</div>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>お問い合わせ</h3>
+          <p>電子メールにて、関心をお持ちの技術領域と、想定される実施の形態をお知らせください。この段階では貴社の機密情報をお送りいただく必要はありません。</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>技術内容のご説明</h3>
+          <p>該当する出願の内容と権利範囲をご説明します。公開前の出願を含む場合は、事前に秘密保持契約を締結します。</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>条件の協議</h3>
+          <p>実施の範囲、期間、対価の算定方法を協議します。対価は実施の規模に応じた実施料率、または一時金と実施料の組み合わせを基本とします。</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>契約の締結</h3>
+          <p>合意した条件にもとづき契約を締結します。専用実施権の設定など登録を要する場合は、当社が特許庁への手続を行います。</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="lead">よくあるご質問</div>
+    <dl class="faq">
+      <dt>まだ登録されていない出願中の技術も対象になりますか。</dt>
+      <dd>対象になります。出願中の段階では、特許を受ける権利の譲渡、または登録後の実施許諾を約する形での契約が可能です。登録の見込みについては、審査の状況を踏まえてご説明します。</dd>
+
+      <dt>秘密保持契約は必要ですか。</dt>
+      <dd>公開前の出願についてご説明する場合は必要です。すでに公開されている出願のみを対象とする場合は、締結せずに進めることもできます。</dd>
+
+      <dt>実施料の水準はどのように決まりますか。</dt>
+      <dd>実施の規模、独占の有無、対象地域によって異なるため、一律の水準は設けていません。協議の初期段階で、算定の考え方をお示しします。</dd>
+
+      <dt>海外での実施も許諾できますか。</dt>
+      <dd>権利が存在する国においては可能です。現時点で登録されている国、および出願中の国については、対象の技術ごとにご説明します。</dd>
+
+      <dt>特定の課題に対して新たに発明してもらうことはできますか。</dt>
+      <dd>共同研究開発の形で承ります。既存の出願で押さえている領域と隣接する課題であれば、着手までの期間を短くできます。</dd>
+    </dl>
+  </div>
+</section>
+
 <section id="creed" class="creed">
   <div class="wrap">
     <h2>OUR CREED</h2>
@@ -224,7 +380,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
   <div class="wrap">
     <h2>CONTACT</h2>
     <div class="lead">お問い合わせ</div>
-    <p>ライセンスに関するご相談、共同研究開発のご提案、その他のお問い合わせは、電子メールにて承ります。</p>
+    <p class="intro">ライセンスに関するご相談、共同研究開発のご提案、その他のお問い合わせは、電子メールにて承ります。ご返信は3営業日以内を目安としています。</p>
     <a class="mail" href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
   </div>
 </section>
@@ -232,7 +388,7 @@ footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wr
 <footer>
   <div class="wrap">
     <div>© 2026 Blue Aegis Inc.</div>
-    <div>info@blueaegis.co.jp</div>
+    <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
   </div>
 </footer>
 

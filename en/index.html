@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue Aegis Inc.</title>
+<meta name="description" content="Blue Aegis Inc. develops regulatory compliance technology and holds and licenses the intellectual property it creates.">
+<meta property="og:title" content="Blue Aegis Inc.">
+<meta property="og:description" content="The Shield for the Intelligent Age">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://blueaegis.co.jp/en/">
+<link rel="canonical" href="https://blueaegis.co.jp/en/">
+<link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/">
+<link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+:root{
+  --navy:#0A2A4F; --blue:#1E5FA8; --cyan:#4FB3D9;
+  --slate:#6B7684; --rule:#C7D0DA; --paper:#F7F9FB; --white:#FFFFFF;
+  --ink:#43536A;
+  --maxw:1040px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--white); color:var(--navy);
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px; line-height:1.8; letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+
+header{
+  position:sticky; top:0; z-index:10;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--rule);
+}
+.headbar{display:flex; align-items:center; justify-content:space-between; gap:16px; height:96px}
+.headbar svg{display:block; height:clamp(42px,5vw,58px); width:auto}
+nav{display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:8px 24px}
+nav a{color:var(--slate); text-decoration:none; font-size:14px; letter-spacing:.04em; white-space:nowrap}
+nav a:hover{color:var(--blue)}
+nav a.lang{border:1px solid var(--rule); border-radius:2px; padding:3px 10px; font-size:12.5px; letter-spacing:.1em}
+nav a.lang:hover{border-color:var(--blue)}
+a:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
+
+.hero{background:var(--navy); color:var(--white); padding:96px 0 88px}
+.hero svg{display:block; height:clamp(88px,13vw,156px); width:auto; margin-bottom:52px}
+.hero h1{margin:0 0 26px; font-size:clamp(28px,4.6vw,46px); font-weight:600; line-height:1.35; letter-spacing:-.01em; text-wrap:balance}
+.hero p{margin:0; max-width:40em; color:#C3D2E0; font-size:clamp(15px,1.7vw,17px)}
+.tagline-en{margin-top:34px; color:var(--cyan); font-size:13px; letter-spacing:.22em}
+
+section{padding:84px 0; border-top:1px solid var(--rule)}
+h2{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24em; color:var(--blue)}
+.lead{margin:0 0 20px; font-size:clamp(21px,2.7vw,29px); font-weight:600; line-height:1.4; text-wrap:balance}
+.intro{margin:0 0 48px; max-width:42em; color:var(--ink); font-size:15px}
+.lead + .cards, .lead + .domains, .lead + .cards3{margin-top:48px}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:34px}
+.card{border-top:3px solid var(--blue); padding-top:22px}
+.card:nth-child(2){border-color:var(--cyan)}
+.card:nth-child(3){border-color:var(--slate)}
+.card h3{margin:0 0 12px; font-size:17px; font-weight:600; line-height:1.5}
+.card p{margin:0; font-size:14.5px; color:var(--ink)}
+
+.domains{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2px; background:var(--rule); border:1px solid var(--rule)}
+.domain{background:var(--white); padding:26px 24px}
+.domain h3{margin:0 0 8px; font-size:15.5px; font-weight:600}
+.domain p{margin:0; font-size:14px; color:var(--ink); line-height:1.7}
+
+.portfolio{background:var(--paper)}
+.stat{display:flex; align-items:baseline; gap:14px; margin:0 0 8px}
+.stat b{font-size:clamp(46px,8vw,76px); font-weight:600; line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--blue)}
+.stat span{font-size:16px; font-weight:600}
+.stat-note{margin:0 0 40px; font-size:13px; color:var(--slate)}
+.pol{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px}
+.pol h3{margin:0 0 10px; font-size:15.5px; font-weight:600}
+.pol p{margin:0; font-size:14.5px; color:var(--ink)}
+
+.cards3{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px; margin-bottom:64px}
+.offer{border:1px solid var(--rule); padding:26px 24px}
+.offer h3{margin:0 0 10px; font-size:16px; font-weight:600}
+.offer p{margin:0; font-size:14.5px; color:var(--ink)}
+.steps{list-style:none; counter-reset:s; margin:0 0 64px; padding:0; display:grid; gap:26px}
+.steps li{counter-increment:s; display:grid; grid-template-columns:auto 1fr; gap:20px; align-items:start}
+.steps li::before{content:counter(s,decimal-leading-zero); font-size:13px; font-weight:600; letter-spacing:.1em; color:var(--cyan); font-variant-numeric:tabular-nums; padding-top:3px}
+.steps h3{margin:0 0 6px; font-size:15.5px; font-weight:600}
+.steps p{margin:0; font-size:14.5px; color:var(--ink)}
+.faq{margin:0}
+.faq dt{font-size:15px; font-weight:600; margin-top:28px; padding-top:22px; border-top:1px solid var(--rule)}
+.faq dd{margin:8px 0 0; font-size:14.5px; color:var(--ink)}
+
+.creed{background:var(--navy); color:var(--white)}
+.creed h2{color:var(--cyan)}
+.creed blockquote{margin:0 0 26px; padding:0 0 0 22px; border-left:3px solid var(--cyan); font-size:clamp(19px,2.5vw,26px); font-weight:600; line-height:1.45}
+.creed p{margin:0; max-width:44em; font-size:15px; color:#C3D2E0}
+
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{text-align:left; vertical-align:top; padding:15px 0; border-bottom:1px solid var(--rule)}
+th{width:11em; font-weight:600; color:var(--slate); font-size:13.5px; letter-spacing:.04em}
+td ol{margin:0; padding-left:1.3em}
+td ol li{margin-bottom:4px}
+.scroller{overflow-x:auto}
+
+.contact{background:var(--paper)}
+.mail{display:inline-block; margin-top:18px; font-size:clamp(17px,2.4vw,22px); color:var(--navy); text-decoration:none; border-bottom:2px solid var(--cyan); padding-bottom:4px}
+.mail:hover{color:var(--blue)}
+
+footer{background:var(--navy); color:#7E93AC; font-size:12.5px; padding:30px 0 40px}
+footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+footer a{color:#7E93AC}
+
+@media(max-width:640px){
+  .headbar{height:auto; padding:16px 0; flex-direction:column; align-items:flex-start; gap:12px}
+  nav{justify-content:flex-start; gap:8px 16px}
+  nav a{font-size:13px}
+  section{padding:62px 0}
+  .hero{padding:68px 0 62px}
+  th{width:7.5em}
+  .steps li{grid-template-columns:1fr; gap:4px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+      <defs>
+        <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+        <clipPath id="cl1"><use href="#sh1"/></clipPath>
+      </defs>
+      <g transform="translate(0,6) scale(0.82)">
+        <g clip-path="url(#cl1)">
+          <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+          <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+        </g>
+      </g>
+      <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+      <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+    </svg>
+    <nav>
+      <a href="#business">Business</a>
+      <a href="#domains">Domains</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#licensing">Licensing</a>
+      <a href="#company">Company</a>
+      <a href="#contact">Contact</a>
+      <a class="lang" href="../" hreflang="ja">日本語</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+      <defs>
+        <path id="sh2" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+        <clipPath id="cl2"><use href="#sh2"/></clipPath>
+      </defs>
+      <g transform="translate(0,6) scale(0.82)">
+        <g clip-path="url(#cl2)">
+          <rect x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
+          <rect x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
+          <rect x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
+          <rect x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
+          <rect x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
+        </g>
+      </g>
+      <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
+      <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
+    </svg>
+    <h1>Make the process smart.<br>Make the future sound.</h1>
+    <p>We develop technology that makes regulatory compliance verifiable, and we hold and license the intellectual property that work produces.</p>
+    <div class="tagline-en">The Shield for the Intelligent Age</div>
+  </div>
+</div>
+
+<section id="business">
+  <div class="wrap">
+    <h2>BUSINESS</h2>
+    <div class="lead">What we do</div>
+    <div class="cards">
+      <div class="card">
+        <h3>Regulatory compliance technology</h3>
+        <p>We research and develop methods for verifying compliance, automating controls, and generating audit evidence — across artificial intelligence, information security, inheritance, space, and other emerging fields.</p>
+      </div>
+      <div class="card">
+        <h3>Intellectual property and licensing</h3>
+        <p>We file patent applications on inventions we create ourselves, and handle acquisition, management, and valuation in house. Rights are offered by licence or assignment.</p>
+      </div>
+      <div class="card">
+        <h3>Real estate management</h3>
+        <p>Operational management, property management, asset management, and related advisory work for rental real estate (excluding activities reserved to licensed real estate brokers under Japanese law).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="domains">
+  <div class="wrap">
+    <h2>TECHNOLOGY DOMAINS</h2>
+    <div class="lead">Where we work</div>
+    <p class="intro">When a new regulation takes effect, operators must demonstrate for themselves that they meet its requirements. We build the technology that carries that burden of proof structurally, rather than through manual process — and we work across sectors rather than within one.</p>
+    <div class="domains">
+      <div class="domain">
+        <h3>AI governance and accountability</h3>
+        <p>Provenance of generated content, records of inference history, authority boundaries for agents, and after-the-fact verification of decisions.</p>
+      </div>
+      <div class="domain">
+        <h3>Identity verification and electronic identification</h3>
+        <p>Verifying that identification procedures satisfy the applicable rules, electronic proof of identity, and determining whether attribute data can be reconciled at all.</p>
+      </div>
+      <div class="domain">
+        <h3>Financial instruments and crypto-assets</h3>
+        <p>Electronic recording of rights, insider trading controls, and verification of reserves and backing assets.</p>
+      </div>
+      <div class="domain">
+        <h3>Inheritance, business succession, and legal practice</h3>
+        <p>Managing the progress of inheritance procedures, demarcating work reserved to licensed professionals, controlling post-mortem administration, and verifying eligibility on succession.</p>
+      </div>
+      <div class="domain">
+        <h3>Telecommunications, space, and energy</h3>
+        <p>Verifying delegated action in next-generation networks, compliance of orbital facilities, and verification of key rotation and destruction.</p>
+      </div>
+      <div class="domain">
+        <h3>Labour, environment, and industrial safety</h3>
+        <p>Three-way reconciliation of working reality, compliance verification for construction and field work, and matching qualifications against the work performed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio" class="portfolio">
+  <div class="wrap">
+    <h2>PORTFOLIO</h2>
+    <div class="lead">Intellectual property</div>
+    <p class="intro">Every patent application we hold was invented in house and drafted in house. None was acquired from third parties or obtained through acquisition.</p>
+    <div class="stat"><b>140</b><span>+ patent applications</span></div>
+    <p class="stat-note">As of August 2026 · Japanese national filings · all created in house</p>
+    <div class="pol">
+      <div>
+        <h3>Invention through prosecution, in house</h3>
+        <p>We conduct our own prior art searches, draft our own specifications and drawings, and file with the Japan Patent Office ourselves. No third party stands between the invention and the claim, so we can explain the technical substance directly in negotiation.</p>
+      </div>
+      <div>
+        <h3>We do not overreach on scope</h3>
+        <p>We do not claim beyond what we could verify at the time of filing. A right that is certain to stand — and that lets you determine clearly whether you may practise it — is worth more to a licensee than a broad right carrying grounds for invalidity.</p>
+      </div>
+      <div>
+        <h3>We track how the rules change</h3>
+        <p>We monitor amendments to the relevant legislation and standards continuously, and design filings so that claim scope does not drift away from practice once a rule takes effect.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="licensing">
+  <div class="wrap">
+    <h2>LICENSING</h2>
+    <div class="lead">Working with us</div>
+    <p class="intro">Our rights are available to those who wish to practise them. Three arrangements are available; which one fits depends on the scale of implementation and the stage of your business.</p>
+    <div class="cards3">
+      <div class="offer">
+        <h3>Licence</h3>
+        <p>We retain the right and grant permission to practise it. Field-limited, territory-limited, and exclusive licences are all available.</p>
+      </div>
+      <div class="offer">
+        <h3>Assignment</h3>
+        <p>The right itself transfers to you. Appropriate where the technology sits at the core of your business and you need to exclude licences to others.</p>
+      </div>
+      <div class="offer">
+        <h3>Joint development</h3>
+        <p>We build on existing rights to create new inventions fitted to your business. Ownership of the results is agreed in advance.</p>
+      </div>
+    </div>
+
+    <div class="lead">How an enquiry proceeds</div>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>Get in touch</h3>
+          <p>Write to us by email with the technology domain you are interested in and the arrangement you have in mind. You need not send us any confidential information at this stage.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Technical briefing</h3>
+          <p>We explain the content and scope of the relevant applications. Where unpublished applications are involved, we execute a non-disclosure agreement first.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Terms</h3>
+          <p>We discuss scope, term, and how consideration is calculated. Consideration is normally a running royalty scaled to implementation, or a lump sum combined with a royalty.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Execution</h3>
+          <p>We execute the agreement on the terms reached. Where registration is required — for an exclusive licence, for example — we handle the filing with the Japan Patent Office.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="lead">Questions we are often asked</div>
+    <dl class="faq">
+      <dt>Are pending applications available, or only granted patents?</dt>
+      <dd>Pending applications are available. At that stage we can assign the right to obtain a patent, or agree now to grant a licence once the patent is granted. We will explain the prospects for grant in light of where prosecution stands.</dd>
+
+      <dt>Is a non-disclosure agreement required?</dt>
+      <dd>It is required if we are to discuss applications that have not yet been published. Where the discussion is limited to published applications, we can proceed without one.</dd>
+
+      <dt>How is the royalty rate set?</dt>
+      <dd>It varies with the scale of implementation, whether the licence is exclusive, and the territory, so we do not publish a standard rate. We set out how we calculate it early in the discussion.</dd>
+
+      <dt>Can we practise the technology outside Japan?</dt>
+      <dd>Where rights exist in that country, yes. We will tell you, for each technology, which countries are granted and which are pending.</dd>
+
+      <dt>Can you invent something for a specific problem we have?</dt>
+      <dd>Yes, through joint development. Where the problem is adjacent to ground our existing filings already cover, we can begin sooner.</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="creed" class="creed">
+  <div class="wrap">
+    <h2>OUR CREED</h2>
+    <div class="lead">If it cannot be verified, it does not proceed.</div>
+    <blockquote>Structure over ornament. Proof over claim.</blockquote>
+    <p>Compliance does not turn on whether you can assert that a system behaved correctly. It turns on whether that behaviour can be verified afterwards. We treat an unverifiable state as unverifiable, and design systems that will not advance from it. We hold our own communications to the same standard: we do not assert more than we can demonstrate.</p>
+  </div>
+</section>
+
+<section id="company">
+  <div class="wrap">
+    <h2>COMPANY</h2>
+    <div class="lead">Company information</div>
+    <div class="scroller">
+      <table>
+        <tr><th>Name</th><td>Blue Aegis Inc. (Japanese: Blue Aegis株式会社)</td></tr>
+        <tr><th>Incorporated</th><td>7 July 2026</td></tr>
+        <tr><th>Activities</th><td>
+          <ol>
+            <li>Research, development, provision, operation, and licensing of software and systems for regulatory compliance — verification of compliance, automation of compliance management, and generation of audit evidence</li>
+            <li>Research, technical development, and consulting in artificial intelligence, quantum cryptography, blockchain, information security, finance, trusts, inheritance, robotics, space, and other advanced fields</li>
+            <li>Acquisition, holding, management, assignment, and licensing of intellectual property rights</li>
+            <li>Negotiation, execution, and administration of licence agreements, joint development agreements, and technology transfer agreements</li>
+            <li>Valuation, appraisal, audit, and due diligence of intellectual property rights</li>
+            <li>Rental, operational, property, and asset management of real estate, and related advisory services (excluding activities reserved to licensed real estate brokers under Japanese law)</li>
+          </ol>
+        </td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <h2>CONTACT</h2>
+    <div class="lead">Contact us</div>
+    <p class="intro">For licensing enquiries, joint development proposals, or anything else, please write to us by email. We aim to reply within three business days.</p>
+    <a class="mail" href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
+  </div>
+</footer>
+
+</body>
+</html>
