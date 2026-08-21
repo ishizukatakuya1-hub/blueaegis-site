@@ -1,0 +1,3 @@
+# ビルド生成物。GitHub Actions が毎回作るためリポジトリには置かない
+_site/
+node_modules/

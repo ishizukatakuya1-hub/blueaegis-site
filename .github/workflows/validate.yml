@@ -1,0 +1,29 @@
+# 記事の検証（PR用）
+#
+# 自動投稿のPRに対して、frontmatterの必須項目・出典・ファイル名規約・
+# ビルドの成否を確認する。auto-merge へ切り替える際の前提になる。
+name: 記事の検証
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 依存パッケージなし。生成スクリプトは標準ライブラリのみで動く。
+      - name: frontmatter と出典の検証
+        run: node tools/build.js --validate-only
+
+      - name: ビルドの確認
+        run: node tools/build.js

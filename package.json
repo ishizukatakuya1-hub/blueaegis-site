@@ -1,0 +1,10 @@
+{
+  "name": "blueaegis-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Blue Aegis株式会社 コーポレートサイト",
+  "scripts": {
+    "build": "node tools/build.js",
+    "validate": "node tools/build.js --validate-only"
+  }
+}
