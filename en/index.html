@@ -160,12 +160,19 @@ footer a{color:#7E93AC}
 }
 
 @media(max-width:640px){
-  .headbar{height:auto; padding:16px 0; flex-direction:column; align-items:flex-start; gap:12px}
-  nav{justify-content:flex-start; gap:8px 16px}
-  nav a{font-size:13px}
+  /* ヘッダーを固定しない。項目が多く、固定すると画面の約2割を常に占有するため */
+  header{position:static}
+  /* padding:16px 0 と書くと .wrap の左右24pxを打ち消し、内容が画面端に貼り付く */
+  .headbar{height:auto; padding:16px 24px; flex-direction:column; align-items:flex-start; gap:10px}
+  nav{justify-content:flex-start; gap:0 18px}
+  nav a{font-size:13.5px; padding:9px 0}   /* 指で押せる高さ（約44px）を確保する */
+  nav a.lang{padding:6px 12px}
   section{padding:62px 0}
   .hero{padding:68px 0 62px}
-  th{width:7.5em}
+  /* 表は2列だと内容側が細くなりすぎるため、項目名と内容を縦に積む */
+  table, tbody, tr, th, td{display:block; width:auto}
+  th{width:auto; padding:20px 0 4px; border-bottom:0}
+  td{padding:0 0 20px; border-bottom:1px solid var(--rule)}
   .steps li{grid-template-columns:1fr; gap:4px}
 }
 </style>
