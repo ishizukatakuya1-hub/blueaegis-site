@@ -338,7 +338,11 @@ html[lang="en"] .mail{letter-spacing:normal}
 /* 記事のタグと、一覧のタグ導線 */
 .article .meta a{color:var(--slate); text-decoration:none; border-bottom:1px solid var(--rule)}
 .article .meta a:hover{color:var(--blue); border-bottom-color:var(--blue)}
-.taglinks{display:flex; flex-wrap:wrap; align-items:center; gap:9px 10px; margin:0 0 30px}
+/* .taglinks は nav 要素なので、指定しないとヘッダ用の nav{justify-content:flex-end} を
+   拾って右へ寄る。左揃えを明示する。 */
+.taglinks{display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:9px 10px; margin:0 0 26px}
+/* 説明文の直後にタグ導線が来るときは間を詰める（.intro の 48px は次が本文のときの値） */
+.intro:has(+ .taglinks){margin-bottom:22px}
 .taglinks > span{font-size:12px; font-weight:600; letter-spacing:.16em; color:var(--slate)}
 .taglinks a{
   display:inline-block; padding:12px 14px; border:1px solid var(--rule); border-radius:2px;
