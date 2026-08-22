@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EU Digital Identity Wallet: relying party registration | Blue Aegis</title>
+<meta name="description" content="Implementing Regulation (EU) 2025/848 applies from 24 December 2026. Registration, the duty to stay within the purpose you declared, and registers that will not be built alike across Member States.">
+<meta property="og:title" content="The EU Digital Identity Wallet — relying party registration begins on 24 December 2026">
+<meta property="og:description" content="Registration, the duty to stay within the purpose you declared, and registers that will not be built alike from one Member State to the next.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/en/insights/eudi-wallet-relying-party.html">
+<link rel="canonical" href="https://blueaegis.co.jp/en/insights/eudi-wallet-relying-party.html">
+<link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/insights/eudi-wallet-relying-party.html">
+<link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/insights/eudi-wallet-relying-party.html">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="index.html">Insights</a>
+      <a href="../blog/index.html">Blog</a>
+      <a href="../index.html#domains">Domains</a>
+      <a href="../index.html#licensing">Licensing</a>
+      <a href="../index.html#contact">Contact</a>
+      <a class="lang" href="../../insights/eudi-wallet-relying-party.html" hreflang="ja">日本語</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>The EU Digital Identity Wallet — relying party registration begins on 24 December 2026</h1>
+  <p class="meta">22 August 2026</p>
+
+  <p>A business that wants to receive a user's attributes from an EU Digital Identity Wallet must first be registered as a relying party. Commission Implementing Regulation (EU) 2025/848, which sets out that registration framework, <strong>applies from 24 December 2026</strong>. That is four months away.</p>
+
+  <h2>What begins</h2>
+
+  <p>Implementing Regulation (EU) 2025/848 was adopted on 6 May 2025 and published in the Official Journal on 30 July 2025. Member States are required to establish national registers of wallet relying parties.</p>
+
+  <p>A registered business carries the following obligations.</p>
+
+  <ul>
+    <li>To be formally registered as a relying party.</li>
+    <li>To keep the registered information accurate and up to date.</li>
+    <li><strong>To operate only within the purpose and the permissions it has declared.</strong></li>
+  </ul>
+
+  <p>The third is the one that bites in practice. What you may ask a wallet user for is tied to what you declared at registration. Asking for more attributes than that is treated as a breach.</p>
+
+  <h2>It reaches businesses outside the EU</h2>
+
+  <p>If you serve users in the EU and intend to use the wallet for identity or attribute verification, you can fall within the registration requirement wherever your business is established. &ldquo;We have no entity in the EU&rdquo; does not settle the question.</p>
+
+  <p>The businesses likely to be affected include online services that accept customers in the EU, businesses that need age verification, finance and payments, and cross-border e-commerce. The starting point is simply whether there is any moment at which you ask a user in the EU to prove who they are, or to prove something about themselves.</p>
+
+  <h2>The registers are built Member State by Member State</h2>
+
+  <p>Each Member State establishes its own register. If you operate in several countries, there are several registers to consult.</p>
+
+  <p>What needs attention here is that <strong>the registers will not necessarily be implemented alike</strong>. Some Member States may publish the information in machine-readable form and others may not. The handling of registration certificates is not uniform either. When you go to check another party's registration, how easily you can do it will depend on where that party registered.</p>
+
+  <blockquote>Is the other party registered, and does the attribute you are asking for fall within what they registered for? How hard that is to establish depends on which country they registered in.</blockquote>
+
+  <h2>&ldquo;Refuse when in doubt&rdquo; does not settle it either</h2>
+
+  <p>Stopping a transaction whenever verification fails looks like the safe rule. But whether the failure lies with the other party, with the register, or with your own implementation changes what you ought to do about it. Stop everything without distinguishing the cause and you will turn away legitimate users.</p>
+
+  <p>Let it through without recording that the check failed, on the other hand, and you keep nothing to answer with if you are later told that you were asking for attributes beyond what you declared.</p>
+
+  <h2>Worth checking now</h2>
+
+  <ul>
+    <li>Whether there is any point at which you ask a user in the EU to prove identity or an attribute.</li>
+    <li>If there is, whether you have listed the attributes you ask for, and narrowed them to what you actually need.</li>
+    <li>Whether you plan to operate in more than one Member State, and if so whose registers you will be consulting.</li>
+    <li>Whether you have decided how a failed check is handled, distinguished by cause.</li>
+    <li>Whether you can be ready to register before 24 December 2026.</li>
+  </ul>
+
+  <h2>Carry it by hand, or build it in</h2>
+
+  <p>Checking against the registered scope by hand works where the countries are few and the volume is limited. But in a procedure where the registers differ by country, and where the answer can change depending on when you looked, nothing can be verified afterwards unless the record of each check is complete.</p>
+
+  <p>We research and develop technology that carries conformity with regulation as a mechanism rather than as manual routine, and we hold the results as patent applications. We have filed in this area as well.</p>
+
+  <div class="cta">
+    <p>Whether you fall within the registration requirement, and what to prepare if you do. Four months remain before it applies. This is a good question to bring us before you have answered it — working out whether it applies is our job, not yours.</p>
+    <a href="../index.html#contact">Get in touch</a>
+  </div>
+
+  <div class="source">
+    <p><strong>Sources</strong></p>
+    <p>Commission Implementing Regulation (EU) 2025/848 (adopted 6 May 2025, published in the Official Journal 30 July 2025, applies from 24 December 2026)<br>
+    <a href="https://eur-lex.europa.eu/eli/reg_impl/2025/848/oj" rel="noopener">https://eur-lex.europa.eu/eli/reg_impl/2025/848/oj</a></p>
+    <p>Regulation (EU) No 910/2014 (eIDAS Regulation), as amended by Regulation (EU) 2024/1183</p>
+    <p>European Commission, EU Digital Identity Wallet implementing regulations<br>
+    <a href="https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/pages/909706465/New+round+of+EU+Digital+Identity+Wallet+implementing+regulations+adopted" rel="noopener">https://ec.europa.eu/digital-building-blocks/sites/spaces/EUDIGITALIDENTITYWALLET/</a></p>
+    <p>This note reflects publicly available material as of 22 August 2026 and is not legal advice. Please confirm the application to your own circumstances with a qualified adviser.</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← Back to Insights</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="../privacy.html">Privacy Policy</a>
+      <a href="../disclaimer.html">Disclaimer</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>
