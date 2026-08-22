@@ -272,6 +272,107 @@
     <div class="lead">Contact us</div>
     <p class="intro">You do not need to know yet whether our technology applies to you. Most enquiries reach us at exactly that stage, and working out whether it applies is our job, not yours. Choose below and an email will open with the message already drafted.</p>
 
+    <div class="bot" id="bot">
+      <p class="bot-head">ENQUIRY GUIDE<span>Three choices and the form below is filled in for you. Nothing you choose leaves this page.</span></p>
+      <div class="bot-log" role="log" aria-live="polite"></div>
+      <div class="bot-opts"></div>
+      <div class="bot-foot"><button type="button" class="bot-restart">Start over</button></div>
+    </div>
+
+    <script type="application/json" id="botflow">
+    {
+      "ui": {
+        "fill": "Fill this into the form",
+        "filled": "Filled in below. Add anything you wish, then draft the email."
+      },
+      "intro": "Hello. Three choices and we will prepare the draft of your enquiry.",
+      "first": "kind",
+      "nodes": {
+        "kind": {
+          "q": "First, which is closest to your reason for writing?",
+          "opts": [
+            { "label": "We cannot tell for ourselves whether we meet a new regulation.", "set": { "kind": "Question about the technology" }, "next": "area" },
+            { "label": "We are considering a licence.", "set": { "kind": "Considering a licence" }, "next": "area" },
+            { "label": "We would like to discuss developing something together.", "set": { "kind": "Joint development" }, "next": "area" },
+            { "label": "None of these, or not decided yet.", "set": { "kind": "Something else" }, "next": "area" }
+          ]
+        },
+        "area": {
+          "q": "Which area is closest? An approximation is fine.",
+          "opts": [
+            { "label": "AI governance and accountability", "set": { "area": "AI governance and accountability" }, "next": "d_ai" },
+            { "label": "Identity verification", "set": { "area": "Identity verification" }, "next": "d_id" },
+            { "label": "Financial instruments and crypto-assets", "set": { "area": "Financial instruments and crypto-assets" }, "next": "d_fin" },
+            { "label": "Inheritance, succession, legal practice", "set": { "area": "Inheritance, succession, legal practice" }, "next": "d_suc" },
+            { "label": "Telecommunications, space, energy", "set": { "area": "Telecommunications, space, energy" }, "next": "d_inf" },
+            { "label": "Labour, environment, industrial safety", "set": { "area": "Labour, environment, industrial safety" }, "next": "d_lab" },
+            { "label": "Not sure which applies", "set": { "area": "Not sure which applies" }, "next": "d_any" }
+          ]
+        },
+        "d_ai": {
+          "q": "In that area we often hear the following. Is any of it close?",
+          "opts": [
+            { "label": "We are preparing for the transparency obligations of the EU AI Act.", "body": "We are preparing for the transparency obligations of the EU AI Act.", "next": "end" },
+            { "label": "We are asked to explain decisions made with AI after the fact.", "body": "We are asked to explain decisions made with AI after the fact.", "next": "end" },
+            { "label": "Nothing specific yet.", "next": "end" }
+          ]
+        },
+        "d_id": {
+          "q": "In that area we often hear the following. Is any of it close?",
+          "opts": [
+            { "label": "We are revisiting our identity checks ahead of a change in anti-money-laundering rules.", "body": "We are revisiting our identity checks ahead of a change in anti-money-laundering rules.", "next": "end" },
+            { "label": "We want to understand our position as a relying party for the EU digital identity wallet.", "body": "We want to understand our position as a relying party for the EU digital identity wallet.", "next": "end" },
+            { "label": "Nothing specific yet.", "next": "end" }
+          ]
+        },
+        "d_fin": {
+          "q": "In that area we often hear the following. Is any of it close?",
+          "opts": [
+            { "label": "We need internal controls over information handling for crypto-assets.", "body": "We need internal controls over information handling for crypto-assets.", "next": "end" },
+            { "label": "We are looking at how electronically recorded securities are handled.", "body": "We are looking at how electronically recorded securities are handled.", "next": "end" },
+            { "label": "Nothing specific yet.", "next": "end" }
+          ]
+        },
+        "d_suc": {
+          "q": "In that area we often hear the following. Is any of it close?",
+          "opts": [
+            { "label": "We want to stop checks being missed in inheritance or business succession work.", "body": "We want to stop checks being missed in inheritance or business succession work.", "next": "end" },
+            { "label": "We face difficult judgements in the procedures that follow a sole tenant's death.", "body": "We face difficult judgements in the procedures that follow a sole tenant's death.", "next": "end" },
+            { "label": "Nothing specific yet.", "next": "end" }
+          ]
+        },
+        "d_inf": {
+          "q": "In that area we often hear the following. Is any of it close?",
+          "opts": [
+            { "label": "We are working on regulatory requirements around subscriber checks and identifiers.", "body": "We are working on regulatory requirements around subscriber checks and identifiers.", "next": "end" },
+            { "label": "We must demonstrate conformity with standards in space, satellite or energy work.", "body": "We must demonstrate conformity with standards in space, satellite or energy work.", "next": "end" },
+            { "label": "Nothing specific yet.", "next": "end" }
+          ]
+        },
+        "d_lab": {
+          "q": "In that area we often hear the following. Is any of it close?",
+          "opts": [
+            { "label": "We need a record of actual working practice that can be checked later.", "body": "We need a record of actual working practice that can be checked later.", "next": "end" },
+            { "label": "The burden of environmental and industrial safety checks and reporting is heavy.", "body": "The burden of environmental and industrial safety checks and reporting is heavy.", "next": "end" },
+            { "label": "Nothing specific yet.", "next": "end" }
+          ]
+        },
+        "d_any": {
+          "q": "If you are willing, choose whichever is closest to the difficulty you face.",
+          "opts": [
+            { "label": "We know which regulation applies but cannot tell whether we can show that we meet it.", "body": "We know which regulation applies but cannot tell whether we can show that we meet it.", "next": "end" },
+            { "label": "An auditor or a customer wants evidence and we are gathering it by hand.", "body": "An auditor or a customer wants evidence and we are gathering it by hand.", "next": "end" },
+            { "label": "The law changed and our service may need rebuilding.", "body": "The law changed and our service may need rebuilding.", "next": "end" }
+          ]
+        },
+        "end": {
+          "q": "Thank you. This is exactly the stage at which to get in touch. Whether our technology applies is our judgement to make. Press the button below and your choices will be entered into the form.",
+          "final": true
+        }
+      }
+    }
+    </script>
+
     <form class="form" id="inq"
       data-subject="Enquiry: " data-label-kind="Enquiry type: " data-label-area="Domain: "
       data-label-who="Company / name: " data-label-body="Situation:" data-blank="(not given)"

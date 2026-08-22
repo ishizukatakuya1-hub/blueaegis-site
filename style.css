@@ -165,6 +165,52 @@ td ol li{margin-bottom:4px}
 .mail{display:inline-block; margin-top:14px; padding-top:4px; font-size:clamp(17px,2.4vw,22px); color:var(--navy); text-decoration:none; border-bottom:2px solid var(--cyan); padding-bottom:6px; letter-spacing:.03em}
 .mail:hover{color:var(--blue)}
 
+/* ---- 相談ナビ（問い合わせ欄の会話式の案内） ----
+   選択肢を押して進み、最後に下のフォームへ内容を流し込む。外部サービスを介さないので、
+   選んだ内容はこのページから出ない。台本は各HTMLの application/json に置いてある。
+   スクリプトが動かない環境では出さない（フォームだけで完結するため）。 */
+.bot{display:none}
+.js .bot{
+  display:block; max-width:44em; margin:0 0 44px;
+  border:1px solid var(--rule); background:var(--paper);
+}
+.bot-head{
+  margin:0; padding:15px clamp(16px,3vw,22px);
+  border-bottom:1px solid var(--rule);
+  font-size:13px; font-weight:600; letter-spacing:.14em; color:var(--blue);
+}
+.bot-head span{
+  display:block; margin-top:7px;
+  font-size:12.5px; font-weight:400; letter-spacing:.02em; line-height:1.8; color:var(--slate);
+}
+.bot-log{display:grid; gap:14px; padding:clamp(16px,3vw,22px)}
+.bot-log p{margin:0; max-width:33em; padding:13px 17px; font-size:14.5px; line-height:1.85}
+.bot-log .says{justify-self:start; background:var(--white); border:1px solid var(--rule); border-left:3px solid var(--cyan); color:var(--navy)}
+.bot-log .picked{justify-self:end; background:var(--navy); color:var(--white)}
+.bot-opts{display:grid; gap:10px; padding:0 clamp(16px,3vw,22px) clamp(16px,3vw,22px)}
+.bot-opts:empty{display:none}
+.bot-opts button{
+  display:block; width:100%; min-height:46px; padding:12px 18px;
+  border:1px solid var(--rule); background:var(--white); color:var(--navy);
+  font:inherit; font-size:14.5px; line-height:1.7; text-align:left; cursor:pointer;
+  transition:border-color .15s, color .15s;
+}
+.bot-opts button:hover{border-color:var(--blue); color:var(--blue)}
+.bot-opts button:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+.bot-opts .bot-go{
+  background:var(--navy); color:var(--white); border-color:var(--navy);
+  font-weight:600; letter-spacing:.06em;
+}
+.bot-opts .bot-go:hover{background:var(--blue); border-color:var(--blue); color:var(--white)}
+/* 単独で押す導線。行の高さだけでは44pxに届かないので padding で足す */
+.bot-foot{padding:0 clamp(16px,3vw,22px) 6px}
+.bot-restart{
+  padding:10px 2px; border:0; background:none; color:var(--slate);
+  font:inherit; font-size:13px; text-decoration:underline; text-underline-offset:4px; cursor:pointer;
+}
+.bot-restart:hover{color:var(--blue)}
+.bot-restart:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+
 /* ---- フッター ---- */
 footer{background:var(--navy); color:#7E93AC; font-size:12.5px; padding:30px 0 40px}
 footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
@@ -183,7 +229,7 @@ footer .legal a:hover{color:#B9C8D6; border-bottom-color:#4A5F73}
   .js .steps > li, .js .pol > div, .js .stat, .js .stat-note,
   .js .faq dt, .js .faq dd, .js .scroller,
   .js .message p, .js .message .pull,
-  .js .creed blockquote, .js .creed p, .js .mail{
+  .js .creed blockquote, .js .creed p, .js .mail, .js .bot{
     opacity:0; transform:translateY(20px);
     transition:opacity .75s cubic-bezier(.2,.7,.3,1), transform .75s cubic-bezier(.2,.7,.3,1);
   }
