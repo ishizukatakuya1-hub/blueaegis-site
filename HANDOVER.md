@@ -12,7 +12,7 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 
 | 項目 | 値 |
 |---|---|
-| 公開URL | http://blueaegis.co.jp/ |
+| 公開URL | https://blueaegis.co.jp/ |
 | リポジトリ | https://github.com/ishizukatakuya1-hub/blueaegis-site |
 | ローカル | `C:\Users\user\Desktop\Clodecodeapp\blueaegis-site` |
 | デフォルトブランチ | `main` |
@@ -149,7 +149,20 @@ preview_start { name: "blueaegis-build-4892" } → http://localhost:4892
 | 760px未満 | 表を項目名と内容の縦積みに |
 | 600px未満 | 相談の流れの連番と本文を縦積みに |
 
-320/360/390/700/1024/1600px で日英とも実測済み。タップ領域は41〜44px確保。
+280/320/360/390/768/1024/1280/1600px で日英とも実測済み（2026年8月22日、全ページ）。
+横スクロール0、画面幅からはみ出す要素0、タップ領域44〜54px。
+
+**スマホ用の別サイト（`m.` 付きなど）は作らない。** Googleが2016年以降非推奨としており、
+モバイルファーストインデックスの下では評価対象が「スマホで見た1つのサイト」であること、
+URLが割れると canonical・hreflang・サイトマップ・構造化データが二重管理になり評価も分散するため。
+
+過去に直した罠（同じ形を新しく書くときは注意）：
+
+- `repeat(auto-fit,minmax(300px,1fr))` は、画面が最小幅より狭いと段が縮まず横スクロールが出る。
+  **必ず `minmax(min(300px,100%),1fr)` と書く**
+- SVGに高さだけを指定すると、幅が縦横比で決まって溢れる。`max-width:100%` を併記する
+- 単独で押す導線（`.cta a`・`.backlink a`・`.mail`）は行の高さだけだと35px以下になる。
+  padding で44px以上にし、**増やしたぶんは上のマージンから引いて見た目の位置を保つ**
 
 ---
 
@@ -157,11 +170,15 @@ preview_start { name: "blueaegis-build-4892" } → http://localhost:4892
 
 ### システム待ち
 
-**HTTPS証明書が未発行（2026年8月22日 再確認）。** `https_certificate` は `null` のまま、`https_error` は `peer_failed_verification`。実際に `https://blueaegis.co.jp/` を叩くとTLSで失敗し、`http://` は 200 を返す。
+**なし**（2026年8月22日 04:00 JST時点）。
 
-DNS側は問題なし（`is_pointed_to_github_pages_ip: true`, `is_https_eligible: true`, `caa_error: null`）。GitHub側の発行待ち。
+HTTPS証明書は発行済み・強制済み。`cert_state: approved` / `domains: ["blueaegis.co.jp"]` / 有効期限 2026-11-20 / `https_enforced: true`。`http://` は 301 で `https://` へリダイレクトする。
 
-**これがいま一番大きい。** canonical・og:url・サイトマップはすべて `https://` を宣言しているのに、その `https://` が到達不能。検索エンジンは正規URLを取得できない。**発行されたら直ちに `https_enforced` を有効にすること。**
+証明書は Let's Encrypt の自動更新なので、期限切れの手当ては不要。
+
+**教訓**：発行までに丸1日かかった。設定画面に `www.blueaegis.co.jp` の DNS エラーが出ていたため「www が無いせいで apex の証明書も出ない」と診断したが、**これは誤り**だった。発行された証明書は apex 単独（`domains: ["blueaegis.co.jp"]`）で、www は含まれていない。www の警告は発行を妨げない。単にGitHub側の発行が遅かっただけ。同じ症状で慌てて独自ドメインを外して入れ直さないこと。
+
+なお `www.blueaegis.co.jp` は現在も NXDOMAIN。www 付きで入力した人は繋がらない。取りこぼしを無くしたいなら Xserver で `www` の CNAME を `ishizukatakuya1-hub.github.io` に向ければよいが、**必須ではない**。
 
 ```bash
 gh api repos/ishizukatakuya1-hub/blueaegis-site/pages   # 証明書状態の確認
@@ -185,7 +202,8 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 
 - 残る規制解説2本（住宅セーフティネット法・EUDIウォレット）の英語版
 - タグ一覧ページの実地確認。記事が3本たまるまで生成されないので、まだ本番で見ていない
-- Search Console でのカバレッジ確認（HTTPS発行後）
+- Search Console でのカバレッジ確認（送信は済んでいるので、数日後にインデックス状況を見る）
+- `www` サブドメインの是非（上記のとおり必須ではない）
 
 ---
 
