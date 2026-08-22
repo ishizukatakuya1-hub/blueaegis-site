@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プログラム医療機器と承認範囲の逸脱｜Blue Aegis</title>
+<meta name="description" content="プログラム医療機器は、承認を受けた使用目的または効果の範囲でのみ提供できます。更新で機能が増えるソフトウェアで、この範囲をどう保つか。二段階承認の第一段階では範囲が特に狭くなります。">
+<meta property="og:title" content="プログラム医療機器 ― 承認範囲を超えないという難題">
+<meta property="og:description" content="更新で機能が増えるソフトウェアで、承認を受けた使用目的の範囲をどう保つか。実務論点を整理します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/insights/samd-approved-scope.html">
+<link rel="canonical" href="https://blueaegis.co.jp/insights/samd-approved-scope.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../blog/index.html">ブログ</a>
+      <a href="index.html">規制解説</a>
+      <a href="../index.html#licensing">ライセンス</a>
+      <a href="../index.html#contact">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>プログラム医療機器 ― 承認範囲を超えないという難題</h1>
+  <p class="meta">2026年8月22日</p>
+
+  <p>プログラム医療機器は、承認または認証を受けた使用目的または効果の範囲でのみ提供できます。これ自体は医療機器一般に共通する原則です。</p>
+
+  <p>ただしソフトウェアには、他の医療機器にない事情があります。<strong>更新によって機能が増え、利用者が想定していなかった使い方を見つけ、提供者が意図しないまま範囲が動いていく</strong>という性質です。</p>
+
+  <h2>プログラム単体が医療機器になる</h2>
+
+  <p>2014年の薬機法改正で、プログラム単体が医療機器として位置づけられました。厚生労働省の該当性に関する考え方では、プログラム医療機器は<strong>意図したとおりに機能しない場合に人の生命および健康に影響を与えるおそれがあるもの</strong>とされています。</p>
+
+  <p>使用目的として想定される例には、疾病の診断（スクリーニング、疾病の兆候の検出や早期発見、重症度の評価）や、疾病の治療（治療計画の提案、行動変容療法）が挙げられています。</p>
+
+  <p>ここで重要なのは、<strong>使用目的は「何ができるか」ではなく「何のために使うものとして承認されたか」で決まる</strong>という点です。技術的に可能であることと、その用途で提供してよいことは別です。</p>
+
+  <h2>二段階承認では範囲が特に狭くなります</h2>
+
+  <p>プログラム医療機器の特性を踏まえ、最終的に目指す臨床的意義がまだ確立していない段階でも、確認できる範囲の使用目的または効果に限定して第一段階の承認を得られる仕組みが整備されています。非臨床試験や探索的な臨床試験の結果に基づいて、まず限定された範囲で承認を受ける形です。</p>
+
+  <p>開発側にとっては前に進みやすくなる制度です。ただし裏を返せば、<strong>第一段階の承認範囲は、開発側が最終的に実現したい姿より意図的に狭く設定されている</strong>ということです。範囲を超えた訴求や提供が起きやすい構造だと言えます。</p>
+
+  <h2>ソフトウェア特有の逸脱の起き方</h2>
+
+  <p>承認範囲からの逸脱は、悪意がなくても起こります。</p>
+
+  <ul>
+    <li><strong>更新による機能追加</strong> ― 利便性の改善として加えた機能が、結果として承認範囲外の用途に踏み込む</li>
+    <li><strong>説明資料の記載</strong> ― 営業資料やウェブサイトの表現が、承認された使用目的より広く読める</li>
+    <li><strong>利用者の使い方</strong> ― 提供者が想定していない用途で使われ、それを前提とした要望が積み上がる</li>
+    <li><strong>連携先の拡大</strong> ― 他のシステムと接続した結果、出力の使われ方が変わる</li>
+  </ul>
+
+  <blockquote>この機能追加は、承認された使用目的の範囲内か。範囲外だとすれば、一部変更の承認が必要ではないか。判断はいつ、誰が行ったのか。</blockquote>
+
+  <p>ソフトウェアの開発では、機能追加の判断が日常的に、しかも分散して行われます。各判断の時点で承認範囲との突き合わせが行われていたかどうかを、あとから示せるかが問題になります。</p>
+
+  <h2>認証基準への移行も進んでいます</h2>
+
+  <p>PMDAは、承認実績が存在するプログラム医療機器について、認証基準の策定および改正を主体的に行っていると説明しています。類型として確立したものは第三者認証へ移行していく方向です。</p>
+
+  <p>認証基準に適合するかどうかの判断は、承認審査とは別の枠組みになります。自社の製品がどちらの経路に乗るのか、そして基準が改正されたときに適合性を再確認する必要があるかどうかは、継続的に見ておく必要があります。</p>
+
+  <h2>いま確認しておくとよいこと</h2>
+
+  <ul>
+    <li>承認または認証を受けた使用目的・効果の文言を、開発チームが正確に把握しているか</li>
+    <li>機能追加の検討時に、承認範囲との突き合わせを行う手順があるか</li>
+    <li>その判断を誰がいつ行ったかが、記録として残っているか</li>
+    <li>営業資料・ウェブサイト・アプリ内の説明が、承認範囲を超えて読めないか</li>
+    <li>二段階承認の第一段階にある場合、範囲の限定を社内で共有できているか</li>
+  </ul>
+
+  <h2>運用でしのぐか、仕組みで担保するか</h2>
+
+  <p>機能追加のたびに薬事担当者が確認する運用でも対応はできます。ただし開発の速度が上がるほど確認が追いつかず、確認を経ずに出た変更がどれかを後から特定できなくなります。</p>
+
+  <p>当社は、規制対応の適合性を人手の運用ではなく仕組みとして担保する技術を研究開発し、その成果を特許出願として保有しています。この領域についても出願を行っています。</p>
+
+  <div class="cta">
+    <p>機能追加が承認範囲に収まっているか、判断の記録が求められる水準を満たしているか。判断がつかない段階でのご相談を歓迎します。該当性の判断は当社側で行います。</p>
+    <a href="../index.html#contact">相談する</a>
+  </div>
+
+  <div class="source">
+    <p><strong>出典</strong></p>
+    <p>独立行政法人医薬品医療機器総合機構（PMDA）「医療機器プログラム（SaMD）の審査ポイント」<br>
+    <a href="https://www.pmda.go.jp/review-services/drug-reviews/about-reviews/devices/0047.html" rel="noopener">https://www.pmda.go.jp/review-services/drug-reviews/about-reviews/devices/0047.html</a></p>
+    <p>PMDA「プログラム医療機器の薬事開発・承認申請に関する手引き」（最終更新 令和8年5月27日）<br>
+    <a href="https://www.pmda.go.jp/files/000274829.pdf" rel="noopener">https://www.pmda.go.jp/files/000274829.pdf</a></p>
+    <p>医薬品、医療機器等の品質、有効性及び安全性の確保等に関する法律（薬機法）／プログラムの医療機器該当性に関する厚生労働省の考え方</p>
+    <p>本稿は2026年8月22日時点で確認できた公表資料に基づく整理であり、法的助言ではありません。二段階承認の適用要件、一部変更承認の要否その他の具体的な判断については、上記の手引きおよびPMDAへの相談によりご確認ください。</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← 規制解説の一覧へ</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>
