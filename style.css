@@ -57,7 +57,7 @@ h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24
    高さだけを幅に連動させる（切り替え点を増やさない）。
    規制解説（/insights/）の .kicker は英字のままなので、指定は .medialogo に限る。
    lg=一覧・タグの題字／sm=記事の冠。 */
-.masthead{margin:0 0 20px}
+.masthead{margin:0 0 8px}
 .medialogo{display:block; width:auto; max-width:100%}
 .medialogo.lg{height:clamp(46px,6.4vw,64px)}
 /* sm の下限 39px は、ガイドラインの最小使用サイズ（ロゴタイプ併記 90px 幅）から逆算した値。
@@ -340,9 +340,14 @@ html[lang="en"] .mail{letter-spacing:normal}
 .article .meta a:hover{color:var(--blue); border-bottom-color:var(--blue)}
 /* .taglinks は nav 要素なので、指定しないとヘッダ用の nav{justify-content:flex-end} を
    拾って右へ寄る。左揃えを明示する。 */
-.taglinks{display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:9px 10px; margin:0 0 26px}
+.taglinks{display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:9px 10px; margin:0 0 20px}
 /* 説明文の直後にタグ導線が来るときは間を詰める（.intro の 48px は次が本文のときの値） */
-.intro:has(+ .taglinks){margin-bottom:22px}
+.intro:has(+ .taglinks){margin-bottom:16px}
+
+/* 題字のあるページ（ブログ一覧・タグ一覧）は、題字→見出し→説明文が短いので
+   セクション上部と見出し周りを詰める。規制解説（.eyebrow）側は対象外。 */
+section:has(.masthead){padding-top:clamp(34px,4.4vw,52px)}
+.masthead + .lead{margin-bottom:12px}
 .taglinks > span{font-size:12px; font-weight:600; letter-spacing:.16em; color:var(--slate)}
 .taglinks a{
   display:inline-block; padding:12px 14px; border:1px solid var(--rule); border-radius:2px;
