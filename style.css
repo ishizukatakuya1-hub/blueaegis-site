@@ -43,7 +43,9 @@ a:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
 
 /* ---- セクション ---- */
 section{padding:clamp(54px,7vw,84px) 0; border-top:1px solid var(--rule)}
-h2{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24em; color:var(--blue)}
+/* 一覧ページでは、大きい行（.lead）を h1 にし、上の小さい英字は見出しにしない。
+   見出しの階層を正しく保ちつつ、見た目は変えないための .eyebrow */
+h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24em; color:var(--blue)}
 .lead{margin:0 0 20px; font-size:clamp(20px,2.6vw,27px); font-weight:600; line-height:1.6; text-wrap:balance}
 .intro{margin:0 0 48px; max-width:46em; color:var(--ink); font-size:15px}
 .lead + .cards, .lead + .domains, .lead + .cards3{margin-top:48px}
@@ -288,3 +290,41 @@ html[lang="en"] .mail{letter-spacing:normal}
 .postlist .date{display:block; font-size:12.5px; letter-spacing:.1em; color:var(--slate); margin-bottom:8px}
 .postlist h3{margin:0 0 8px; font-size:clamp(17px,2.1vw,20px); font-weight:600; line-height:1.55; transition:color .15s}
 .postlist p{margin:0; font-size:14.5px; color:var(--ink); line-height:1.85; max-width:44em}
+
+/* 現在地。ビルド時に記事へ差し込まれる（tools/build.js の crumbsHtml）。
+   フェードインの対象には入れない。読み手が最初に見る位置に、遅れて現れる要素を置かないため。 */
+.article .crumbs{
+  display:flex; flex-wrap:wrap; align-items:center; gap:0 8px;
+  margin:0 0 18px; font-size:12.5px; line-height:1.8; color:var(--slate); letter-spacing:.04em;
+}
+.article .crumbs a{color:var(--slate); text-decoration:none; border-bottom:1px solid transparent}
+.article .crumbs a:hover{color:var(--blue); border-bottom-color:var(--blue)}
+.article .crumbs .sep{color:var(--rule)}
+.article .crumbs [aria-current]{
+  min-width:0; flex:0 1 auto; color:var(--ink);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* 記事の下の関連記事。こちらもビルド時に差し込まれる */
+.article .related{margin:52px 0 0; padding-top:26px; border-top:1px solid var(--rule)}
+.article .related h2{margin:0 0 4px; font-size:12.5px; font-weight:600; letter-spacing:.18em; color:var(--slate)}
+.article .related ul{margin:0; padding:0; list-style:none}
+.article .related ul li{margin:0; padding:0; border-top:1px solid var(--rule)}
+.article .related ul li::before{content:none}
+.article .related ul li:first-child{border-top:none}
+.article .related a{display:block; padding:16px 0; text-decoration:none; color:inherit}
+.article .related .date{display:block; font-size:12px; letter-spacing:.1em; color:var(--slate); margin-bottom:5px}
+.article .related .t{font-size:15px; font-weight:600; line-height:1.65; color:var(--navy); transition:color .15s}
+.article .related a:hover .t{color:var(--blue)}
+
+/* 記事のタグと、一覧のタグ導線 */
+.article .meta a{color:var(--slate); text-decoration:none; border-bottom:1px solid var(--rule)}
+.article .meta a:hover{color:var(--blue); border-bottom-color:var(--blue)}
+.taglinks{display:flex; flex-wrap:wrap; align-items:center; gap:9px 10px; margin:0 0 30px}
+.taglinks > span{font-size:12px; font-weight:600; letter-spacing:.16em; color:var(--slate)}
+.taglinks a{
+  display:inline-block; padding:8px 13px; border:1px solid var(--rule); border-radius:2px;
+  font-size:13px; line-height:1.4; color:var(--ink); text-decoration:none;
+  transition:border-color .15s, color .15s;
+}
+.taglinks a:hover{border-color:var(--blue); color:var(--blue)}

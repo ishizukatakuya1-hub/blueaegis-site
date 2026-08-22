@@ -6,18 +6,35 @@
  * 外部ライブラリに依存しない。自動掲載の経路に供給網の攻撃面を持ち込まないため。
  *
  *   node tools/build.js                  ビルド（_site/ を生成）
- *   node tools/build.js --validate-only  検証のみ（PRのCIで使用）
+ *   node tools/build.js --validate-only  記事の検証のみ（PRのCIで使用）
  *
  * 記事ファイルの規約は PUBLISHING.md を正とする。ここを変えたら向こうも直すこと。
+ *
+ * 検索・共有まわり（構造化データ、OGP画像、サイトマップ、RSS、内部リンク、検査）は
+ * tools/lib/ に分けてある。ページを手で足しても同じ処理を通るので、付け忘れが起きない。
  */
 
 const fs = require('fs');
 const path = require('path');
 
+const seo = require('./lib/seo');
+const { ogCard, logoPng } = require('./lib/ogimage');
+const { audit } = require('./lib/audit');
+
 const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'content', 'blog');
 const OUT = path.join(ROOT, '_site');
 const VALIDATE_ONLY = process.argv.includes('--validate-only');
+
+const BASE = seo.BASE;
+
+/** タグの一覧ページを作る下限。
+ *  記事が少ないうちにページだけ増やすと中身の薄いページが並ぶので、
+ *  この本数に達したタグだけを独立したページにする。 */
+const TAG_PAGE_MIN = 3;
+
+/** 記事下に出す関連記事の本数 */
+const RELATED_MAX = 3;
 
 /* ビルド出力に含めない（生成物・道具・設定） */
 const SKIP = new Set(['content', 'tools', '_site', 'node_modules', '.git', '.github',
@@ -123,14 +140,22 @@ function validate(file, fm, body) {
   if (text.length < 800) warn(file, `本文が短い（約${text.length}字。目安1,500〜2,500字）`);
   if (text.length > 4000) warn(file, `本文が長い（約${text.length}字。目安1,500〜2,500字）`);
   if (/^#\s/m.test(body)) fail(file, '本文の見出しは H2（##）から。H1 は title から生成されます');
-  if (fm.title && fm.title.length > 60) warn(file, `title が長い（${fm.title.length}字）`);
-  if (fm.description && fm.description.length > 120) warn(file, `description が長い（${fm.description.length}字）`);
+  /* 検索結果は文字数ではなく幅で切られるので、全角を2として数える */
+  if (fm.title) {
+    const w = seo.displayWidth(`${fm.seoTitle || fm.title}｜Blue Aegis Media`);
+    if (w > 68) warn(file, `検索結果に出る title が長い（表示幅 ${w}／目安 68）。frontmatter に seoTitle を足せば、見出しはそのままで短い版を出せます`);
+  }
+  if (fm.description) {
+    const w = seo.displayWidth(fm.description);
+    if (w > 200) warn(file, `description が長い（表示幅 ${w}／目安 200）`);
+    if (w < 70) warn(file, `description が短い（表示幅 ${w}／目安 70 以上）`);
+  }
 
   return { slug, date: fileDate };
 }
 
 /* ---------------- Markdown（規約で許す範囲のみ） ---------------- */
-const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 function inline(s) {
   return esc(s)
@@ -198,7 +223,8 @@ const LOGO = `<svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式
 
 const ANALYTICS = `<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->`;
 
-function page({ title, description, canonical, ogType, main }) {
+/** up はサイト直下までの相対（'../' など）。404 だけは絶対パスの '/' を渡す */
+function page({ title, description, canonical, ogType, main, up = '../', robots }) {
   return `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -206,27 +232,27 @@ function page({ title, description, canonical, ogType, main }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<meta property="og:title" content="${esc(title)}">
+${robots ? `<meta name="robots" content="${robots}">\n` : ''}<meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="${ogType}">
 <meta property="og:url" content="${canonical}">
 <link rel="canonical" href="${canonical}">
-<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
 <script>document.documentElement.classList.add('js')</script>
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="${up}style.css">
 </head>
 <body>
 
 <header>
   <div class="wrap headbar">
-    <a href="../index.html" style="display:block">
+    <a href="${up}index.html" style="display:block">
       ${LOGO}
     </a>
     <nav>
-      <a href="index.html">ブログ</a>
-      <a href="../insights/index.html">規制解説</a>
-      <a href="../index.html#licensing">ライセンス</a>
-      <a href="../index.html#contact">お問い合わせ</a>
+      <a href="${up}blog/index.html">ブログ</a>
+      <a href="${up}insights/index.html">規制解説</a>
+      <a href="${up}index.html#licensing">ライセンス</a>
+      <a href="${up}index.html#contact">お問い合わせ</a>
     </nav>
   </div>
 </header>
@@ -240,7 +266,7 @@ ${main}
   </div>
 </footer>
 
-<script src="../script.js"></script>
+<script src="${up}script.js"></script>
 
 ${ANALYTICS}
 
@@ -260,17 +286,26 @@ function sourcesHtml(sources) {
   return group('primary', '一次出典') + group('secondary', '経由記事');
 }
 
-function articleHtml(post) {
-  const tags = (post.fm.tags || []).map(t => esc(t)).join('・');
+/** 記事本文中のタグ表示。一覧ページがあるタグはそこへ張る */
+function tagLine(tags, tagPages, up) {
+  return (tags || []).map(t =>
+    tagPages.has(t)
+      ? `<a href="${up}blog/tags/${encodeURIComponent(t)}.html">${esc(t)}</a>`
+      : esc(t)).join('・');
+}
+
+function articleHtml(post, tagPages) {
   return page({
-    title: `${post.fm.title}｜Blue Aegis Media`,
+    // 検索結果は幅で切られるので、長い見出しの記事は seoTitle で短い版を持てる。
+    // ページ内の h1 は常に title のまま（表示は変えない）
+    title: `${post.fm.seoTitle || post.fm.title}｜Blue Aegis Media`,
     description: post.fm.description || '',
-    canonical: `https://blueaegis.co.jp/blog/${post.slug}.html`,
+    canonical: `${BASE}/blog/${post.slug}.html`,
     ogType: 'article',
     main: `<main class="wrap article">
   <p class="kicker">BLUE AEGIS MEDIA</p>
   <h1>${esc(post.fm.title)}</h1>
-  <p class="meta">${esc(post.date)}${tags ? `　${tags}` : ''}</p>
+  <p class="meta">${esc(post.date)}${post.fm.tags && post.fm.tags.length ? `　${tagLine(post.fm.tags, tagPages, '../')}` : ''}</p>
 
   ${post.html}
 
@@ -289,27 +324,38 @@ function articleHtml(post) {
   });
 }
 
-function indexHtml(posts) {
-  const items = posts.map(p => `      <li>
-        <a href="${p.slug}.html">
+function postListHtml(posts, hrefOf) {
+  return posts.map(p => `      <li>
+        <a href="${hrefOf(p)}">
           <span class="date">${esc(p.date)}</span>
           <h3>${esc(p.fm.title)}</h3>
           <p>${esc(p.fm.description || '')}</p>
         </a>
       </li>`).join('\n');
+}
+
+function indexHtml(posts, tagPages) {
+  const items = postListHtml(posts, p => `${p.slug}.html`);
+  const tags = [...tagPages.keys()].sort();
+  const tagNav = tags.length ? `
+    <nav class="taglinks" aria-label="タグ">
+      <span>タグ</span>
+      ${tags.map(t => `<a href="tags/${encodeURIComponent(t)}.html">${esc(t)}（${tagPages.get(t).length}）</a>`).join('\n      ')}
+    </nav>` : '';
 
   return page({
     title: 'ブログ｜Blue Aegis Media',
     description: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。Blue Aegis株式会社のメディア「Blue Aegis Media」。',
-    canonical: 'https://blueaegis.co.jp/blog/',
+    canonical: `${BASE}/blog/`,
     ogType: 'website',
     main: `<section>
   <div class="wrap">
-    <h2>BLUE AEGIS MEDIA</h2>
-    <div class="lead">ブログ</div>
+    <p class="eyebrow">BLUE AEGIS MEDIA</p>
+    <h1 class="lead">ブログ</h1>
     <p class="intro">AI活用と生産性について書いています。数字や調査を引くときは必ず一次出典まで辿り、媒体名・タイトル・公開日・URLを明記します。誇張した効果や収益の保証は書きません。<br>
-    規制そのものの解説は<a href="../insights/index.html">規制解説</a>に分けています。</p>
-
+    規制そのものの解説は<a href="../insights/index.html">規制解説</a>に分けています。<br>
+    更新は<a href="feed.xml">RSS</a>でも受け取れます。</p>
+${tagNav}
     <ul class="postlist">
 ${items || '      <li><p style="padding:28px 0">まだ記事がありません。</p></li>'}
     </ul>
@@ -318,42 +364,56 @@ ${items || '      <li><p style="padding:28px 0">まだ記事がありません�
   });
 }
 
-/* ---------------- sitemap ----------------
-   記事が増えるたびに手で足すと必ず漏れるので、ビルド時に組み立てる。
-   手書きページは固定、ブログは公開分だけを列挙する。 */
-const STATIC_PAGES = [
-  { loc: '/',                                          alt: { ja: '/', en: '/en/' } },
-  { loc: '/en/',                                       alt: { ja: '/', en: '/en/' } },
-  { loc: '/insights/' },
-  { loc: '/insights/eu-ai-act-transparency.html',
-    alt: { ja: '/insights/eu-ai-act-transparency.html', en: '/en/insights/eu-ai-act-transparency.html' } },
-  { loc: '/en/insights/eu-ai-act-transparency.html',
-    alt: { ja: '/insights/eu-ai-act-transparency.html', en: '/en/insights/eu-ai-act-transparency.html' } },
-  { loc: '/insights/aml-ekyc-2027.html' },
-  { loc: '/insights/housing-safety-net-postmortem.html' },
-  { loc: '/insights/eudi-wallet-relying-party.html' },
-  { loc: '/blog/' },
-];
+function tagPageHtml(tag, posts) {
+  return page({
+    up: '../../',
+    title: `${tag}の記事｜Blue Aegis Media`,
+    description: `${tag}に関する記事を新しい順に並べています。いずれも一次出典に当たって確かめた事実をもとに書いた、Blue Aegis株式会社のメディア「Blue Aegis Media」の記事です。`,
+    canonical: `${BASE}/blog/tags/${encodeURIComponent(tag)}.html`,
+    ogType: 'website',
+    main: `<section>
+  <div class="wrap">
+    <p class="eyebrow">BLUE AEGIS MEDIA</p>
+    <h1 class="lead">${esc(tag)}</h1>
+    <p class="intro">「${esc(tag)}」に関する記事です。<a href="../index.html">ブログの全記事</a>もあわせてご覧ください。</p>
 
-function writeSitemap(posts) {
-  const BASE = 'https://blueaegis.co.jp';
-  const today = new Date().toISOString().slice(0, 10);
-  const entry = (loc, lastmod, alt) =>
-    `  <url>\n    <loc>${BASE}${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n` +
-    (alt ? `    <xhtml:link rel="alternate" hreflang="ja" href="${BASE}${alt.ja}"/>\n` +
-           `    <xhtml:link rel="alternate" hreflang="en" href="${BASE}${alt.en}"/>\n` : '') +
-    `  </url>`;
+    <ul class="postlist">
+${postListHtml(posts, p => `../${p.slug}.html`)}
+    </ul>
+  </div>
+</section>`
+  });
+}
 
-  const urls = [
-    ...STATIC_PAGES.map(p => entry(p.loc, today, p.alt)),
-    ...posts.map(p => entry(`/blog/${p.slug}.html`, p.date)),
-  ];
+/** GitHub Pages は存在しないパスすべてでこのページを返すので、参照は絶対パスにする */
+function notFoundHtml() {
+  return page({
+    up: '/',
+    robots: 'noindex',
+    title: 'ページが見つかりません｜Blue Aegis株式会社',
+    description: 'お探しのページは見つかりませんでした。Blue Aegis株式会社のサイト内の主な入口をご案内します。',
+    canonical: `${BASE}/404.html`,
+    ogType: 'website',
+    main: `<main class="wrap article">
+  <p class="kicker">404</p>
+  <h1>ページが見つかりません</h1>
+  <p class="meta">URLが変わったか、削除された可能性があります</p>
 
-  fs.writeFileSync(path.join(OUT, 'sitemap.xml'),
-    `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n` +
-    `        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n` +
-    urls.join('\n') + `\n</urlset>\n`);
+  <p>お探しのページは見つかりませんでした。以下からお探しください。</p>
+
+  <ul>
+    <li><a href="/index.html">トップページ</a> ― 事業内容と知的財産ポートフォリオ</li>
+    <li><a href="/insights/index.html">規制解説</a> ― 法令の施行と改正の実務整理</li>
+    <li><a href="/blog/index.html">ブログ</a> ― AI活用と生産性</li>
+    <li><a href="/en/index.html">English</a></li>
+  </ul>
+
+  <div class="cta">
+    <p>お探しの内容が見つからない場合や、規制対応でお困りの場面がある場合は、判断がつかない段階でもご相談ください。</p>
+    <a href="/index.html#contact">相談する</a>
+  </div>
+</main>`
+  });
 }
 
 /* ---------------- 静的ファイルの複製 ---------------- */
@@ -366,6 +426,164 @@ function copyDir(from, to, top = true) {
     if (fs.statSync(s).isDirectory()) copyDir(s, d, false);
     else fs.copyFileSync(s, d);
   }
+}
+
+function listHtml(dir, root = dir, out = []) {
+  for (const name of fs.readdirSync(dir)) {
+    const p = path.join(dir, name);
+    if (fs.statSync(p).isDirectory()) listHtml(p, root, out);
+    else if (name.endsWith('.html')) out.push(path.relative(root, p).replace(/\\/g, '/'));
+  }
+  return out;
+}
+
+/* ---------------- 仕上げ ----------------
+   出来上がった HTML を1枚ずつ読み、共通の要素を足していく。
+   手で書いたページも生成したページも同じ経路を通るので、
+   新しいページを足したときに構造化データやOGP画像を付け忘れることがない。 */
+
+const L = {
+  ja: { crumbHome: 'ホーム', here: '現在地', related: '関連する記事', more: 'この分類の他の記事' },
+  en: { crumbHome: 'Home',   here: 'Breadcrumb', related: 'Related articles', more: 'More in this section' },
+};
+
+const OG_KICKER = {
+  insights: 'Regulatory Insight',
+  blog: 'Blue Aegis Media',
+  tags: 'Blue Aegis Media',
+  null: 'Intellectual Property Licensing',
+};
+
+/** OGP画像のファイル名。タグ名など日本語を含むパスもあるので、必ずASCIIに落とす */
+function ogName(relPath) {
+  const stem = relPath.replace(/\.html$/, '').replace(/\//g, '-');
+  const safe = stem.replace(/[^A-Za-z0-9_-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+  if (safe === stem) return `og/${stem}.png`;
+
+  let h = 0x811c9dc5;
+  for (let i = 0; i < stem.length; i++) { h ^= stem.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return `og/${safe || 'page'}-${h.toString(36)}.png`;
+}
+
+/** そのページから見た、サイト直下への相対プレフィックス */
+function upFrom(relPath) {
+  const depth = relPath.split('/').length - 1;
+  return depth === 0 ? '' : '../'.repeat(depth);
+}
+
+function crumbsHtml(desc, cls) {
+  const t = L[cls.lang], S = seo.SECTION[cls.lang];
+  // 英語版の起点は /en/ なので、言語ごとに根を変える。日本語ページへ混ぜて戻さないこと
+  const up = upFrom(desc.relPath) + (cls.lang === 'en' ? 'en/' : '');
+  const parts = [`<a href="${up || './'}index.html">${t.crumbHome}</a>`];
+
+  if (cls.section === 'insights') parts.push(`<a href="${up}insights/index.html">${S.insights}</a>`);
+  if (cls.section === 'blog' || cls.section === 'tags') parts.push(`<a href="${up}blog/index.html">${S.blog}</a>`);
+  parts.push(`<span aria-current="page">${esc(desc.h1 || desc.title)}</span>`);
+
+  return `<nav class="crumbs" aria-label="${t.here}">${parts.join('<span class="sep" aria-hidden="true">/</span>')}</nav>\n  `;
+}
+
+function relatedHtml(desc, cls, siblings, tagsOf) {
+  const mine = tagsOf(desc.relPath);
+  const scored = siblings
+    .filter(s => s.relPath !== desc.relPath)
+    .map(s => {
+      const theirs = tagsOf(s.relPath);
+      const shared = mine.filter(t => theirs.includes(t)).length;
+      return { s, shared, date: seo.isoDate(s.metaLine) || '' };
+    })
+    .sort((a, b) => b.shared - a.shared || (a.date < b.date ? 1 : -1))
+    .slice(0, RELATED_MAX);
+
+  if (!scored.length) return '';
+
+  const t = L[cls.lang];
+  const here = path.posix.dirname(desc.relPath);
+  const items = scored.map(({ s, date }) => {
+    const href = path.posix.relative(here, s.relPath).split('/').map(encodeURIComponent).join('/');
+    return `      <li><a href="${href}">` +
+      (date ? `<span class="date">${esc(date)}</span>` : '') +
+      `<span class="t">${esc(s.h1 || s.title)}</span></a></li>`;
+  }).join('\n');
+
+  return `<aside class="related">
+    <h2>${mine.length ? t.related : t.more}</h2>
+    <ul>
+${items}
+    </ul>
+  </aside>
+
+  `;
+}
+
+function finish(posts, tagPages) {
+  const buildDate = new Date();
+  const files = listHtml(OUT).sort();
+
+  // 記事の frontmatter を出力パスで引けるようにしておく
+  const byPath = new Map(posts.map(p => [`blog/${p.slug}.html`, p]));
+  const tagsOf = rel => {
+    const p = byPath.get(rel);
+    return p ? (p.fm.tags || []) : [];
+  };
+
+  const pages = files.map(rel => {
+    const html = fs.readFileSync(path.join(OUT, rel), 'utf8');
+    return { rel, html, desc: seo.describePage(html, rel), cls: seo.classify(rel) };
+  });
+
+  fs.mkdirSync(path.join(OUT, 'og'), { recursive: true });
+  fs.writeFileSync(path.join(OUT, 'og', 'logo.png'), logoPng());
+
+  const sitemap = [];
+
+  for (const page of pages) {
+    const { rel, desc, cls } = page;
+    let html = page.html;
+
+    /* --- 共有カード --- */
+    const post = byPath.get(rel);
+    const dateLine = post ? post.date : (seo.isoDate(desc.metaLine) || '');
+    const img = ogName(rel);
+    fs.writeFileSync(path.join(OUT, img), ogCard({
+      kicker: OG_KICKER[cls.section] || OG_KICKER.null,
+      line: dateLine,
+      seed: rel,
+    }));
+
+    /* --- パンくずと関連記事を本文へ --- */
+    if (cls.kind === 'article') {
+      // 手で書いたページは改行コードが CRLF のことがあるので、空白の並びは決め打ちにしない
+      html = html.replace(/<main class="wrap article">\s*/,
+                          m => m + crumbsHtml(desc, cls));
+
+      const siblings = pages
+        .filter(p => p.cls.kind === 'article' && p.cls.section === cls.section && p.cls.lang === cls.lang)
+        .map(p => p.desc);
+      const block = relatedHtml(desc, cls, siblings, tagsOf);
+      if (block) html = html.replace('<p class="backlink">', block + '<p class="backlink">');
+    }
+
+    /* --- head --- */
+    html = seo.enhanceHead(html, desc, cls, {
+      ogImage: `${BASE}/${img}`,
+      datePublished: post ? post.date : null,
+      author: post ? post.fm.author : null,
+      keywords: post ? post.fm.tags : null,
+    });
+
+    fs.writeFileSync(path.join(OUT, rel), html);
+
+    if (cls.kind !== 'notfound') {
+      sitemap.push({ desc, lastmod: cls.kind === 'article' ? (dateLine || null) : seo.todayJst(buildDate) });
+    }
+  }
+
+  fs.writeFileSync(path.join(OUT, 'sitemap.xml'), seo.buildSitemap(sitemap));
+  fs.writeFileSync(path.join(OUT, 'blog', 'feed.xml'), seo.buildFeed(posts, buildDate));
+
+  return { pageCount: pages.length, tagPages };
 }
 
 /* ---------------- 実行 ---------------- */
@@ -399,15 +617,51 @@ function main() {
 
   if (VALIDATE_ONLY) { console.log('検証のみ。ビルドは行いません。'); return; }
 
+  /* タグごとの本数を数え、下限に達したものだけ一覧ページを持つ */
+  const byTag = new Map();
+  for (const p of posts) for (const t of (p.fm.tags || [])) {
+    if (!byTag.has(t)) byTag.set(t, []);
+    byTag.get(t).push(p);
+  }
+  const tagPages = new Map([...byTag].filter(([, list]) => list.length >= TAG_PAGE_MIN));
+  const held = [...byTag].filter(([, list]) => list.length < TAG_PAGE_MIN);
+  if (held.length) {
+    console.log(`タグ一覧は ${TAG_PAGE_MIN} 本以上のタグにのみ作成。今回見送り: `
+      + held.map(([t, l]) => `${t}(${l.length})`).join('、'));
+  }
+
   fs.rmSync(OUT, { recursive: true, force: true });
   copyDir(ROOT, OUT);
+
   const blogDir = path.join(OUT, 'blog');
   fs.mkdirSync(blogDir, { recursive: true });
-  for (const p of posts) fs.writeFileSync(path.join(blogDir, `${p.slug}.html`), articleHtml(p));
-  fs.writeFileSync(path.join(blogDir, 'index.html'), indexHtml(posts));
+  for (const p of posts) fs.writeFileSync(path.join(blogDir, `${p.slug}.html`), articleHtml(p, tagPages));
+  fs.writeFileSync(path.join(blogDir, 'index.html'), indexHtml(posts, tagPages));
 
-  writeSitemap(posts);
-  console.log(`_site/ を生成（ブログ ${posts.length + 1} ページを含む）`);
+  if (tagPages.size) {
+    fs.mkdirSync(path.join(blogDir, 'tags'), { recursive: true });
+    for (const [tag, list] of tagPages) {
+      fs.writeFileSync(path.join(blogDir, 'tags', `${tag}.html`), tagPageHtml(tag, list));
+    }
+  }
+
+  fs.writeFileSync(path.join(OUT, '404.html'), notFoundHtml());
+
+  const { pageCount } = finish(posts, tagPages);
+  console.log(`_site/ を生成（HTML ${pageCount} ページ、タグ一覧 ${tagPages.size}、OGP画像 ${pageCount + 1} 枚）`);
+
+  /* 仕上がりの検査。ここで落ちたら配信しない */
+  const result = audit(OUT);
+  if (result.warnings.length) {
+    console.log('検査の警告:');
+    result.warnings.forEach(w => console.log('  ' + w));
+  }
+  if (result.errors.length) {
+    console.error('検査エラー:');
+    result.errors.forEach(e => console.error('  ' + e));
+    process.exit(1);
+  }
+  console.log(`検査 ${result.count} ページ：問題なし`);
 }
 
 main();
