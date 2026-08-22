@@ -262,8 +262,7 @@ const T = {
     siteSuffix: '｜Blue Aegis Media',
     blogTitle: 'ブログ',
     blogDesc: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。Blue Aegis株式会社のメディア「Blue Aegis Media」。',
-    blogIntro: 'AI活用と生産性について書いています。数字や調査を引くときは必ず一次出典まで辿り、媒体名・タイトル・公開日・URLを明記します。誇張した効果や収益の保証は書きません。',
-    blogIntroInsights: '規制そのものの解説は<a href="{insights}">規制解説</a>に分けています。',
+    blogIntro: 'AI活用と生産性について書いています。',
     blogIntroFeed: '更新は<a href="feed.xml">RSS</a>でも受け取れます。',
     empty: 'まだ記事がありません。',
     tagsLabel: 'タグ',
@@ -285,8 +284,7 @@ const T = {
     siteSuffix: ' | Blue Aegis Media',
     blogTitle: 'Blog',
     blogDesc: 'Notes on working with AI and on productivity, written from facts checked against their primary sources. Blue Aegis Media, published by Blue Aegis Inc.',
-    blogIntro: 'Notes on working with AI and on productivity. Whenever we cite a number or a study we trace it back to the primary source and give the publisher, title, date and URL. We do not promise outcomes we cannot show.',
-    blogIntroInsights: 'Analysis of the regulations themselves is kept separate, under <a href="{insights}">Insights</a>.',
+    blogIntro: 'Notes on working with AI and on productivity.',
     blogIntroFeed: 'You can also follow updates by <a href="feed.xml">RSS</a>.',
     empty: 'No articles yet.',
     tagsLabel: 'Tags',
@@ -468,7 +466,6 @@ function indexHtml(posts, tagPages, lang, alternates) {
     <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">${t.blogTitle}</h1>
     <p class="intro">${t.blogIntro}<br>
-    ${t.blogIntroInsights.replace('{insights}', '../insights/index.html')}<br>
     ${t.blogIntroFeed}</p>
 ${tagNav}
     <ul class="postlist">
