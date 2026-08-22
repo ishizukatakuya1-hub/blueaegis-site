@@ -3,7 +3,7 @@
 Blue Aegis株式会社サイト（https://blueaegis.co.jp/）へ記事を自動掲載するための仕様です。
 **記事を生成する側は、毎回このファイルを読んでから生成してください。** ここが両者の契約です。
 
-最終更新: 2026年8月22日（検索まわりの自動化に伴い §3・§5・§6 を更新）
+最終更新: 2026年8月22日（英語版ブログの追加に伴い §2 を更新）
 
 ---
 
@@ -24,8 +24,12 @@ Blue Aegis株式会社サイト（https://blueaegis.co.jp/）へ記事を自動�
 ## 2. 記事の置き場所とファイル名
 
 ```
-content/blog/YYYY-MM-DD-<slug>.md
+content/blog/YYYY-MM-DD-<slug>.md      日本語（自動掲載の対象）
+content/blog-en/YYYY-MM-DD-<slug>.md   英語
 ```
+
+**自動掲載が書き込むのは `content/blog/` だけです。** 英語版は現在のところ手作業で用意しています。
+将来、英語記事も自動掲載する場合はこの仕様に追記します。
 
 - `YYYY-MM-DD` は公開日（JST）。**frontmatter の `date` と一致していること。** 不一致はビルドエラーになります。
 - `<slug>` は **英小文字・数字・ハイフンのみ**。日本語・大文字・アンダースコアは使えません。
@@ -33,7 +37,18 @@ content/blog/YYYY-MM-DD-<slug>.md
 
 例: `content/blog/2026-08-20-ai-hakusho-2026.md`
 
-**生成されるURL**: `https://blueaegis.co.jp/blog/<slug>.html`（日付はURLに含まれません）
+**生成されるURL**
+
+| 置き場所 | URL |
+|---|---|
+| `content/blog/` | `https://blueaegis.co.jp/blog/<slug>.html` |
+| `content/blog-en/` | `https://blueaegis.co.jp/en/blog/<slug>.html` |
+
+日付はURLに含まれません。
+
+**日英で `<slug>` が一致する記事どうしは、自動的に翻訳の対として扱われます。**
+`hreflang` の相互宣言が両方に付き、検索エンジンに言語違いの同じ記事だと伝わります。
+対にしたくない記事は、slug を変えてください。
 
 ---
 

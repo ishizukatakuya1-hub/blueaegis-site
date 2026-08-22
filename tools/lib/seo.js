@@ -320,7 +320,7 @@ function enhanceHead(html, desc, cls, extra) {
   }
 
   if (!has(/type="application\/rss\+xml"/)) {
-    add.push(`<link rel="alternate" type="application/rss+xml" title="Blue Aegis Media" href="${BASE}/blog/feed.xml">`);
+    add.push(`<link rel="alternate" type="application/rss+xml" title="Blue Aegis Media" href="${feedUrl(cls.lang)}">`);
   }
 
   if (cls.kind !== 'notfound') add.push(jsonLd(structuredData(desc, cls, extra)));
@@ -347,14 +347,23 @@ function buildSitemap(pages) {
 }
 
 /* ---------------- RSS ----------------
-   購読という入口を増やす。更新の通知先を自社サイトの外に置かないための経路でもある。 */
+   購読という入口を増やす。更新の通知先を自社サイトの外に置かないための経路でもある。
+   日英で別のフィードを持つ。混ぜると購読者に読めない記事が流れる。 */
 
-function buildFeed(posts, buildDate) {
+const FEED = {
+  ja: { path: '/blog/', desc: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。' },
+  en: { path: '/en/blog/', desc: 'Notes on working with AI and on productivity, written from facts checked against their primary sources.' },
+};
+
+/** そのページに出すフィードのURL */
+function feedUrl(lang) { return `${BASE}${FEED[lang].path}feed.xml`; }
+
+function buildFeed(posts, buildDate, lang = 'ja') {
   const esc = s => escAttr(s);
   const items = posts.map(p => `    <item>
       <title>${esc(p.fm.title)}</title>
-      <link>${BASE}/blog/${p.slug}.html</link>
-      <guid isPermaLink="true">${BASE}/blog/${p.slug}.html</guid>
+      <link>${BASE}${FEED[lang].path}${p.slug}.html</link>
+      <guid isPermaLink="true">${BASE}${FEED[lang].path}${p.slug}.html</guid>
       <pubDate>${new Date(`${p.date}T00:00:00+09:00`).toUTCString()}</pubDate>
       <description>${esc(p.fm.description || '')}</description>
 ${(p.fm.tags || []).map(t => `      <category>${esc(t)}</category>`).join('\n')}
@@ -364,10 +373,10 @@ ${(p.fm.tags || []).map(t => `      <category>${esc(t)}</category>`).join('\n')}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blue Aegis Media</title>
-    <link>${BASE}/blog/</link>
-    <atom:link href="${BASE}/blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <description>AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。</description>
-    <language>ja</language>
+    <link>${BASE}${FEED[lang].path}</link>
+    <atom:link href="${feedUrl(lang)}" rel="self" type="application/rss+xml"/>
+    <description>${FEED[lang].desc}</description>
+    <language>${lang}</language>
     <lastBuildDate>${buildDate.toUTCString()}</lastBuildDate>
 ${items}
   </channel>
@@ -378,5 +387,5 @@ ${items}
 module.exports = {
   BASE, SITE, SECTION,
   describePage, classify, structuredData, enhanceHead,
-  buildSitemap, buildFeed, isoDate, dateTimeJst, todayJst, displayWidth, unesc, escAttr,
+  buildSitemap, buildFeed, feedUrl, isoDate, dateTimeJst, todayJst, displayWidth, unesc, escAttr,
 };

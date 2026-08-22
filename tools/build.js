@@ -22,7 +22,8 @@ const { ogCard, logoPng } = require('./lib/ogimage');
 const { audit } = require('./lib/audit');
 
 const ROOT = path.resolve(__dirname, '..');
-const SRC = path.join(ROOT, 'content', 'blog');
+const SRC = { ja: path.join(ROOT, 'content', 'blog'),
+              en: path.join(ROOT, 'content', 'blog-en') };
 const OUT = path.join(ROOT, '_site');
 const VALIDATE_ONLY = process.argv.includes('--validate-only');
 
@@ -251,10 +252,88 @@ function mediaLogo(size) {
 
 const ANALYTICS = `<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->`;
 
-/** up はサイト直下までの相対（'../' など）。404 だけは絶対パスの '/' を渡す */
-function page({ title, description, canonical, ogType, main, up = '../', robots }) {
+/* ---------------- 言語ごとの文言 ----------------
+   ブログは日英の2系統を持つ。英語版の記事は content/blog-en/ に置く。
+   規制解説（/insights/）は手書きなのでここには関係しない。 */
+const T = {
+  ja: {
+    htmlLang: 'ja',
+    navBlog: 'ブログ', navInsights: '規制解説', navLicensing: 'ライセンス', navContact: 'お問い合わせ',
+    siteSuffix: '｜Blue Aegis Media',
+    blogTitle: 'ブログ',
+    blogDesc: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。Blue Aegis株式会社のメディア「Blue Aegis Media」。',
+    blogIntro: 'AI活用と生産性について書いています。数字や調査を引くときは必ず一次出典まで辿り、媒体名・タイトル・公開日・URLを明記します。誇張した効果や収益の保証は書きません。',
+    blogIntroInsights: '規制そのものの解説は<a href="{insights}">規制解説</a>に分けています。',
+    blogIntroFeed: '更新は<a href="feed.xml">RSS</a>でも受け取れます。',
+    empty: 'まだ記事がありません。',
+    tagsLabel: 'タグ',
+    tagJoin: '・',
+    tagTitle: t => `${t}の記事`,
+    tagDesc: t => `${t}に関する記事を新しい順に並べています。いずれも一次出典に当たって確かめた事実をもとに書いた、Blue Aegis株式会社のメディア「Blue Aegis Media」の記事です。`,
+    tagIntro: t => `「${esc(t)}」に関する記事です。<a href="../index.html">ブログの全記事</a>もあわせてご覧ください。`,
+    tagCount: n => `（${n}）`,
+    srcPrimary: '一次出典', srcSecondary: '経由記事',
+    srcCite: s => `${esc(s.publisher)}「${esc(s.title)}」${s.published ? `（${esc(String(s.published))}）` : ''}`,
+    disclaimer: '本稿は公表資料に基づく整理であり、法的助言ではありません。',
+    ctaBody: 'Blue Aegis株式会社は、規制対応を検証可能にする技術を研究開発し、その成果を特許として保有・提供しています。規制対応でお困りの場面がありましたら、判断がつかない段階でもご相談ください。',
+    ctaLink: '相談する',
+    backlink: '← ブログ一覧へ',
+  },
+  en: {
+    htmlLang: 'en',
+    navBlog: 'Blog', navInsights: 'Insights', navLicensing: 'Licensing', navContact: 'Contact',
+    siteSuffix: ' | Blue Aegis Media',
+    blogTitle: 'Blog',
+    blogDesc: 'Notes on working with AI and on productivity, written from facts checked against their primary sources. Blue Aegis Media, published by Blue Aegis Inc.',
+    blogIntro: 'Notes on working with AI and on productivity. Whenever we cite a number or a study we trace it back to the primary source and give the publisher, title, date and URL. We do not promise outcomes we cannot show.',
+    blogIntroInsights: 'Analysis of the regulations themselves is kept separate, under <a href="{insights}">Insights</a>.',
+    blogIntroFeed: 'You can also follow updates by <a href="feed.xml">RSS</a>.',
+    empty: 'No articles yet.',
+    tagsLabel: 'Tags',
+    tagJoin: ' · ',
+    tagTitle: t => `${t}`,
+    tagDesc: t => `Articles on ${t}, newest first. Each is written from facts checked against their primary sources, and published as Blue Aegis Media by Blue Aegis Inc.`,
+    tagIntro: t => `Articles on ${esc(t)}. You may also want <a href="../index.html">all articles</a>.`,
+    tagCount: n => ` (${n})`,
+    srcPrimary: 'Primary sources', srcSecondary: 'Secondary coverage',
+    srcCite: s => `${esc(s.publisher)}, &ldquo;${esc(s.title)}&rdquo;${s.published ? ` (${esc(String(s.published))})` : ''}`,
+    disclaimer: 'This note reflects publicly available material and is not legal advice.',
+    ctaBody: 'Blue Aegis Inc. researches and develops technology that makes conformity with regulation verifiable, and holds the results as patents. If you are facing a compliance question — even one you have not yet been able to frame — we are glad to hear from you.',
+    ctaLink: 'Get in touch',
+    backlink: '← Back to Blog',
+  },
+};
+
+/** その言語のトップまでの相対（英語は /en/ が起点） */
+const langRoot = (up, lang) => up + (lang === 'en' ? 'en/' : '');
+
+/**
+ * タグ一覧のファイル名。
+ * 英字だけのタグは小文字とハイフンに正規化する（URLに空白を入れないため）。
+ * 日本語を含むタグはそのまま。既に公開しているURLを変えないための線引きでもある。
+ */
+function tagSlug(tag) {
+  return /^[\x20-\x7E]+$/.test(tag)
+    ? tag.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    : tag;
+}
+
+/** 記事・一覧・タグの出力先（言語で接頭辞が変わる） */
+const blogDirOf = lang => (lang === 'en' ? 'en/blog' : 'blog');
+const blogUrlOf = lang => `${BASE}/${blogDirOf(lang)}`;
+
+/**
+ * up はサイト直下までの相対（'../' など）。404 だけは絶対パスの '/' を渡す。
+ * lang は本文とナビの言語。スタイル・スクリプト・favicon はサイト直下から引く。
+ */
+function page({ title, description, canonical, ogType, main, up = '../', robots, lang = 'ja', alternates }) {
+  const t = T[lang];
+  const L = langRoot(up, lang);
+  const alt = alternates
+    ? Object.entries(alternates).map(([k, v]) => `<link rel="alternate" hreflang="${k}" href="${v}">\n`).join('')
+    : '';
   return `<!DOCTYPE html>
-<html lang="ja">
+<html lang="${t.htmlLang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -265,7 +344,7 @@ ${robots ? `<meta name="robots" content="${robots}">\n` : ''}<meta property="og:
 <meta property="og:type" content="${ogType}">
 <meta property="og:url" content="${canonical}">
 <link rel="canonical" href="${canonical}">
-<link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
+${alt}<link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="${up}style.css">
 </head>
@@ -273,14 +352,14 @@ ${robots ? `<meta name="robots" content="${robots}">\n` : ''}<meta property="og:
 
 <header>
   <div class="wrap headbar">
-    <a href="${up}index.html" style="display:block">
+    <a href="${L}index.html" style="display:block">
       ${LOGO}
     </a>
     <nav>
-      <a href="${up}blog/index.html">ブログ</a>
-      <a href="${up}insights/index.html">規制解説</a>
-      <a href="${up}index.html#licensing">ライセンス</a>
-      <a href="${up}index.html#contact">お問い合わせ</a>
+      <a href="${L}blog/index.html">${t.navBlog}</a>
+      <a href="${L}insights/index.html">${t.navInsights}</a>
+      <a href="${L}index.html#licensing">${t.navLicensing}</a>
+      <a href="${L}index.html#contact">${t.navContact}</a>
     </nav>
   </div>
 </header>
@@ -303,51 +382,56 @@ ${ANALYTICS}
 `;
 }
 
-function sourcesHtml(sources) {
+function sourcesHtml(sources, lang) {
+  const t = T[lang];
   const group = (type, label) => {
     const list = (sources || []).filter(s => s.type === type);
     if (!list.length) return '';
     return `<p><strong>${label}</strong></p>\n    <ul>` + list.map(s =>
-      `<li>${esc(s.publisher)}「${esc(s.title)}」${s.published ? `（${esc(String(s.published))}）` : ''}<br>` +
+      `<li>${t.srcCite(s)}<br>` +
       `<a href="${esc(s.url)}" rel="noopener">${esc(s.url)}</a></li>`).join('') + '</ul>';
   };
-  return group('primary', '一次出典') + group('secondary', '経由記事');
+  return group('primary', t.srcPrimary) + group('secondary', t.srcSecondary);
 }
 
 /** 記事本文中のタグ表示。一覧ページがあるタグはそこへ張る */
-function tagLine(tags, tagPages, up) {
-  return (tags || []).map(t =>
-    tagPages.has(t)
-      ? `<a href="${up}blog/tags/${encodeURIComponent(t)}.html">${esc(t)}</a>`
-      : esc(t)).join('・');
+function tagLine(tags, tagPages, lang) {
+  return (tags || []).map(x =>
+    tagPages.has(x)
+      ? `<a href="tags/${encodeURIComponent(tagSlug(x))}.html">${esc(x)}</a>`
+      : esc(x)).join(T[lang].tagJoin);
 }
 
-function articleHtml(post, tagPages) {
+function articleHtml(post, tagPages, lang, alternates) {
+  const t = T[lang];
+  const up = lang === 'en' ? '../../' : '../';
+  const L = langRoot(up, lang);
   return page({
+    lang, up, alternates,
     // 検索結果は幅で切られるので、長い見出しの記事は seoTitle で短い版を持てる。
     // ページ内の h1 は常に title のまま（表示は変えない）
-    title: `${post.fm.seoTitle || post.fm.title}｜Blue Aegis Media`,
+    title: `${post.fm.seoTitle || post.fm.title}${t.siteSuffix}`,
     description: post.fm.description || '',
-    canonical: `${BASE}/blog/${post.slug}.html`,
+    canonical: `${blogUrlOf(lang)}/${post.slug}.html`,
     ogType: 'article',
     main: `<main class="wrap article">
   <p class="kicker">${mediaLogo('sm')}</p>
   <h1>${esc(post.fm.title)}</h1>
-  <p class="meta">${esc(post.date)}${post.fm.tags && post.fm.tags.length ? `　${tagLine(post.fm.tags, tagPages, '../')}` : ''}</p>
+  <p class="meta">${esc(post.date)}${post.fm.tags && post.fm.tags.length ? `　${tagLine(post.fm.tags, tagPages, lang)}` : ''}</p>
 
   ${post.html}
 
   <div class="cta">
-    <p>Blue Aegis株式会社は、規制対応を検証可能にする技術を研究開発し、その成果を特許として保有・提供しています。規制対応でお困りの場面がありましたら、判断がつかない段階でもご相談ください。</p>
-    <a href="../index.html#contact">相談する</a>
+    <p>${t.ctaBody}</p>
+    <a href="${L}index.html#contact">${t.ctaLink}</a>
   </div>
 
   <div class="source">
-    ${sourcesHtml(post.fm.sources)}
-    <p>本稿は公表資料に基づく整理であり、法的助言ではありません。</p>
+    ${sourcesHtml(post.fm.sources, lang)}
+    <p>${t.disclaimer}</p>
   </div>
 
-  <p class="backlink"><a href="index.html">← ブログ一覧へ</a></p>
+  <p class="backlink"><a href="index.html">${t.backlink}</a></p>
 </main>`
   });
 }
@@ -362,48 +446,53 @@ function postListHtml(posts, hrefOf) {
       </li>`).join('\n');
 }
 
-function indexHtml(posts, tagPages) {
+function indexHtml(posts, tagPages, lang, alternates) {
+  const t = T[lang];
+  const up = lang === 'en' ? '../../' : '../';
   const items = postListHtml(posts, p => `${p.slug}.html`);
   const tags = [...tagPages.keys()].sort();
   const tagNav = tags.length ? `
-    <nav class="taglinks" aria-label="タグ">
-      <span>タグ</span>
-      ${tags.map(t => `<a href="tags/${encodeURIComponent(t)}.html">${esc(t)}（${tagPages.get(t).length}）</a>`).join('\n      ')}
+    <nav class="taglinks" aria-label="${t.tagsLabel}">
+      <span>${t.tagsLabel}</span>
+      ${tags.map(x => `<a href="tags/${encodeURIComponent(tagSlug(x))}.html">${esc(x)}${t.tagCount(tagPages.get(x).length)}</a>`).join('\n      ')}
     </nav>` : '';
 
   return page({
-    title: 'ブログ｜Blue Aegis Media',
-    description: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。Blue Aegis株式会社のメディア「Blue Aegis Media」。',
-    canonical: `${BASE}/blog/`,
+    lang, up, alternates,
+    title: `${t.blogTitle}${t.siteSuffix}`,
+    description: t.blogDesc,
+    canonical: `${blogUrlOf(lang)}/`,
     ogType: 'website',
     main: `<section>
   <div class="wrap">
     <p class="masthead">${mediaLogo('lg')}</p>
-    <h1 class="lead">ブログ</h1>
-    <p class="intro">AI活用と生産性について書いています。数字や調査を引くときは必ず一次出典まで辿り、媒体名・タイトル・公開日・URLを明記します。誇張した効果や収益の保証は書きません。<br>
-    規制そのものの解説は<a href="../insights/index.html">規制解説</a>に分けています。<br>
-    更新は<a href="feed.xml">RSS</a>でも受け取れます。</p>
+    <h1 class="lead">${t.blogTitle}</h1>
+    <p class="intro">${t.blogIntro}<br>
+    ${t.blogIntroInsights.replace('{insights}', '../insights/index.html')}<br>
+    ${t.blogIntroFeed}</p>
 ${tagNav}
     <ul class="postlist">
-${items || '      <li><p style="padding:28px 0">まだ記事がありません。</p></li>'}
+${items || `      <li><p style="padding:28px 0">${t.empty}</p></li>`}
     </ul>
   </div>
 </section>`
   });
 }
 
-function tagPageHtml(tag, posts) {
+function tagPageHtml(tag, posts, lang) {
+  const t = T[lang];
+  const up = lang === 'en' ? '../../../' : '../../';
   return page({
-    up: '../../',
-    title: `${tag}の記事｜Blue Aegis Media`,
-    description: `${tag}に関する記事を新しい順に並べています。いずれも一次出典に当たって確かめた事実をもとに書いた、Blue Aegis株式会社のメディア「Blue Aegis Media」の記事です。`,
-    canonical: `${BASE}/blog/tags/${encodeURIComponent(tag)}.html`,
+    lang, up,
+    title: `${t.tagTitle(tag)}${t.siteSuffix}`,
+    description: t.tagDesc(tag),
+    canonical: `${blogUrlOf(lang)}/tags/${encodeURIComponent(tagSlug(tag))}.html`,
     ogType: 'website',
     main: `<section>
   <div class="wrap">
     <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">${esc(tag)}</h1>
-    <p class="intro">「${esc(tag)}」に関する記事です。<a href="../index.html">ブログの全記事</a>もあわせてご覧ください。</p>
+    <p class="intro">${t.tagIntro(tag)}</p>
 
     <ul class="postlist">
 ${postListHtml(posts, p => `../${p.slug}.html`)}
@@ -545,12 +634,15 @@ ${items}
   `;
 }
 
-function finish(posts, tagPages) {
+function finish(loaded, tagPages) {
   const buildDate = new Date();
   const files = listHtml(OUT).sort();
 
-  // 記事の frontmatter を出力パスで引けるようにしておく
-  const byPath = new Map(posts.map(p => [`blog/${p.slug}.html`, p]));
+  // 記事の frontmatter を出力パスで引けるようにしておく（日英とも）
+  const byPath = new Map();
+  for (const lang of ['ja', 'en']) {
+    for (const p of loaded[lang].posts) byPath.set(`${blogDirOf(lang)}/${p.slug}.html`, p);
+  }
   const tagsOf = rel => {
     const p = byPath.get(rel);
     return p ? (p.fm.tags || []) : [];
@@ -609,28 +701,82 @@ function finish(posts, tagPages) {
   }
 
   fs.writeFileSync(path.join(OUT, 'sitemap.xml'), seo.buildSitemap(sitemap));
-  fs.writeFileSync(path.join(OUT, 'blog', 'feed.xml'), seo.buildFeed(posts, buildDate));
+  for (const lang of ['ja', 'en']) {
+    const dir = path.join(OUT, ...blogDirOf(lang).split('/'));
+    fs.writeFileSync(path.join(dir, 'feed.xml'), seo.buildFeed(loaded[lang].posts, buildDate, lang));
+  }
 
   return { pageCount: pages.length, tagPages };
 }
 
 /* ---------------- 実行 ---------------- */
-function main() {
-  const files = fs.existsSync(SRC)
-    ? fs.readdirSync(SRC).filter(f => f.endsWith('.md')).sort().reverse()
+
+/** 1言語ぶんの記事を読み、検証して返す */
+function loadPosts(lang) {
+  const dir = SRC[lang];
+  const files = fs.existsSync(dir)
+    ? fs.readdirSync(dir).filter(f => f.endsWith('.md')).sort().reverse()
     : [];
 
   const posts = [];
   let drafts = 0;
 
   for (const file of files) {
-    const raw = fs.readFileSync(path.join(SRC, file), 'utf8');
+    const raw = fs.readFileSync(path.join(dir, file), 'utf8');
     const [fm, body] = parseFrontmatter(raw, file);
     const meta = validate(file, fm, body);
     if (!meta || !fm) continue;
     if (fm.draft === true) { drafts++; continue; }   // 下書きは公開ビルドに載せない
-    posts.push({ ...meta, fm, html: renderMarkdown(body, file) });
+    posts.push({ ...meta, fm, lang, html: renderMarkdown(body, file) });
   }
+  return { files, posts, drafts };
+}
+
+/** タグごとの本数を数え、下限に達したものだけ一覧ページを持つ */
+function tagPagesOf(posts, lang) {
+  const byTag = new Map();
+  for (const p of posts) for (const t of (p.fm.tags || [])) {
+    if (!byTag.has(t)) byTag.set(t, []);
+    byTag.get(t).push(p);
+  }
+  const keep = new Map([...byTag].filter(([, list]) => list.length >= TAG_PAGE_MIN));
+  const held = [...byTag].filter(([, list]) => list.length < TAG_PAGE_MIN);
+  if (held.length) {
+    console.log(`[${lang}] タグ一覧は ${TAG_PAGE_MIN} 本以上のタグにのみ作成。今回見送り: `
+      + held.map(([t, l]) => `${t}(${l.length})`).join('、'));
+  }
+  return keep;
+}
+
+/** 1言語ぶんのブログを出力する */
+function writeBlog(posts, tagPages, lang, pairs) {
+  const dir = path.join(OUT, ...blogDirOf(lang).split('/'));
+  fs.mkdirSync(dir, { recursive: true });
+
+  for (const p of posts) {
+    // 同じ slug の記事が両言語にあれば、互いを指し合う宣言を付ける
+    const pair = pairs.get(p.slug);
+    const alternates = pair && pair.ja && pair.en
+      ? { ja: `${BASE}/blog/${p.slug}.html`, en: `${BASE}/en/blog/${p.slug}.html` }
+      : null;
+    fs.writeFileSync(path.join(dir, `${p.slug}.html`), articleHtml(p, tagPages, lang, alternates));
+  }
+
+  // 一覧どうしは常に対になる
+  fs.writeFileSync(path.join(dir, 'index.html'),
+    indexHtml(posts, tagPages, lang, { ja: `${BASE}/blog/`, en: `${BASE}/en/blog/` }));
+
+  if (tagPages.size) {
+    fs.mkdirSync(path.join(dir, 'tags'), { recursive: true });
+    for (const [tag, list] of tagPages) {
+      fs.writeFileSync(path.join(dir, 'tags', `${tagSlug(tag)}.html`), tagPageHtml(tag, list, lang));
+    }
+  }
+  return dir;
+}
+
+function main() {
+  const loaded = { ja: loadPosts('ja'), en: loadPosts('en') };
 
   if (warnings.length) {
     console.log('警告:');
@@ -641,42 +787,35 @@ function main() {
     errors.forEach(e => console.error('  ' + e));
     process.exit(1);
   }
-  console.log(`記事 ${files.length} 件を検証（公開 ${posts.length} / 下書き ${drafts}）`);
+  for (const lang of ['ja', 'en']) {
+    const { files, posts, drafts } = loaded[lang];
+    console.log(`[${lang}] 記事 ${files.length} 件を検証（公開 ${posts.length} / 下書き ${drafts}）`);
+  }
 
   if (VALIDATE_ONLY) { console.log('検証のみ。ビルドは行いません。'); return; }
 
-  /* タグごとの本数を数え、下限に達したものだけ一覧ページを持つ */
-  const byTag = new Map();
-  for (const p of posts) for (const t of (p.fm.tags || [])) {
-    if (!byTag.has(t)) byTag.set(t, []);
-    byTag.get(t).push(p);
-  }
-  const tagPages = new Map([...byTag].filter(([, list]) => list.length >= TAG_PAGE_MIN));
-  const held = [...byTag].filter(([, list]) => list.length < TAG_PAGE_MIN);
-  if (held.length) {
-    console.log(`タグ一覧は ${TAG_PAGE_MIN} 本以上のタグにのみ作成。今回見送り: `
-      + held.map(([t, l]) => `${t}(${l.length})`).join('、'));
+  // slug が一致する記事どうしを翻訳の対とみなす
+  const pairs = new Map();
+  for (const lang of ['ja', 'en']) {
+    for (const p of loaded[lang].posts) {
+      if (!pairs.has(p.slug)) pairs.set(p.slug, {});
+      pairs.get(p.slug)[lang] = p;
+    }
   }
 
   fs.rmSync(OUT, { recursive: true, force: true });
   copyDir(ROOT, OUT);
 
-  const blogDir = path.join(OUT, 'blog');
-  fs.mkdirSync(blogDir, { recursive: true });
-  for (const p of posts) fs.writeFileSync(path.join(blogDir, `${p.slug}.html`), articleHtml(p, tagPages));
-  fs.writeFileSync(path.join(blogDir, 'index.html'), indexHtml(posts, tagPages));
-
-  if (tagPages.size) {
-    fs.mkdirSync(path.join(blogDir, 'tags'), { recursive: true });
-    for (const [tag, list] of tagPages) {
-      fs.writeFileSync(path.join(blogDir, 'tags', `${tag}.html`), tagPageHtml(tag, list));
-    }
+  const tagPages = {};
+  for (const lang of ['ja', 'en']) {
+    tagPages[lang] = tagPagesOf(loaded[lang].posts, lang);
+    writeBlog(loaded[lang].posts, tagPages[lang], lang, pairs);
   }
 
   fs.writeFileSync(path.join(OUT, '404.html'), notFoundHtml());
 
-  const { pageCount } = finish(posts, tagPages);
-  console.log(`_site/ を生成（HTML ${pageCount} ページ、タグ一覧 ${tagPages.size}、OGP画像 ${pageCount + 1} 枚）`);
+  const { pageCount } = finish(loaded, tagPages);
+  console.log(`_site/ を生成（HTML ${pageCount} ページ、タグ一覧 ja:${tagPages.ja.size} en:${tagPages.en.size}、OGP画像 ${pageCount + 1} 枚）`);
 
   /* 仕上がりの検査。ここで落ちたら配信しない */
   const result = audit(OUT);

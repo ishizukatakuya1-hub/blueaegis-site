@@ -35,7 +35,8 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 /en/insights/                            英語の規制解説 一覧
   eu-ai-act-transparency.html            EU AI法の英語版
   aml-ekyc-2027.html                     犯収法の英語版
-/blog/                                   Blue Aegis Media（自動掲載・1本）
+/blog/                                   Blue Aegis Media（自動掲載・日本語）
+/en/blog/                                Blue Aegis Media（英語・手作業）
 ```
 
 ビルドが追加で作るもの（リポジトリには置かない）:
@@ -43,7 +44,8 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 ```
 /404.html            見つからないときの案内（noindex）
 /sitemap.xml         出力された全ページから自動生成
-/blog/feed.xml       RSS
+/blog/feed.xml       RSS（日本語）
+/en/blog/feed.xml    RSS（英語）
 /blog/tags/<タグ>.html  同じタグが3本たまると自動生成
 /og/*.png            ページごとのOGP画像＋発行元ロゴ
 ```
@@ -201,7 +203,7 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 次にやるなら候補は次のとおり。いずれも未着手・未承認。
 
 - 残る規制解説2本（住宅セーフティネット法・EUDIウォレット）の英語版
-- タグ一覧ページの実地確認。記事が3本たまるまで生成されないので、まだ本番で見ていない
+- 英語ブログの記事は3本のみ。日本固有の調査に依存した記事は英訳していない（英語圏では文脈が薄く、薄いページを量産すると検索評価がむしろ下がるため）。増やすなら国際比較・海外調査を扱ったものから
 - Search Console でのカバレッジ確認（送信は済んでいるので、数日後にインデックス状況を見る）
 - `www` サブドメインの是非（上記のとおり必須ではない）
 
@@ -230,7 +232,7 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 - **パンくず**: 記事の冒頭に自動で差し込む（表示・JSON-LD 両方）
 - **関連記事**: 記事の末尾に、タグの重なりが多い順で最大3本
 - **タグ一覧**: 同じタグが**3本**たまった時点で `/blog/tags/` に作られる（`TAG_PAGE_MIN`）。薄いページを量産しないための下限。見送ったタグはビルドログに出る
-- **RSS**: `/blog/feed.xml`
+- **RSS**: `/blog/feed.xml`（日本語）と `/en/blog/feed.xml`（英語）。言語を混ぜない
 - **サイトマップ**: 出力された全HTMLから組み立てる
 - **404ページ**: 主要な入口への導線つき（`noindex`）
 
@@ -249,6 +251,16 @@ canonical の有無と自己一致／title・description の有無と重複／h1
 - `/insights/` と `/blog/` に `h1` がなかったので `.lead` を `h1` にした（見た目は不変。小さい英字は `.eyebrow` に降格）
 - `insights/index.html` の description にあった「賃貸住宅管理業法」を「住宅セーフティネット法」に訂正（記事の内容と食い違っていた）
 - `/en/insights/` を新設し、英語トップのナビを記事直リンクから一覧へ変更
+
+### 英語版ブログ（2026年8月22日 追加）
+
+`/en/blog/` を新設した。記事の置き場は `content/blog-en/`。**自動掲載が書き込むのは `content/blog/` だけ**で、英語は手作業。
+
+- `tools/build.js` の `T`（日英の文言表）と `page({lang})` で切り替える。ナビ・出典見出し・免責・CTA・戻り導線がすべて言語に追従する
+- **日英で slug が一致する記事どうしを翻訳の対とみなし**、`hreflang` の相互宣言を自動で付ける。対にしたくないなら slug を変える
+- 一覧（`/blog/` ↔ `/en/blog/`）は常に対。タグ一覧は言語間で対応が取れないので `hreflang` を付けていない
+- RSSは言語別（`/blog/feed.xml` と `/en/blog/feed.xml`）。混ぜると購読者に読めない記事が流れる
+- タグのファイル名は `tagSlug()` で決まる。**英字だけのタグは小文字とハイフンに正規化**（URLに空白を入れないため）、日本語を含むタグはそのまま。既に公開している日本語タグのURLを変えないための線引きでもある
 
 ### 触るときの注意
 

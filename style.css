@@ -341,7 +341,7 @@ html[lang="en"] .mail{letter-spacing:normal}
 .taglinks{display:flex; flex-wrap:wrap; align-items:center; gap:9px 10px; margin:0 0 30px}
 .taglinks > span{font-size:12px; font-weight:600; letter-spacing:.16em; color:var(--slate)}
 .taglinks a{
-  display:inline-block; padding:8px 13px; border:1px solid var(--rule); border-radius:2px;
+  display:inline-block; padding:12px 14px; border:1px solid var(--rule); border-radius:2px;
   font-size:13px; line-height:1.4; color:var(--ink); text-decoration:none;
   transition:border-color .15s, color .15s;
 }
