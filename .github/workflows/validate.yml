@@ -2,6 +2,9 @@
 #
 # 自動投稿のPRに対して、frontmatterの必須項目・出典・ファイル名規約・
 # ビルドの成否を確認する。auto-merge へ切り替える際の前提になる。
+#
+# ビルドの中でサイト全体の検査（canonical・重複・リンク切れ・構造化データ・
+# フェードイン対象のずれ）も走るので、記事以外の壊れもここで止まる。
 name: 記事の検証
 
 on:
@@ -25,5 +28,5 @@ jobs:
       - name: frontmatter と出典の検証
         run: node tools/build.js --validate-only
 
-      - name: ビルドの確認
+      - name: ビルドとサイト全体の検査
         run: node tools/build.js

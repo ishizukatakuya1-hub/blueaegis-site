@@ -32,9 +32,20 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
   aml-ekyc-2027.html                     犯収法2027年4月改正
   housing-safety-net-postmortem.html     住宅セーフティネット法と死後事務
   eudi-wallet-relying-party.html         EUデジタルIDウォレット依拠当事者登録
-/en/insights/
-  eu-ai-act-transparency.html            上記1本の英語版
+/en/insights/                            英語の規制解説 一覧
+  eu-ai-act-transparency.html            EU AI法の英語版
+  aml-ekyc-2027.html                     犯収法の英語版
 /blog/                                   Blue Aegis Media（自動掲載・1本）
+```
+
+ビルドが追加で作るもの（リポジトリには置かない）:
+
+```
+/404.html            見つからないときの案内（noindex）
+/sitemap.xml         出力された全ページから自動生成
+/blog/feed.xml       RSS
+/blog/tags/<タグ>.html  同じタグが3本たまると自動生成
+/og/*.png            ページごとのOGP画像＋発行元ロゴ
 ```
 
 `style.css` と `script.js` は全ページ共通。英語版の差分は `html[lang="en"]` で上書きしている。
@@ -50,6 +61,7 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 - PRで `.github/workflows/validate.yml` が走り、frontmatter・出典・ファイル名・ビルドを検証する
 - `draft: true` は公開ビルドから完全に除外される
 - 出典は frontmatter の `sources` から記事末尾に自動出力される。本文に「参考・出典」を書くと二重になる
+- 2026年8月22日に `seoTitle`（任意）を追加。検索結果でタイトルが切られる場合の短い版。**見出しは `title` のまま**
 
 **規制解説（`/insights/`）と日次ブログ（`/blog/`）は系統が違う。** 読者層も更新頻度も異なるため分けてある。自動掲載の対象は `/blog/` のみ。
 
@@ -107,12 +119,21 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 ```
 preview_start { name: "blueaegis-site" }   → http://localhost:4890（ソース）
 preview_start { name: "blueaegis-build" }  → http://localhost:4891（_site/）
+preview_start { name: "blueaegis-build-4892" } → http://localhost:4892
 ```
 
-**必ず確認すること：**
+`launch.json` の実体は `Clodecodeapp/.claude/launch.json`（リポジトリの中ではない）。
+別のチャットが同じ名前・同じポートでサーバーを動かしていると `preview_start` は失敗するので、名前とポートを変えた項目を足す。
+
+**リンク切れ・重複・構造化データ・OGP画像の実在・フェードイン対象のずれは、`node tools/build.js` の検査が見る。**
+都度スクリプトを書く必要はなくなった。落ちたらビルドが止まる。
+
+**ブラウザで見て確かめること：**
 - フェードイン対象要素が最終的にすべて表示されるか（`opacity >= 0.9`）
 - 横スクロールが出ていないか
-- リンク切れ（`_site` 内を走査するスクリプトを都度書いている）
+
+注意：**ブラウザペインが画面に出ていないと `document.hidden` が `true` になり、IntersectionObserver が発火しない。**
+その状態で opacity を測ると全要素が「非表示」に見えるが、サイトの不具合ではない。`document.visibilityState` を先に確かめること。
 
 過去に、エスケープ処理のミスで `script.js` が構文エラーになり全53要素が非表示のまま公開されかけた。**シェルのヒアドキュメントでJSを書くと `\r\n` が実際の改行になる事故が起きる。** Writeツールを使うこと。
 
@@ -136,7 +157,11 @@ preview_start { name: "blueaegis-build" }  → http://localhost:4891（_site/）
 
 ### システム待ち
 
-**HTTPS証明書が未発行。** DNSはGitHubのヘルスチェックで問題なしと判定されている（`is_pointed_to_github_pages_ip: true`, `is_https_eligible: true`, `caa_error: null`）。ドメイン設定を再適用して発行を促した状態。**発行されたら `https_enforced` を有効にすること。**
+**HTTPS証明書が未発行（2026年8月22日 再確認）。** `https_certificate` は `null` のまま、`https_error` は `peer_failed_verification`。実際に `https://blueaegis.co.jp/` を叩くとTLSで失敗し、`http://` は 200 を返す。
+
+DNS側は問題なし（`is_pointed_to_github_pages_ip: true`, `is_https_eligible: true`, `caa_error: null`）。GitHub側の発行待ち。
+
+**これがいま一番大きい。** canonical・og:url・サイトマップはすべて `https://` を宣言しているのに、その `https://` が到達不能。検索エンジンは正規URLを取得できない。**発行されたら直ちに `https_enforced` を有効にすること。**
 
 ```bash
 gh api repos/ishizukatakuya1-hub/blueaegis-site/pages   # 証明書状態の確認
@@ -154,45 +179,66 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 
 ### 私（Claude）側の残作業
 
-- **犯収法記事の英語版**（未着手・ユーザー承認済み）
-- **記事のOGP画像の自動生成**（未着手・ユーザー承認済み）
-- **§8のSEO自動化**（未着手・今回の依頼）
+**なし**（2026年8月22日時点）。犯収法記事の英語版・OGP画像の自動生成・SEO自動化はいずれも完了（§8）。
+
+次にやるなら候補は次のとおり。いずれも未着手・未承認。
+
+- 残る規制解説2本（住宅セーフティネット法・EUDIウォレット）の英語版
+- タグ一覧ページの実地確認。記事が3本たまるまで生成されないので、まだ本番で見ていない
+- Search Console でのカバレッジ確認（HTTPS発行後）
 
 ---
 
-## 8. ★今回の依頼：SEO自動化の仕組み
+## 8. SEO自動化（2026年8月22日 実装完了）
 
-> 「このHPには最強のSEO対策を自動で回す仕組みを備えて」
+「ビルド内で完結する範囲」「流入量に寄せる」という方針で `tools/` に実装した。外部サービスもトークンも増やしていない。
 
-要件の詳細はユーザーから未聴取。**着手前に方向性を確認すること。** 以下は前セッションの見立て。
+### 構成
 
-### 現状すでにあるもの
+| ファイル | 役割 |
+|---|---|
+| `tools/build.js` | 記事の読込・検証・ページ生成・仕上げの統括 |
+| `tools/lib/seo.js` | 構造化データ、head への注入、サイトマップ、RSS |
+| `tools/lib/ogimage.js` | OGP画像の版面 |
+| `tools/lib/png.js` | PNG書き出しと描画（zlibのみ。外部依存なし） |
+| `tools/lib/audit.js` | 出来上がったサイトの検査 |
 
-- `sitemap.xml` はビルド時に自動生成（記事追加で自動反映。手作業不要）
-- `robots.txt` 設置済み
-- 全ページに `canonical` / `og:*` / `description`
-- 日英ページは `hreflang` で相互宣言
-- Cloudflare Web Analytics 稼働中（Cookie不使用）
-- Google Search Console 登録済み
+**要点は「仕上げ（`finish()`）が `_site` の全HTMLを1枚ずつ通る」こと。** 手で書いたページも生成したページも同じ経路を通るので、新しいページを足したときに構造化データやOGP画像を付け忘れることがない。ページ一覧はどこにも手で持っていない。
 
-### 自動化の余地がありそうなもの
+### 入るもの
 
-1. **構造化データ（JSON-LD）の自動付与** — `Organization` / `Article` / `BreadcrumbList`。ビルド時に frontmatter から生成できる。検索結果での表示に効く
-2. **OGP画像の自動生成** — 承認済みの残作業と同じ
-3. **内部リンクの自動提案** — 記事間でタグや語の重なりを見て関連記事を出す
-4. **メタ情報の機械検査** — title/description の長さ、重複、H1の個数、alt属性の欠落などをCIで落とす
-5. **サイトマップのSearch Console自動送信** — 更新のたびにpingする
-6. **表示速度の計測** — Lighthouse CIをActionsに載せる
+- **JSON-LD**: Organization / WebSite / BreadcrumbList / Article・BlogPosting / CollectionPage。記事の出典URLは `citation` に入る
+- **OGP画像**: `/og/` にページごと1枚。1200×630、日付入り、盾の強調帯が slug から決まるので記事ごとに絵が違う
+- **パンくず**: 記事の冒頭に自動で差し込む（表示・JSON-LD 両方）
+- **関連記事**: 記事の末尾に、タグの重なりが多い順で最大3本
+- **タグ一覧**: 同じタグが**3本**たまった時点で `/blog/tags/` に作られる（`TAG_PAGE_MIN`）。薄いページを量産しないための下限。見送ったタグはビルドログに出る
+- **RSS**: `/blog/feed.xml`
+- **サイトマップ**: 出力された全HTMLから組み立てる
+- **404ページ**: 主要な入口への導線つき（`noindex`）
 
-### 注意すべき点
+### 検査（ここで落ちたら配信されない）
 
-**「最強のSEO」を謳う施策の多くは、この会社では逆効果になる。** キーワード詰め込み、大量の薄い記事、相互リンクなどは、ブランドガイドラインの「装飾より構造」「誇張より証明」と正面から衝突する。ライセンス交渉の相手（企業の法務・知財部門）が読むサイトで、検索対策の痕跡が見えることは信用を損なう。
+canonical の有無と自己一致／title・description の有無と重複／h1 が1個／img の alt／JSON-LD が壊れていないこと／og:image の実在／サイト内リンク切れ／言語版の相互参照／**CSSとJSのフェードイン対象のずれ**。
 
-前セッションでの診断は「**入口の数と、到着後の転換**が効く」というもの。実際にそれで規制解説4本と選択式の問い合わせフォームを作った。自動化するなら、この延長で考えるのが筋が通る。
+最後の1つは §5 が警告している事故（全53要素が非表示のまま公開されかけた）を機械化したもの。`style.css` で `opacity:0` にした要素が `script.js` の対象に入っていなければビルドが落ちる。
 
-**着手前に、どこまでを自動化したいのか、機械的な最適化と内容の質のどちらに寄せるのかを、ボタンで確認すること。**
+警告（止めない）: title・description の表示幅。全角を2として数え、title は68以内、description は70〜200。
 
----
+### 同時に直したもの
+
+- 全ページの `title` が検索結果で切られていたので短縮した。**`h1` は変えていない**（記事の見出しは長いままでよい）
+- 記事の `title` が長い場合に備え、frontmatter に `seoTitle`（任意）を追加。`PUBLISHING.md` に記載済み
+- `/insights/` と `/blog/` に `h1` がなかったので `.lead` を `h1` にした（見た目は不変。小さい英字は `.eyebrow` に降格）
+- `insights/index.html` の description にあった「賃貸住宅管理業法」を「住宅セーフティネット法」に訂正（記事の内容と食い違っていた）
+- `/en/insights/` を新設し、英語トップのナビを記事直リンクから一覧へ変更
+
+### 触るときの注意
+
+- **`seo.js` の `organization()` に住所・代表者名・法人番号を足さないこと。** §4-5 で意図的に伏せている
+- タグ一覧のファイル名は日本語のまま、リンクは百分率符号化。この対応関係を崩すと404になる
+- 手で書いたページは改行が CRLF のことがある。HTMLへの差し込みで空白の並びを決め打ちにしない
+- 日付に `toISOString()` をそのまま使わない（UTCで前日になる）。`seo.todayJst()` を使う
+
 
 ## 9. ユーザーとのやり取りで守ること
 
