@@ -50,6 +50,18 @@ h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24
 .intro{margin:0 0 48px; max-width:46em; color:var(--ink); font-size:15px}
 .lead + .cards, .lead + .domains, .lead + .cards3{margin-top:48px}
 
+/* ---- Blue Aegis Media の題字 ----
+   ブログ（/blog/）でだけ使う派生ロゴ。英字を並べていた場所にそのまま置き、
+   高さだけを幅に連動させる（切り替え点を増やさない）。
+   規制解説（/insights/）の .kicker は英字のままなので、指定は .medialogo に限る。
+   lg=一覧・タグの題字／sm=記事の冠。 */
+.masthead{margin:0 0 20px}
+.medialogo{display:block; width:auto; max-width:100%}
+.medialogo.lg{height:clamp(46px,6.4vw,64px)}
+/* sm の下限 39px は、ガイドラインの最小使用サイズ（ロゴタイプ併記 90px 幅）から逆算した値。
+   viewBox 380 のうち字面は 304 までなので、幅 114px でちょうど 90px の字面になる。 */
+.medialogo.sm{height:clamp(39px,5.2vw,44px)}
+
 /* ---- メッセージ ---- */
 .message{border-top:0}
 .message .lead{font-size:clamp(23px,3.3vw,35px); line-height:1.5; margin-bottom:36px}

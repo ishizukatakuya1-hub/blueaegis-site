@@ -221,6 +221,34 @@ const LOGO = `<svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式
         <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
       </svg>`;
 
+/* ブログ（Blue Aegis Media）の題字。
+   正式ロゴの「積層の盾＋blueaegis」を引き継ぎ、英文社名の行を MEDIA に差し替え、
+   Shield Blue の箇所を Media Lemon(#E0C61B) に置き換えた派生形。
+   この黄は白地で 1.9:1 しかない。可読性を負わせる用途に流用しないこと。
+   正本は 法人設立_BlueAegis/logo/正式/logo_07_media_横並び_カラー.svg（モノクロ・白抜きも同フォルダ）。
+   symbol の id はヘッダのロゴ（sh1/cl1）と重ならないようにしてある。
+   size は 'lg'（一覧の題字）と 'sm'（記事の冠）の2種類のみ。 */
+function mediaLogo(size) {
+  return `<svg class="medialogo ${size}" viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Media">
+      <defs>
+        <path id="shm${size}" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+        <clipPath id="clm${size}"><use href="#shm${size}"/></clipPath>
+      </defs>
+      <g transform="translate(0,6) scale(0.82)">
+        <g clip-path="url(#clm${size})">
+          <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="64" width="120" height="22" fill="#E0C61B"/>
+          <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+          <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+        </g>
+      </g>
+      <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#E0C61B">aegis</tspan></text>
+      <text x="112" y="97" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="bold" letter-spacing="5.5" fill="#0A2A4F">MEDIA</text>
+      <rect x="200" y="90" width="104" height="3" fill="#E0C61B"/>
+    </svg>`;
+}
+
 const ANALYTICS = `<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->`;
 
 /** up はサイト直下までの相対（'../' など）。404 だけは絶対パスの '/' を渡す */
@@ -303,7 +331,7 @@ function articleHtml(post, tagPages) {
     canonical: `${BASE}/blog/${post.slug}.html`,
     ogType: 'article',
     main: `<main class="wrap article">
-  <p class="kicker">BLUE AEGIS MEDIA</p>
+  <p class="kicker">${mediaLogo('sm')}</p>
   <h1>${esc(post.fm.title)}</h1>
   <p class="meta">${esc(post.date)}${post.fm.tags && post.fm.tags.length ? `　${tagLine(post.fm.tags, tagPages, '../')}` : ''}</p>
 
@@ -350,7 +378,7 @@ function indexHtml(posts, tagPages) {
     ogType: 'website',
     main: `<section>
   <div class="wrap">
-    <p class="eyebrow">BLUE AEGIS MEDIA</p>
+    <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">ブログ</h1>
     <p class="intro">AI活用と生産性について書いています。数字や調査を引くときは必ず一次出典まで辿り、媒体名・タイトル・公開日・URLを明記します。誇張した効果や収益の保証は書きません。<br>
     規制そのものの解説は<a href="../insights/index.html">規制解説</a>に分けています。<br>
@@ -373,7 +401,7 @@ function tagPageHtml(tag, posts) {
     ogType: 'website',
     main: `<section>
   <div class="wrap">
-    <p class="eyebrow">BLUE AEGIS MEDIA</p>
+    <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">${esc(tag)}</h1>
     <p class="intro">「${esc(tag)}」に関する記事です。<a href="../index.html">ブログの全記事</a>もあわせてご覧ください。</p>
 
