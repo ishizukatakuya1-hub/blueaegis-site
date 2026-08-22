@@ -23,7 +23,7 @@ header{
 /* ロゴとナビが1行に収まる幅でのみ固定する */
 @media(min-width:880px){ header{position:sticky; top:0} }
 .headbar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px clamp(16px,2.5vw,24px); min-height:92px; padding:14px clamp(18px,4vw,24px)}
-.headbar svg{display:block; height:clamp(36px,4.8vw,58px); width:auto}
+.headbar svg{display:block; height:clamp(36px,4.8vw,58px); width:auto; max-width:100%}
 nav{display:flex; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:0 clamp(14px,1.9vw,24px)}
 nav a{color:var(--slate); text-decoration:none; font-size:clamp(13px,1.15vw,14px); letter-spacing:.06em; white-space:nowrap; padding:9px 0}
 nav a:hover{color:var(--blue)}
@@ -36,7 +36,9 @@ a:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
 
 /* ---- ヒーロー ---- */
 .hero{background:var(--navy); color:var(--white); padding:clamp(58px,8.5vw,96px) 0 clamp(54px,7.5vw,88px)}
-.hero svg{display:block; height:clamp(88px,13vw,156px); width:auto; margin-bottom:52px}
+/* 高さだけを指定すると、極端に狭い画面（280px級の折りたたみ端末）で横に溢れる。
+   max-width で頭を押さえる。縦横比は保たれる */
+.hero svg{display:block; height:clamp(88px,13vw,156px); width:auto; max-width:100%; margin-bottom:52px}
 .hero h1{margin:0 0 26px; font-size:clamp(26px,4.4vw,42px); font-weight:600; line-height:1.55; letter-spacing:.04em; text-wrap:balance}
 .hero p{margin:0; max-width:44em; color:#C3D2E0; font-size:clamp(15px,1.7vw,17px)}
 .tagline-en{margin-top:34px; color:var(--cyan); font-size:13px; letter-spacing:.22em}
@@ -73,8 +75,10 @@ h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24
   line-height:1.65; max-width:26em;
 }
 
+/* 段組みの最小幅は min(...,100%) で包む。
+   包まないと、画面が最小幅より狭いときに段が縮まず横スクロールが出る（320pxで発生していた）。 */
 /* ---- 事業内容 ---- */
-.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(268px,1fr)); gap:34px}
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(268px,100%),1fr)); gap:34px}
 .card{border-top:3px solid var(--blue); padding-top:22px}
 .card:nth-child(2){border-color:var(--cyan)}
 .card:nth-child(3){border-color:var(--slate)}
@@ -82,7 +86,7 @@ h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24
 .card p{margin:0; font-size:14.5px; color:var(--ink)}
 
 /* ---- 技術領域 ---- */
-.domains{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:2px; background:var(--rule); border:1px solid var(--rule)}
+.domains{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr)); gap:2px; background:var(--rule); border:1px solid var(--rule)}
 .domain{background:var(--white); padding:26px 24px}
 .domain h3{margin:0 0 8px; font-size:15.5px; font-weight:600}
 .domain p{margin:0; font-size:14px; color:var(--ink); line-height:1.8}
@@ -93,12 +97,12 @@ h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24
 .stat b{font-size:clamp(46px,8vw,76px); font-weight:600; line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--blue)}
 .stat span{font-size:16px; font-weight:600}
 .stat-note{margin:0 0 40px; font-size:13px; color:var(--slate)}
-.pol{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px}
+.pol{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr)); gap:32px}
 .pol h3{margin:0 0 10px; font-size:15.5px; font-weight:600}
 .pol p{margin:0; font-size:14.5px; color:var(--ink)}
 
 /* ---- ライセンス ---- */
-.cards3{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:32px; margin-bottom:64px}
+.cards3{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr)); gap:32px; margin-bottom:64px}
 .offer{border:1px solid var(--rule); padding:26px 24px}
 .offer h3{margin:0 0 10px; font-size:16px; font-weight:600}
 .offer p{margin:0; font-size:14.5px; color:var(--ink)}
@@ -133,7 +137,7 @@ td ol li{margin-bottom:4px}
 .contact{background:var(--paper)}
 .form{display:grid; gap:28px; max-width:44em; margin:0 0 34px}
 .field > span{display:block; font-size:13px; font-weight:600; letter-spacing:.08em; color:var(--slate); margin-bottom:12px}
-.opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px}
+.opts{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr)); gap:10px}
 .opt{position:relative}
 .opt input{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:pointer}
 .opt span{
@@ -158,7 +162,7 @@ td ol li{margin-bottom:4px}
 .send:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
 .note{margin:18px 0 0; font-size:13px; color:var(--slate); line-height:1.85; max-width:40em}
 .fallback{margin:30px 0 0; padding-top:26px; border-top:1px solid var(--rule); font-size:14px; color:var(--ink)}
-.mail{display:inline-block; margin-top:18px; font-size:clamp(17px,2.4vw,22px); color:var(--navy); text-decoration:none; border-bottom:2px solid var(--cyan); padding-bottom:4px; letter-spacing:.03em}
+.mail{display:inline-block; margin-top:14px; padding-top:4px; font-size:clamp(17px,2.4vw,22px); color:var(--navy); text-decoration:none; border-bottom:2px solid var(--cyan); padding-bottom:6px; letter-spacing:.03em}
 .mail:hover{color:var(--blue)}
 
 /* ---- フッター ---- */
@@ -280,16 +284,18 @@ html[lang="en"] .mail{letter-spacing:normal}
   font-size:13.5px; line-height:1.9; color:var(--slate); word-break:break-word;
 }
 .article .source a{color:var(--blue)}
-.article .backlink{margin:40px 0 0; font-size:14px}
-.article .backlink a{color:var(--blue); text-decoration:none}
+.article .backlink{margin:27px 0 0; font-size:14px}
+.article .backlink a{display:inline-block; padding:13px 0; color:var(--blue); text-decoration:none}
 .article .backlink a:hover{text-decoration:underline}
 
 /* 記事末尾の相談導線 */
 .cta{margin:56px 0 0; padding:30px 28px; background:var(--navy); color:var(--white)}
-.cta p{margin:0 0 18px; font-size:15px; line-height:1.95; color:#C3D2E0}
+.cta p{margin:0 0 10px; font-size:15px; line-height:1.95; color:#C3D2E0}
+/* 指で押す前提の高さを確保する（約45px）。文章中のリンクではなく単独の導線なので、
+   見た目の余白ではなく当たり判定として padding を持たせる */
 .cta a{
   display:inline-block; color:var(--white); text-decoration:none;
-  border-bottom:2px solid var(--cyan); padding-bottom:3px; font-size:16px; font-weight:600;
+  border-bottom:2px solid var(--cyan); padding:8px 0 5px; font-size:16px; font-weight:600;
 }
 .cta a:hover{color:var(--cyan)}
 
