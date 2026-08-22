@@ -37,6 +37,19 @@
       var el = form.querySelector('[name="'+n+'"]:checked') || form.querySelector('[name="'+n+'"]');
       return el ? el.value.trim() : '';
     };
+    /* どの記事を読んで相談に至ったかを本文に添える。
+       記事側の導線が ?from=... を付けてくるので、それを読むだけ。
+       外部へ送るものは何もなく、本人が送信するメールに1行入るだけ。 */
+    var m = /[?&]from=([^&]+)/.exec(window.location.search);
+    var src = '';
+    if (m) {
+      try { src = decodeURIComponent(m[1]); } catch (e) { src = ''; }
+      /* このサイトのページのパスにしか見えないものだけ通す。
+         タグ一覧は日本語を含むので文字種では絞れない。空白・記号を弾き、
+         .html で終わることを求める。細工したURLで本文に文言を差し込めないように。 */
+      if (!/^[^\s:<>"'\\]+\.html$/.test(src)) src = '';
+    }
+
     var lines = [
       L.labelKind + v('kind'),
       L.labelArea + v('area'),
@@ -45,9 +58,10 @@
       L.labelBody,
       v('body') || L.blank,
       '',
-      '--------------------',
-      L.footer
+      '--------------------'
     ];
+    if (src && L.labelFrom) lines.push(L.labelFrom + src);
+    lines.push(L.footer);
     window.location.href = 'mailto:info@blueaegis.co.jp'
       + '?subject=' + encodeURIComponent(L.subject + v('kind'))
       + '&body='    + encodeURIComponent(lines.join('\r\n'));

@@ -287,6 +287,13 @@ html[lang="en"] .mail{letter-spacing:normal}
   font-size:13.5px; line-height:1.9; color:var(--slate); word-break:break-word;
 }
 .article .source a{color:var(--blue)}
+/* 規制解説の購読導線。施行日が先の規制ほど、読んだ時点では動けない。
+   次の改正までつながっていられる経路として記事末尾と一覧に置く。 */
+.subscribe{margin:34px 0 0; padding-top:20px; border-top:1px solid var(--rule);
+           font-size:13.5px; color:var(--slate)}
+.subscribe a{color:var(--blue)}
+.postlist + .subscribe{margin-top:8px}
+
 .article .backlink{margin:27px 0 0; font-size:14px}
 .article .backlink a{display:inline-block; padding:13px 0; color:var(--blue); text-decoration:none}
 .article .backlink a:hover{text-decoration:underline}
