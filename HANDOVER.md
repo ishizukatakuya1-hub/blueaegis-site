@@ -37,6 +37,10 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
   aml-ekyc-2027.html                     犯収法の英語版
 /blog/                                   Blue Aegis Media（自動掲載・日本語）
 /en/blog/                                Blue Aegis Media（英語・手作業）
+/privacy.html                            プライバシーポリシー（日本語）
+/disclaimer.html                         免責事項（日本語）
+/en/privacy.html                         Privacy Policy（英語）
+/en/disclaimer.html                      Disclaimer（英語）
 ```
 
 ビルドが追加で作るもの（リポジトリには置かない）:
@@ -51,6 +55,10 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 ```
 
 `style.css` と `script.js` は全ページ共通。英語版の差分は `html[lang="en"]` で上書きしている。
+
+**プライバシーポリシーと免責事項は全ページのフッターから引く。** リンクは `footer .legal` に置いてある。
+手書きページは各HTMLに直接、生成ページは `tools/build.js` の `page()` にある1か所に書いてあるので、
+文言やパスを変えるときは両方を直すこと。
 **CSSのフェードイン対象セレクタと `script.js` のセレクタは同一に保つこと。** 片方だけ変えると要素が非表示のまま残る。
 
 ---

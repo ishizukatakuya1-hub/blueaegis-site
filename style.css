@@ -169,6 +169,9 @@ td ol li{margin-bottom:4px}
 footer{background:var(--navy); color:#7E93AC; font-size:12.5px; padding:30px 0 40px}
 footer .wrap{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
 footer a{color:#7E93AC}
+footer .legal{display:flex; gap:20px; flex-wrap:wrap}
+footer .legal a{text-decoration:none; border-bottom:1px solid transparent}
+footer .legal a:hover{color:#B9C8D6; border-bottom-color:#4A5F73}
 
 /* ---- 動きの演出 ----
    すべて prefers-reduced-motion: no-preference の中だけで定義する。

@@ -259,6 +259,7 @@ const T = {
   ja: {
     htmlLang: 'ja',
     navBlog: 'ブログ', navInsights: '規制解説', navLicensing: 'ライセンス', navContact: 'お問い合わせ',
+    navPrivacy: 'プライバシーポリシー', navDisclaimer: '免責事項',
     siteSuffix: '｜Blue Aegis Media',
     blogTitle: 'ブログ',
     blogDesc: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。Blue Aegis株式会社のメディア「Blue Aegis Media」。',
@@ -281,6 +282,7 @@ const T = {
   en: {
     htmlLang: 'en',
     navBlog: 'Blog', navInsights: 'Insights', navLicensing: 'Licensing', navContact: 'Contact',
+    navPrivacy: 'Privacy Policy', navDisclaimer: 'Disclaimer',
     siteSuffix: ' | Blue Aegis Media',
     blogTitle: 'Blog',
     blogDesc: 'Notes on working with AI and on productivity, written from facts checked against their primary sources. Blue Aegis Media, published by Blue Aegis Inc.',
@@ -367,7 +369,11 @@ ${main}
 <footer>
   <div class="wrap">
     <div>© 2026 Blue Aegis Inc.</div>
-    <div><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></div>
+    <div class="legal">
+      <a href="${L}privacy.html">${t.navPrivacy}</a>
+      <a href="${L}disclaimer.html">${t.navDisclaimer}</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
   </div>
 </footer>
 
