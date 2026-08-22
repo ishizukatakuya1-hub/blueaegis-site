@@ -116,6 +116,15 @@ function isoDate(text) {
 }
 
 /**
+ * 構造化データに載せる日時。
+ * 日付だけだと Google が「日時値が無効」「タイムゾーンがありません」と警告するので、
+ * 記事の公開日（JST）として時刻と時差まで書く。
+ */
+function dateTimeJst(isoDay) {
+  return isoDay ? `${isoDay}T00:00:00+09:00` : null;
+}
+
+/**
  * 日本時間での「今日」。
  * ビルドは UTC の実行環境で動くので、toISOString() をそのまま使うと前日になる。
  */
@@ -214,7 +223,8 @@ function structuredData(desc, cls, extra) {
       description: desc.description,
       inLanguage: lang,
       isAccessibleForFree: true,
-      ...(published ? { datePublished: published, dateModified: extra.dateModified || published } : {}),
+      ...(published ? { datePublished: dateTimeJst(published),
+                        dateModified: dateTimeJst(extra.dateModified || published) } : {}),
       author: extra.author
         ? { '@type': 'Organization', name: extra.author, url: BASE + '/' }
         : { '@id': ORG_ID },
@@ -297,7 +307,7 @@ function enhanceHead(html, desc, cls, extra) {
   if (cls.kind === 'article') {
     const published = extra.datePublished || isoDate(desc.metaLine);
     if (published && !has(/property="article:published_time"/)) {
-      add.push(`<meta property="article:published_time" content="${published}">`);
+      add.push(`<meta property="article:published_time" content="${dateTimeJst(published)}">`);
     }
     if (extra.keywords) {
       for (const t of extra.keywords) add.push(`<meta property="article:tag" content="${escAttr(t)}">`);
@@ -368,5 +378,5 @@ ${items}
 module.exports = {
   BASE, SITE, SECTION,
   describePage, classify, structuredData, enhanceHead,
-  buildSitemap, buildFeed, isoDate, todayJst, displayWidth, unesc, escAttr,
+  buildSitemap, buildFeed, isoDate, dateTimeJst, todayJst, displayWidth, unesc, escAttr,
 };
