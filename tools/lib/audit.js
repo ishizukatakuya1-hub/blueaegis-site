@@ -19,6 +19,14 @@ const { describePage, classify, displayWidth, BASE } = require('./seo');
 const TITLE_MIN = 20, TITLE_MAX = 68;
 const DESC_MIN  = 70, DESC_MAX  = 200;
 
+/* 全ページのフッターから引く方針ページ。言語ごとに置き場が違う。
+   フッターは手書きページと tools/build.js の page() の2経路にあるため、
+   規制解説を手で足したときに実際ここが抜けた。人の目に頼らず止める。 */
+const POLICY_PAGES = {
+  ja: ['privacy.html', 'disclaimer.html'],
+  en: ['en/privacy.html', 'en/disclaimer.html'],
+};
+
 function listHtml(dir, root = dir, out = []) {
   for (const name of fs.readdirSync(dir)) {
     const p = path.join(dir, name);
@@ -159,6 +167,7 @@ function audit(outDir) {
 
     /* --- リンク --- */
     const reHref = /(?:href|src)="([^"]+)"/g;
+    const linked = new Set();
     let h;
     while ((h = reHref.exec(html)) !== null) {
       const raw = h[1];
@@ -176,9 +185,20 @@ function audit(outDir) {
         errors.push(at(`リンク切れ: ${raw} → ${target}`));
         continue;
       }
+      linked.add(target);
       if (frag && target.endsWith('.html')) {
         const t = pages.get(target);
         if (t && !t.ids.has(frag)) warnings.push(at(`リンク先に id がありません: ${raw}`));
+      }
+    }
+
+    /* --- 方針ページへの導線 ---
+       同じ言語のプライバシーポリシーと免責事項へ、必ず1本は引けること。
+       方針ページ自体が無い構成では課さない（消したなら、リンク切れの側で落ちる）。 */
+    for (const target of POLICY_PAGES[cls.lang] || []) {
+      if (!pages.has(target)) continue;
+      if (!linked.has(target)) {
+        errors.push(at(`${target} へのリンクがありません（フッターに入れること）`));
       }
     }
 
