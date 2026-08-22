@@ -319,8 +319,14 @@ function enhanceHead(html, desc, cls, extra) {
     add.push(`<link rel="alternate" hreflang="x-default" href="${desc.alternates.ja || desc.alternates.en}">`);
   }
 
+  /* 購読の入口。規制解説を読んでいる人にブログのRSSを渡さない（読者が違う）。
+     トップだけは入口なので両方を出す。 */
   if (!has(/type="application\/rss\+xml"/)) {
-    add.push(`<link rel="alternate" type="application/rss+xml" title="Blue Aegis Media" href="${feedUrl(cls.lang)}">`);
+    const sections = cls.kind === 'home' ? ['insights', 'blog']
+                   : cls.section === 'insights' ? ['insights'] : ['blog'];
+    for (const sec of sections) {
+      add.push(`<link rel="alternate" type="application/rss+xml" title="${escAttr(FEED[sec][cls.lang].title)}" href="${feedUrl(cls.lang, sec)}">`);
+    }
   }
 
   if (cls.kind !== 'notfound') add.push(jsonLd(structuredData(desc, cls, extra)));
@@ -351,34 +357,52 @@ function buildSitemap(pages) {
    日英で別のフィードを持つ。混ぜると購読者に読めない記事が流れる。 */
 
 const FEED = {
-  ja: { path: '/blog/', desc: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。' },
-  en: { path: '/en/blog/', desc: 'Notes on working with AI and on productivity, written from facts checked against their primary sources.' },
+  blog: {
+    ja: { path: '/blog/', title: 'Blue Aegis Media',
+          desc: 'AI活用と生産性について、一次出典に当たって確かめた事実をもとに書いています。' },
+    en: { path: '/en/blog/', title: 'Blue Aegis Media',
+          desc: 'Notes on working with AI and on productivity, written from facts checked against their primary sources.' },
+  },
+  insights: {
+    ja: { path: '/insights/', title: 'Blue Aegis 規制解説',
+          desc: '規制の施行と改正について、事業者が何を求められ、何を記録しておくべきかを、公表資料に当たって整理しています。' },
+    en: { path: '/en/insights/', title: 'Blue Aegis Regulatory Insights',
+          desc: 'What incoming regulation requires of a business, and what it needs to be able to show afterwards — written from the published sources.' },
+  },
 };
 
-/** そのページに出すフィードのURL */
-function feedUrl(lang) { return `${BASE}${FEED[lang].path}feed.xml`; }
+/** そのページに出すフィードのURL。読者が違うので系統ごとに分ける */
+function feedUrl(lang, section = 'blog') {
+  return `${BASE}${FEED[section][lang].path}feed.xml`;
+}
 
-function buildFeed(posts, buildDate, lang = 'ja') {
+/**
+ * フィード1本。
+ * items は { title, url, date, description, categories } に正規化して渡す。
+ * ブログは frontmatter から、規制解説は出力したHTMLから作るので、
+ * 素材の出どころが違っても同じ形で出る。
+ */
+function buildFeed(items, buildDate, lang = 'ja', section = 'blog') {
   const esc = s => escAttr(s);
-  const items = posts.map(p => `    <item>
-      <title>${esc(p.fm.title)}</title>
-      <link>${BASE}${FEED[lang].path}${p.slug}.html</link>
-      <guid isPermaLink="true">${BASE}${FEED[lang].path}${p.slug}.html</guid>
-      <pubDate>${new Date(`${p.date}T00:00:00+09:00`).toUTCString()}</pubDate>
-      <description>${esc(p.fm.description || '')}</description>
-${(p.fm.tags || []).map(t => `      <category>${esc(t)}</category>`).join('\n')}
+  const ch = FEED[section][lang];
+  const body = items.map(it => `    <item>
+      <title>${esc(it.title)}</title>
+      <link>${it.url}</link>
+      <guid isPermaLink="true">${it.url}</guid>
+${it.date ? `      <pubDate>${new Date(`${it.date}T00:00:00+09:00`).toUTCString()}</pubDate>\n` : ''}      <description>${esc(it.description || '')}</description>
+${(it.categories || []).map(t => `      <category>${esc(t)}</category>`).join('\n')}
     </item>`).join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Blue Aegis Media</title>
-    <link>${BASE}${FEED[lang].path}</link>
-    <atom:link href="${feedUrl(lang)}" rel="self" type="application/rss+xml"/>
-    <description>${FEED[lang].desc}</description>
+    <title>${esc(ch.title)}</title>
+    <link>${BASE}${ch.path}</link>
+    <atom:link href="${feedUrl(lang, section)}" rel="self" type="application/rss+xml"/>
+    <description>${esc(ch.desc)}</description>
     <language>${lang}</language>
     <lastBuildDate>${buildDate.toUTCString()}</lastBuildDate>
-${items}
+${body}
   </channel>
 </rss>
 `;

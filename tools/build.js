@@ -563,8 +563,10 @@ function listHtml(dir, root = dir, out = []) {
    新しいページを足したときに構造化データやOGP画像を付け忘れることがない。 */
 
 const L = {
-  ja: { crumbHome: 'ホーム', here: '現在地', related: '関連する記事', more: 'この分類の他の記事' },
-  en: { crumbHome: 'Home',   here: 'Breadcrumb', related: 'Related articles', more: 'More in this section' },
+  ja: { crumbHome: 'ホーム', here: '現在地', related: '関連する記事', more: 'この分類の他の記事',
+        feedLine: '施行と改正を追っています。更新は<a href="feed.xml">RSS</a>で受け取れます。' },
+  en: { crumbHome: 'Home',   here: 'Breadcrumb', related: 'Related articles', more: 'More in this section',
+        feedLine: 'We follow these rules as they come into force. Updates are available by <a href="feed.xml">RSS</a>.' },
 };
 
 const OG_KICKER = {
@@ -688,6 +690,23 @@ function finish(loaded, tagPages) {
       if (block) html = html.replace('<p class="backlink">', block + '<p class="backlink">');
     }
 
+    /* --- 規制解説の購読導線 ---
+       施行日が先にある規制ほど、読んだ時点では動けない。次の改正まで
+       つながっていられる経路を、記事と一覧の両方に置く。 */
+    if (cls.section === 'insights') {
+      const line = `<p class="subscribe">${L[cls.lang].feedLine}</p>\n\n  `;
+      html = cls.kind === 'article'
+        ? html.replace('<p class="backlink">', line + '<p class="backlink">')
+        : html.replace('</ul>\n  </div>', `</ul>\n\n    ${line}</div>`);
+    }
+
+    /* --- 問い合わせの出所 ---
+       どの記事を読んで相談に至ったのかが、届くメールの本文で分かるようにする。
+       外部サービスもCookieも使わない。パスを1つ足すだけ。
+       トップ自身の導線は「#contact」なので、ここでは書き換わらない。 */
+    html = html.replace(/href="([^"]*index\.html)#contact"/g,
+      (m, to) => `href="${to}?from=${rel.split('/').map(encodeURIComponent).join('/')}#contact"`);
+
     /* --- head --- */
     html = seo.enhanceHead(html, desc, cls, {
       ogImage: `${BASE}/${img}`,
@@ -704,12 +723,52 @@ function finish(loaded, tagPages) {
   }
 
   fs.writeFileSync(path.join(OUT, 'sitemap.xml'), seo.buildSitemap(sitemap));
-  for (const lang of ['ja', 'en']) {
-    const dir = path.join(OUT, ...blogDirOf(lang).split('/'));
-    fs.writeFileSync(path.join(dir, 'feed.xml'), seo.buildFeed(loaded[lang].posts, buildDate, lang));
-  }
+  writeFeeds(loaded, pages, buildDate);
 
   return { pageCount: pages.length, tagPages };
+}
+
+/**
+ * 購読の入口を系統ごとに書き出す。
+ *
+ * ブログは frontmatter から、規制解説は出力したHTMLから作る。
+ * 規制解説は手書きで、記事の一覧をどこにも持っていない。ここで数え上げるので、
+ * 1本足したらフィードにも載る（載せ忘れる経路がない）。
+ *
+ * 系統を分けているのは読者が違うからで、混ぜてはいけない。規制解説を購読した人に
+ * AI活用の記事が流れると、購読の意味がなくなる。
+ */
+function writeFeeds(loaded, pages, buildDate) {
+  const write = (dir, xml) => {
+    const abs = path.join(OUT, ...dir.split('/'));
+    fs.mkdirSync(abs, { recursive: true });
+    fs.writeFileSync(path.join(abs, 'feed.xml'), xml);
+  };
+
+  for (const lang of ['ja', 'en']) {
+    const blogDir = blogDirOf(lang);
+    write(blogDir, seo.buildFeed(loaded[lang].posts.map(p => ({
+      title: p.fm.title,
+      url: `${BASE}/${blogDir}/${p.slug}.html`,
+      date: p.date,
+      description: p.fm.description || '',
+      categories: p.fm.tags || [],
+    })), buildDate, lang, 'blog'));
+
+    const insightItems = pages
+      .filter(p => p.cls.section === 'insights' && p.cls.kind === 'article' && p.cls.lang === lang)
+      .map(p => ({ d: p.desc, date: seo.isoDate(p.desc.metaLine) || '' }))
+      .sort((a, b) => (a.date < b.date ? 1 : -1))
+      .map(({ d, date }) => ({
+        title: d.h1 || d.title,
+        url: d.url,
+        date,
+        description: d.description,
+        categories: [],
+      }));
+    write(lang === 'en' ? 'en/insights' : 'insights',
+          seo.buildFeed(insightItems, buildDate, lang, 'insights'));
+  }
 }
 
 /* ---------------- 実行 ---------------- */
