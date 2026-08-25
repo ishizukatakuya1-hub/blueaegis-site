@@ -306,7 +306,11 @@ html[lang="en"] .mail{letter-spacing:normal}
 .article .kicker{font-size:12.5px; font-weight:600; letter-spacing:.2em; color:var(--blue); margin:0 0 14px}
 .article h1{
   margin:0 0 20px; font-size:clamp(25px,3.6vw,38px); font-weight:600;
-  line-height:1.45; letter-spacing:.01em; text-wrap:balance;
+  line-height:1.45; letter-spacing:.01em;
+  /* balance は全行の長さを揃えるため、3行になる見出しで全行が列幅の7割ほどで
+     止まり、右に余白が残って左に寄って見えた。pretty は最終行だけを整えるので
+     行が列幅まで伸び、パンくずや本文と幅が揃う。 */
+  text-wrap:pretty;
 }
 .article .meta{margin:0 0 44px; font-size:13px; color:var(--slate); letter-spacing:.04em}
 .article h2{
