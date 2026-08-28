@@ -170,6 +170,14 @@ function organization(lang) {
       : ['Blue Aegis株式会社', 'ブルーイージス'],
     url: BASE + '/',
     email: 'info@blueaegis.co.jp',
+    /* 国税庁の法人番号。同一商号の別法人と機械的に区別できる唯一の識別子なので載せる
+       （2026-08-28 ユーザー判断で §4-5 のうちこの1項目だけ解除）。
+       代表者名・所在地は引き続き伏せる。ここに address や founder を足さないこと。 */
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: '法人番号',
+      value: '2010401200286',
+    },
     logo: { '@type': 'ImageObject', url: `${BASE}/og/logo.png`, width: 512, height: 512 },
     description: lang === 'ja'
       ? '規制対応技術の研究開発と、自ら創出した知的財産の保有・ライセンスを行う会社。'
