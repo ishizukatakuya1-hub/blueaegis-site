@@ -162,7 +162,12 @@ function organization(lang) {
     '@type': 'Organization',
     '@id': ORG_ID,
     name: SITE[lang].name,
-    alternateName: lang === 'ja' ? 'Blue Aegis Inc.' : 'Blue Aegis株式会社',
+    /* 商号の読み。katakana の「ブルーイージス」を宣言しておかないと、
+       その表記での検索に対して当サイト側に手掛かりが一切なくなる（実際に順位が付いていなかった）。
+       §4-5 の伏せる対象（代表者名・所在地・法人番号）ではないので、ここに置いてよい。 */
+    alternateName: lang === 'ja'
+      ? ['ブルーイージス', 'Blue Aegis Inc.']
+      : ['Blue Aegis株式会社', 'ブルーイージス'],
     url: BASE + '/',
     email: 'info@blueaegis.co.jp',
     logo: { '@type': 'ImageObject', url: `${BASE}/og/logo.png`, width: 512, height: 512 },
