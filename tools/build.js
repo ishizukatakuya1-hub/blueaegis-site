@@ -16,6 +16,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const seo = require('./lib/seo');
 const { ogCard, logoPng } = require('./lib/ogimage');
@@ -661,6 +662,21 @@ function finish(loaded, tagPages) {
   fs.mkdirSync(path.join(OUT, 'og'), { recursive: true });
   fs.writeFileSync(path.join(OUT, 'og', 'logo.png'), logoPng());
 
+  /* 見た目と挙動のファイルは名前が変わらないので、中身を直しても
+     端末とGitHub Pagesの配信面が古いものを使い続ける（記事は新しいURLに
+     なるので出るが、CSSの修正だけは何時間も反映されないことがある）。
+     中身から作った版番号を問い合わせに付け、変えたときだけ別のURLにする。
+     検査のリンク照合は ? の手前だけを見るので、これで切れることはない。 */
+  const assetV = {};
+  for (const file of ['style.css', 'script.js']) {
+    assetV[file] = crypto.createHash('sha256')
+      .update(fs.readFileSync(path.join(OUT, file))).digest('hex').slice(0, 8);
+  }
+  /* 404 はどの階層で表示されるか決まらないので絶対パスで書いてある。相対と両方を見る */
+  const stampAssets = html => html.replace(
+    /(href|src)="(\/|(?:\.\.\/)*)(style\.css|script\.js)"/g,
+    (m, attr, up, file) => `${attr}="${up}${file}?v=${assetV[file]}"`);
+
   const sitemap = [];
 
   for (const page of pages) {
@@ -706,6 +722,8 @@ function finish(loaded, tagPages) {
        トップ自身の導線は「#contact」なので、ここでは書き換わらない。 */
     html = html.replace(/href="([^"]*index\.html)#contact"/g,
       (m, to) => `href="${to}?from=${rel.split('/').map(encodeURIComponent).join('/')}#contact"`);
+
+    html = stampAssets(html);
 
     /* --- head --- */
     html = seo.enhanceHead(html, desc, cls, {
