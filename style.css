@@ -302,7 +302,15 @@ html[lang="en"] th{letter-spacing:.04em}
 html[lang="en"] .mail{letter-spacing:normal}
 
 /* ================= 解説記事 ================= */
-.article{max-width:40em; padding:clamp(46px,6vw,72px) 0 clamp(54px,7vw,84px)}
+/* 記事の main は .wrap と併用する（build.js の <main class="wrap article">）。
+   padding の左右を 0 にすると .wrap の左右余白まで打ち消してしまい、
+   本文が 40em に収まらない画面幅＝スマホで、見出しと本文が画面の端に貼り付く。
+   左右にヘッダーと同じ余白を持たせたうえで、max-width にその分を足し戻す。
+   こうすると本文の実寸は 40em のまま変わらない。 */
+.article{
+  max-width:calc(40em + 2 * clamp(18px,4vw,24px));
+  padding:clamp(46px,6vw,72px) clamp(18px,4vw,24px) clamp(54px,7vw,84px);
+}
 .article .kicker{font-size:12.5px; font-weight:600; letter-spacing:.2em; color:var(--blue); margin:0 0 14px}
 .article h1{
   margin:0 0 20px; font-size:clamp(25px,3.6vw,38px); font-weight:600;
