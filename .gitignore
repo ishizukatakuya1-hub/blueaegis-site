@@ -1,3 +1,6 @@
 # ビルド生成物。GitHub Actions が毎回作るためリポジトリには置かない
 _site/
 node_modules/
+
+# 公開できない引継ぎ情報。リポジトリが public なので、手元にだけ置く
+HANDOVER.private.md
