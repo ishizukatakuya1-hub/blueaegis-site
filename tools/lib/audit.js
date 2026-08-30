@@ -79,6 +79,88 @@ function auditFadeSelectors(outDir, errors) {
   }
 }
 
+/* 相談ナビ（HANDOVER.md §8-3）がフォームへ移せるのはこの2つだけ。
+   script.js の fill() が名前を直に持っているので、台本側で増やしても黙って捨てられる。 */
+const BOT_FIELDS = ['kind', 'area'];
+
+/**
+ * 相談ナビの台本が、同じページのフォームと噛み合っているかを確かめる。
+ *
+ * script.js の fill() は set の値と一致するラジオを探して選ぶだけなので、
+ * 値が一字でも違えば何も選ばれないまま「反映しました」と表示される。
+ * 台本が壊れているときナビは黙って出ないため、画面を見ても気づけない。
+ * ここは長らく検査の外だった（HANDOVER.md §8-3 が自ら断っていた穴）。
+ *
+ * エラー＝利用者の操作が通らなくなるもの。警告＝書いたのに出ないだけのもの。
+ */
+function auditBotFlow(html, rel, errors, warnings) {
+  const src = /<script type="application\/json" id="botflow">([\s\S]*?)<\/script>/.exec(html);
+  if (!src) return;
+  const at = msg => `${rel}: 相談ナビ: ${msg}`;
+
+  let flow;
+  try { flow = JSON.parse(src[1]); }
+  catch (e) { errors.push(at(`台本が JSON として不正です: ${e.message}`)); return; }
+
+  const nodes = flow.nodes || {};
+  if (!flow.first || !nodes[flow.first]) {
+    errors.push(at(`first "${flow.first}" が nodes にありません（ナビが出ません）`));
+    return;
+  }
+
+  /* フォーム側の受け皿。ラジオが取りうる値を name ごとに集める。 */
+  const values = new Map();
+  const reInput = /<input\b[^>]*>/g;
+  let inp;
+  while ((inp = reInput.exec(html)) !== null) {
+    if (!/type="radio"/.test(inp[0])) continue;
+    const name = /\sname="([^"]*)"/.exec(inp[0]);
+    const value = /\svalue="([^"]*)"/.exec(inp[0]);
+    if (!name || !value) continue;
+    if (!values.has(name[1])) values.set(name[1], new Set());
+    values.get(name[1]).add(value[1]);
+  }
+
+  /* first から辿れる範囲だけを見る。辿れない節は下で警告する。 */
+  const reached = new Set([flow.first]);
+  const queue = [flow.first];
+  let usesBody = false;
+  let hasFinal = false;
+
+  while (queue.length) {
+    const id = queue.shift();
+    const node = nodes[id];
+    const opts = node.opts || [];
+    if (node.final) hasFinal = true;
+    else if (opts.length === 0) errors.push(at(`"${id}" に選択肢が無く、先へ進めません`));
+
+    for (const o of opts) {
+      for (const [k, v] of Object.entries(o.set || {})) {
+        if (!BOT_FIELDS.includes(k)) {
+          errors.push(at(`"${id}" の set に ${k} がありますが、フォームへ移るのは ${BOT_FIELDS.join('・')} だけです`));
+          continue;
+        }
+        const allowed = values.get(k);
+        if (!allowed) { errors.push(at(`フォームに name="${k}" のラジオがありません`)); continue; }
+        if (!allowed.has(v)) {
+          errors.push(at(`"${id}" の set.${k} "${v}" がフォームのラジオの値にありません（黙って何も選ばれません）`));
+        }
+      }
+      if (o.body) usesBody = true;
+      if (!nodes[o.next]) { errors.push(at(`"${id}" の next "${o.next}" が nodes にありません`)); continue; }
+      if (!reached.has(o.next)) { reached.add(o.next); queue.push(o.next); }
+    }
+  }
+
+  if (!hasFinal) errors.push(at('final の節へ到達できません（フォームへ移す手段がありません）'));
+  if (usesBody && !/<textarea\b[^>]*\sname="body"/.test(html)) {
+    errors.push(at('body を持つ選択肢がありますが、フォームに name="body" の欄がありません'));
+  }
+  for (const id of Object.keys(nodes)) {
+    if (!reached.has(id)) warnings.push(at(`"${id}" へ到達する経路がありません（書いても出ません）`));
+  }
+}
+
 function audit(outDir) {
   const errors = [];
   const warnings = [];
@@ -103,6 +185,8 @@ function audit(outDir) {
     const { html, desc, cls } = page;
     const at = msg => `${rel}: ${msg}`;
     const skipIndexable = cls.kind === 'notfound';
+
+    auditBotFlow(html, rel, errors, warnings);
 
     /* --- canonical --- */
     if (!skipIndexable) {
