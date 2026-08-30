@@ -40,7 +40,12 @@ const RELATED_MAX = 3;
 
 /* ビルド出力に含めない（生成物・道具・設定） */
 const SKIP = new Set(['content', 'tools', '_site', 'node_modules', '.git', '.github',
-                      'package.json', 'package-lock.json', 'PUBLISHING.md', 'HANDOVER.md', '.claude']);
+                      'package.json', 'package-lock.json', '.claude']);
+
+/* 直下の .md は社内向けの文書なので配信しない。記事は content/ から HTML にして出すので、
+   ここを通る .md に配信すべきものは無い。名前で数え上げると足したときに漏れる
+   （実際 CLAUDE.md を足したとき、そのまま /CLAUDE.md として配信される状態になった）。 */
+const SKIP_TOP = /\.md$/i;
 
 const errors = [];
 const warnings = [];
@@ -541,7 +546,7 @@ function notFoundHtml() {
 function copyDir(from, to, top = true) {
   fs.mkdirSync(to, { recursive: true });
   for (const name of fs.readdirSync(from)) {
-    if (top && SKIP.has(name)) continue;
+    if (top && (SKIP.has(name) || SKIP_TOP.test(name))) continue;
     if (name.startsWith('.') && name !== '.nojekyll') continue;
     const s = path.join(from, name), d = path.join(to, name);
     if (fs.statSync(s).isDirectory()) copyDir(s, d, false);
