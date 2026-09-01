@@ -5,6 +5,7 @@
   "description": "Blue Aegis株式会社 コーポレートサイト",
   "scripts": {
     "build": "node tools/build.js",
-    "validate": "node tools/build.js --validate-only"
+    "validate": "node tools/build.js --validate-only",
+    "analytics": "node tools/analytics.js"
   }
 }

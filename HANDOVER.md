@@ -240,6 +240,9 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 サイトに関するもの（Search Console の所有権確認・サイトマップ送信）は対応済み。
 社内側の手続き（トークンの受け渡し、押印、名刺）は `HANDOVER.private.md` に移した。
 
+残っているのは Cloudflare の解析用APIトークンの発行と、環境変数 `CF_API_TOKEN` への設定
+（`tools/analytics.js` を動かすのに要る。§8-5）。
+
 ### 私（Claude）側の残作業
 
 **なし**（2026年8月22日時点）。犯収法記事の英語版・OGP画像の自動生成・SEO自動化はいずれも完了（§8）。
@@ -408,6 +411,32 @@ canonical の有無と自己一致／title・description の有無と重複／h1
 ### 残り（ユーザー側）
 
 Search Console で `https://blueaegis.co.jp/` をURL検査 → インデックス登録をリクエストすると、変えた title の反映が早い。順位の実測も Search Console の検索クエリで見るのが正確（このセッションの順位確認はブラウザ実測なので地域・パーソナライズの影響を受けている可能性がある）。
+
+## 8-5. アクセス数の読み出し（2026年9月2日 追加）
+
+サイトの計測は Cloudflare Web Analytics（beacon）。**数値は Cloudflare 側にしか無く、リポジトリには一切保存していない。** 読み出し口が `tools/analytics.js`。
+
+```bash
+node tools/analytics.js            # 直近7日。日別・ページ別・参照元・国
+node tools/analytics.js --days=30  # 期間を変える
+node tools/analytics.js --json     # 他の処理に渡す用
+node tools/analytics.js --schema   # 項目名の食い違いを疑うとき
+```
+
+Web Analytics も GraphQL Analytics API も Free プランに含まれる。追加料金は発生しない。
+
+### 動かすのに要るもの
+
+環境変数 `CF_API_TOKEN` のみ（権限は アカウント → Analytics → 読み取り だけで足りる）。`CF_ACCOUNT_ID` と `CF_SITE_TAG` は省略時に自動で引く。
+
+**このAPIトークンは §4-4 の例外にあたらない。** 例外は beacon に埋め込む公開値のほうで、こちらはアカウントの解析を読める資格情報。会話に貼らず、環境変数に直接設定すること。
+
+### 触るときの注意
+
+- beacon のトークンは `tools/build.js` の `ANALYTICS` が唯一の出どころ。`analytics.js` はそこから読むので、**二重に書かないこと**
+- beacon に入っているのは `site_token`。GraphQL の絞り込みに使う `site_tag` は別の値なので、`rum/site_info/list` で突き合わせている
+- Cookie を使わない集計なので、個人単位の行動は元々記録されていない（privacy.html の記載と揃えること）
+- アクセスが多い期間は標本化がかかる。数値は概算として扱う
 
 
 ## 9. ユーザーとのやり取りで守ること
