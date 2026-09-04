@@ -48,24 +48,76 @@ function beaconToken() {
   return m[1];
 }
 
+/* 通信。「Cloudflare まで届いたか」を、届いた後の失敗と区別する。
+   途中のプロキシやファイアウォールが割り込むと、Cloudflare とは無関係の応答が
+   返る。これを素の HTTP ステータスだけで表示すると、トークンや項目名の問題に
+   見えてしまう（実際に 403 を「項目名の食い違い」と誤診した事故がある）。
+   err.kind に印を付けて、最後の案内を切り替えられるようにする。 */
+const NETWORK = 'network';     // 接続そのものが出来なかった
+const TRANSPORT = 'transport'; // 何かは返ってきたが Cloudflare の応答ではない
+
+function tagged(kind, message) {
+  const err = new Error(message);
+  err.kind = kind;
+  return err;
+}
+
+/* fetch の失敗は素っ気ない TypeError で、本当の理由は cause の側に入っている */
+function causeChain(err) {
+  const parts = [];
+  for (let e = err, depth = 0; e && depth < 5; e = e.cause, depth += 1) {
+    const label = e.code ? `${e.code}: ${e.message}` : e.message;
+    if (label && !parts.includes(label)) parts.push(label);
+  }
+  return parts.join(' ← ') || String(err);
+}
+
+function excerpt(text) {
+  const flat = String(text).replace(/\s+/g, ' ').trim();
+  if (!flat) return '';
+  return flat.length > 300 ? `${flat.slice(0, 300)}…` : flat;
+}
+
+async function send(url, init) {
+  let res;
+  try {
+    res = await fetch(url, init);
+  } catch (err) {
+    throw tagged(NETWORK, `${url} に接続できなかった — ${causeChain(err)}`);
+  }
+  const text = await res.text().catch(() => '');
+  const type = res.headers.get('content-type') || '(なし)';
+  let body = null;
+  try { body = JSON.parse(text); } catch { /* JSON でない。呼び出し側で扱う */ }
+  return { res, text, type, body };
+}
+
+/* Cloudflare は認証や権限の失敗でも JSON でコード付きのエラーを返す。
+   それが返っていないなら、応答は Cloudflare のものではない */
+function notCloudflare(what, res, type, text) {
+  const tail = text ? ` 本文: ${excerpt(text)}` : ' 本文は空。';
+  return tagged(TRANSPORT, `${what} が Cloudflare の応答を返さなかった（HTTP ${res.status}、content-type: ${type}）。${tail}`);
+}
+
 async function cf(url, token) {
-  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-  const body = await res.json().catch(() => null);
-  if (!res.ok || !body || body.success === false) {
-    const detail = body && body.errors ? body.errors.map((e) => `${e.code}: ${e.message}`).join(' / ') : `HTTP ${res.status}`;
+  const { res, text, type, body } = await send(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!body) throw notCloudflare(url, res, type, text);
+  if (!res.ok || body.success === false) {
+    const detail = Array.isArray(body.errors) && body.errors.length
+      ? body.errors.map((e) => `${e.code}: ${e.message}`).join(' / ')
+      : `HTTP ${res.status}`;
     throw new Error(`${url} が失敗した — ${detail}`);
   }
   return body.result;
 }
 
 async function graphql(token, query, variables) {
-  const res = await fetch(GRAPHQL, {
+  const { res, text, type, body } = await send(GRAPHQL, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, variables }),
   });
-  const body = await res.json().catch(() => null);
-  if (!body) throw new Error(`GraphQL の応答を解釈できなかった（HTTP ${res.status}）`);
+  if (!body) throw notCloudflare('GraphQL', res, type, text);
   if (body.errors && body.errors.length) {
     throw new Error('GraphQL がエラーを返した — ' + body.errors.map((e) => e.message).join(' / '));
   }
@@ -218,6 +270,15 @@ async function main() {
 
 main().catch((err) => {
   console.error(`失敗: ${err.message}`);
-  console.error('項目名の食い違いが疑われるときは node tools/analytics.js --schema で実際の項目名を確認すること。');
+  if (err.kind === NETWORK || err.kind === TRANSPORT) {
+    console.error('');
+    console.error('Cloudflare の API まで届いていない。トークンや項目名ではなく、経路を疑うこと。');
+    console.error('  ・api.cloudflare.com への外向き通信が許可されているか（実行環境の送信制限・ファイアウォール・社内プロキシ）');
+    console.error('  ・プロキシ経由なら HTTPS_PROXY と CA 証明書が正しいか');
+    console.error('  ・切り分け: curl -sS -o /dev/null -w "%{http_code}\\n" https://api.cloudflare.com/client/v4/user/tokens/verify');
+    console.error('    401 が返るなら経路は生きている（トークン無しの正常な応答）。それ以外は手前で止められている。');
+  } else {
+    console.error('項目名の食い違いが疑われるときは node tools/analytics.js --schema で実際の項目名を確認すること。');
+  }
   process.exit(1);
 });
