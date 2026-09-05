@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ステーブルコインの裏付資産検証と資金決済法｜Blue Aegis</title>
+<meta name="description" content="2023年施行の改正資金決済法が定める電子決済手段（ステーブルコイン）の発行者・電子決済手段等取引業者の義務のうち、裏付資産の保全と検証、記録に関する要件を整理します。">
+<meta property="og:title" content="ステーブルコインの裏付資産検証——資金決済法で発行者・仲介者に求められること">
+<meta property="og:description" content="電子決済手段の発行者・取引業者に課される義務のうち、裏付資産の保全と検証、記録に関する要件を整理します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/insights/stablecoin-reserve-verification.html">
+<link rel="canonical" href="https://blueaegis.co.jp/insights/stablecoin-reserve-verification.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../blog/index.html">ブログ</a>
+      <a href="index.html">規制解説</a>
+      <a href="../index.html#domains">技術領域</a>
+      <a href="../index.html#licensing">ライセンス</a>
+      <a href="../index.html#contact">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>ステーブルコインの裏付資産検証——資金決済法で発行者・仲介者に求められること</h1>
+  <p class="meta">2026年9月12日</p>
+
+  <h2>誰が、いつから、何を示す必要があるか</h2>
+
+  <p>2023年6月施行の改正資金決済法で、法定通貨建てで額面での償還を約するデジタル資産は「電子決済手段」と定義され、発行できるのは銀行・資金移動業者・信託会社等に限られました。流通を担う「電子決済手段等取引業者」は登録制です。発行者は裏付資産を全額保全する義務を負い、仲介者は取り扱う電子決済手段が適法に発行されたものであることを確認する立場にあります。裏付資産の運用対象を拡大する改正が行われており [要確認: 施行日と範囲]<!-- TODO: 要確認 -->、保全の検証がより複雑になっています。</p>
+
+  <h2>法令が定めていること</h2>
+
+  <ul>
+    <li>発行者：発行残高に相当する裏付資産を、信託等の方法で分別保全すること。裏付資産の状況を定期的に報告すること</li>
+    <li>取引業者：利用者財産の分別管理、取引記録の作成・保存、発行者との間の償還手続の整備</li>
+    <li>監督：金融庁による報告徴求・検査。裏付資産の検証結果が検査対象になる</li>
+  </ul>
+
+  <h2>実務で詰まる点</h2>
+
+  <ol>
+    <li>発行残高はオンチェーンで即時に確認できるが、裏付資産は信託口座の残高証明（日次・月次）でしか確認できず、時点がずれる</li>
+    <li>発行者と取引業者で残高の計上基準（未確定トランザクションの扱い）が違い、突合が合わない</li>
+    <li>裏付資産に国債等が含まれる場合、時価評価の基準日と評価元が記録されていない</li>
+  </ol>
+
+  <h2>運用でしのぐか、仕組みで担保するか</h2>
+
+  <p>この種の要請には、二通りの向き合い方があります。ひとつは、手順書を整備し、担当者が確認と記録を行う運用でしのぐ方法。もうひとつは、求められたときに示せる記録が自動的に残る仕組みを組み込む方法です。</p>
+
+  <p>前者は着手が早い反面、対象となる手続や担当者が増えるほど破綻します。例外対応が積み重なるうちに記録の粒度が揃わなくなり、後から範囲を特定できなくなるためです。後者は設計の負担が先に来ますが、あとから確認できる状態が保たれます。</p>
+
+  <p>当社は、規制対応の適合性を人手の運用ではなく仕組みとして担保する技術を研究開発し、その成果を特許出願として保有しています。本稿が扱う「金融商品・暗号資産の規制対応」の領域についても出願を行っています。詳しくは<a href="../index.html#domains">技術領域</a>をご覧ください。</p>
+
+  <div class="cta">
+    <p>自社が対象になるのか、対象だとして何を記録しておくべきか。判断がつかない段階でのご相談を歓迎します。該当性の判断は当社側で行いますので、現在の仕組みをお聞かせいただくだけで構いません。</p>
+    <a href="../index.html#contact">相談する</a>
+  </div>
+
+  <div class="source">
+    <p><strong>出典</strong></p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>資金決済に関する法律（電子決済手段関連条項）</p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>金融庁「電子決済手段等取引業者に関する内閣府令」</p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>信託業法・信託型ステーブルコインの発行スキームに関するガイドライン</p>
+    <!-- TODO: 出典URL未確認 ― 2025年以降の改正内容を要確認 -->
+    <p>裏付資産の運用範囲拡大に関する改正</p>
+    <p>本稿は2026年9月12日時点で確認できた公表資料に基づく整理であり、法的助言ではありません。個別の適用可否については専門家にご確認ください。</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← 解説の一覧へ</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>
