@@ -18,9 +18,12 @@ const SITE = {
   en: { name: 'Blue Aegis Inc.',    locale: 'en_US', home: 'Home' },
 };
 
+/* パンくずと画面表示で使う区分の名前。
+   「タグ」は入れない。/blog/tags/ に一覧ページが無く、URL を持てない段を
+   パンくずへ足すと ListItem の item が欠けて構造化データが無効になる。 */
 const SECTION = {
-  ja: { insights: '規制解説', blog: 'ブログ', tags: 'タグ' },
-  en: { insights: 'Insights', blog: 'Blog',   tags: 'Tags' },
+  ja: { insights: '規制解説', blog: 'ブログ' },
+  en: { insights: 'Insights', blog: 'Blog'   },
 };
 
 /* ---------------- 文字まわり ---------------- */
@@ -185,15 +188,28 @@ function organization(lang) {
   };
 }
 
+/**
+ * パンくず。
+ *
+ * ListItem の item は Google の必須項目で、欠けると
+ * 「項目『item』がありません（itemListElement に含まれる）」で無効になる
+ * （2026-09-05 の Search Console で検出。原因は URL を持たない「タグ」の段だった）。
+ * URL を持てない中間階層は段として置かない。/blog/tags/ に一覧ページは無く、
+ * 画面のパンくず（build.js の crumbsHtml）も ホーム / ブログ / タグ名 で「タグ」を挟まない。
+ * ここもそれに合わせる。
+ *
+ * item は必ず絶対URL。終点はそのページの canonical と同じにする。
+ */
 function breadcrumbs(desc, cls) {
   const S = SECTION[cls.lang], root = cls.lang === 'en' ? `${BASE}/en/` : `${BASE}/`;
   const items = [{ name: SITE[cls.lang].home, item: root }];
 
   if (cls.section === 'insights') items.push({ name: S.insights, item: `${root}insights/` });
   if (cls.section === 'blog' || cls.section === 'tags') items.push({ name: S.blog, item: `${root}blog/` });
-  if (cls.section === 'tags') items.push({ name: S.tags, item: null });
-  if (cls.kind === 'article') items.push({ name: desc.h1 || desc.title, item: desc.url });
-  if (cls.kind === 'collection' && cls.section === 'tags') items.push({ name: desc.h1 || desc.title, item: desc.url });
+
+  // /blog/ と /insights/ は上で足した段そのものなので、自分をもう一度重ねない
+  const selfIsSection = cls.kind === 'collection' && (cls.section === 'blog' || cls.section === 'insights');
+  if (!selfIsSection) items.push({ name: desc.h1 || desc.title, item: desc.canonical || desc.url });
 
   return {
     '@type': 'BreadcrumbList',
@@ -201,7 +217,7 @@ function breadcrumbs(desc, cls) {
       '@type': 'ListItem',
       position: i + 1,
       name: it.name,
-      ...(it.item ? { item: it.item } : {}),
+      item: it.item,
     })),
   };
 }
@@ -223,7 +239,9 @@ function structuredData(desc, cls, extra) {
     publisher: { '@id': ORG_ID },
   });
 
-  if (cls.kind !== 'notfound') graph.push(breadcrumbs(desc, cls));
+  // トップページ（/ と /en/）は自分1段だけになるのでパンくず自体を出さない。
+  // 1要素の BreadcrumbList は検索結果に出ないうえ、終点が自分ではなく「ホーム」になってしまう。
+  if (cls.kind !== 'notfound' && cls.kind !== 'home') graph.push(breadcrumbs(desc, cls));
 
   if (cls.kind === 'article') {
     const published = extra.datePublished || isoDate(desc.metaLine);
