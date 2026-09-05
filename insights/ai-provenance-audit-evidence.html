@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生成AIの出所証明を監査で示すための証跡要件｜Blue Aegis</title>
+<meta name="description" content="生成物がAI由来かどうか、どのモデル・どの入力から生まれたかを、監査や係争で証拠として通る形で残すための要件を、C2PA等の標準と国内制度の両面から整理します。">
+<meta property="og:title" content="生成AIの出所証明（来歴記録）を監査で示す——有効な証跡の要件">
+<meta property="og:description" content="どのモデル・どの入力から生まれたかを、監査や係争で証拠として通る形で残すための要件を整理します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/insights/ai-provenance-audit-evidence.html">
+<link rel="canonical" href="https://blueaegis.co.jp/insights/ai-provenance-audit-evidence.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../blog/index.html">ブログ</a>
+      <a href="index.html">規制解説</a>
+      <a href="../index.html#domains">技術領域</a>
+      <a href="../index.html#licensing">ライセンス</a>
+      <a href="../index.html#contact">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>生成AIの出所証明（来歴記録）を監査で示す——有効な証跡の要件</h1>
+  <p class="meta">2026年9月7日</p>
+
+  <h2>誰が、いつから、何を示す必要があるか</h2>
+
+  <p>生成AIの出力を対外的に使う事業者は、「この文書・画像はAIが作ったものか」「誰の指示で、どのデータを基に生成されたか」を、後から問われる立場にあります。広告表示、契約書ドラフト、開示資料、医療・法務の説明文書など、生成物が第三者の判断に影響する場面ほど、この問いは避けられません。</p>
+
+  <h2>参照すべき標準と制度</h2>
+
+  <ul>
+    <li>C2PA（Coalition for Content Provenance and Authenticity）：コンテンツに来歴情報（作成者、使用ツール、編集履歴）を署名付きで埋め込む仕様。大手プラットフォームとカメラメーカーが採用を進めています [要確認: 2026年時点の国内採用状況]<!-- TODO: 要確認 --></li>
+    <li>電子署名法：電磁的記録に本人の電子署名があれば真正な成立が推定される（第3条）。来歴記録に法的な重みを持たせる際の国内の根拠</li>
+    <li>AI事業者ガイドラインの「透明性」「トレーサビリティ」項目</li>
+  </ul>
+
+  <h2>実務で詰まる点</h2>
+
+  <ol>
+    <li>埋め込み型の来歴情報は、コピー・再保存・画面キャプチャで消える。監査で「元ファイル」が手元にないと立証できない</li>
+    <li>生成時に記録しても、誰が記録したかの認証がなければ、記録自体の真正性を問われる</li>
+    <li>出力だけ残して入力（プロンプト・参照文書）を残していないと、「なぜその出力になったか」が説明できない</li>
+  </ol>
+
+  <h2>運用でしのぐか、仕組みで担保するか</h2>
+
+  <p>この種の要請には、二通りの向き合い方があります。ひとつは、手順書を整備し、担当者が確認と記録を行う運用でしのぐ方法。もうひとつは、求められたときに示せる記録が自動的に残る仕組みを組み込む方法です。</p>
+
+  <p>前者は着手が早い反面、対象となる手続や担当者が増えるほど破綻します。例外対応が積み重なるうちに記録の粒度が揃わなくなり、後から範囲を特定できなくなるためです。後者は設計の負担が先に来ますが、あとから確認できる状態が保たれます。</p>
+
+  <p>当社は、規制対応の適合性を人手の運用ではなく仕組みとして担保する技術を研究開発し、その成果を特許出願として保有しています。本稿が扱う「人工知能の統治と説明責任」の領域についても出願を行っています。詳しくは<a href="../index.html#domains">技術領域</a>をご覧ください。</p>
+
+  <div class="cta">
+    <p>自社が対象になるのか、対象だとして何を記録しておくべきか。判断がつかない段階でのご相談を歓迎します。該当性の判断は当社側で行いますので、現在の仕組みをお聞かせいただくだけで構いません。</p>
+    <a href="../index.html#contact">相談する</a>
+  </div>
+
+  <div class="source">
+    <p><strong>出典</strong></p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>C2PA Technical Specification</p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>電子署名及び認証業務に関する法律</p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>AI事業者ガイドライン（該当箇所：透明性・トレーサビリティ）</p>
+    <p>本稿は2026年9月7日時点で確認できた公表資料に基づく整理であり、法的助言ではありません。個別の適用可否については専門家にご確認ください。</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← 解説の一覧へ</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>
