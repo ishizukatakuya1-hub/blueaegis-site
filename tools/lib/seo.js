@@ -162,6 +162,10 @@ function organization(lang) {
     '@type': 'Organization',
     '@id': ORG_ID,
     name: SITE[lang].name,
+    /* 登記上の商号。name は言語ごとに変わる（en では Blue Aegis Inc.）ので、
+       法人格まで含む登記の表記をここで固定する。identifier と同じく、同一商号の
+       別法人と機械的に区別するための手掛かり。§4-5 の伏せる対象ではない。 */
+    legalName: 'Blue Aegis株式会社',
     /* 商号の読み。katakana の「ブルーイージス」を宣言しておかないと、
        その表記での検索に対して当サイト側に手掛かりが一切なくなる（実際に順位が付いていなかった）。
        §4-5 の伏せる対象（代表者名・所在地・法人番号）ではないので、ここに置いてよい。 */

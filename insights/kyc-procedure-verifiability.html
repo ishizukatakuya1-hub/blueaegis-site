@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>犯収法の本人確認 ― 適法性を後から検証できる状態とは｜Blue Aegis</title>
+<meta name="description" content="犯収法が特定事業者に義務付ける取引時確認と確認記録について、施行規則が定める確認方法と記録事項を整理し、当局検査や監査で「適法に確認した」と示せる記録の要件をまとめます。">
+<meta property="og:title" content="犯罪収益移転防止法の本人確認——手続の適法性を後から検証できる状態とは">
+<meta property="og:description" content="施行規則が定める確認方法と記録事項を整理し、当局検査や監査で「適法に確認した」と示せる記録の要件をまとめます。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/insights/kyc-procedure-verifiability.html">
+<link rel="canonical" href="https://blueaegis.co.jp/insights/kyc-procedure-verifiability.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../blog/index.html">ブログ</a>
+      <a href="index.html">規制解説</a>
+      <a href="../index.html#domains">技術領域</a>
+      <a href="../index.html#licensing">ライセンス</a>
+      <a href="../index.html#contact">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>犯罪収益移転防止法の本人確認——手続の適法性を後から検証できる状態とは</h1>
+  <p class="meta">2026年9月7日</p>
+
+  <h2>誰が、いつから、何を示す必要があるか</h2>
+
+  <p>金融機関、資金移動業者、暗号資産交換業者、宅建業者、貴金属商など「特定事業者」は、特定取引の際に本人特定事項等の取引時確認を行い、確認記録を作成して取引終了後7年間保存する義務があります（法第4条・第6条）。非対面の本人確認については、書類の画像だけで済ませる方法を段階的に廃止し、ICチップ読み取りや公的個人認証へ寄せる改正が進んでいます [要確認: 施行時期]<!-- TODO: 要確認 -->。</p>
+
+  <h2>施行規則が定めていること</h2>
+
+  <ul>
+    <li>確認方法（規則第6条）：対面・非対面・電子的方法ごとに、認められる書類と手順が列挙されている。「ホ」「ヘ」「ト」「ワ」等の号で呼ばれる方式ごとに要件が異なる</li>
+    <li>確認記録の記録事項（規則第20条）：確認を行った者の氏名、日時、方法、書類の名称と特定する記号番号、本人特定事項、取引目的、職業・事業内容、実質的支配者、ハイリスク取引の場合の資産・収入の状況 など</li>
+  </ul>
+
+  <h2>実務で詰まる点</h2>
+
+  <ol>
+    <li>eKYC事業者から返ってくるのは「確認済」のフラグだけで、どの号の方式で、どの書類の、どの項目を照合したかが自社の記録に残っていない</li>
+    <li>規則改正で方式が廃止・変更されたとき、過去の確認がどの時点の規則に基づいていたかを示せない</li>
+    <li>実質的支配者の確認が別ワークフローになっていて、本人特定事項の記録と結び付いていない</li>
+  </ol>
+
+  <h2>運用でしのぐか、仕組みで担保するか</h2>
+
+  <p>この種の要請には、二通りの向き合い方があります。ひとつは、手順書を整備し、担当者が確認と記録を行う運用でしのぐ方法。もうひとつは、求められたときに示せる記録が自動的に残る仕組みを組み込む方法です。</p>
+
+  <p>前者は着手が早い反面、対象となる手続や担当者が増えるほど破綻します。例外対応が積み重なるうちに記録の粒度が揃わなくなり、後から範囲を特定できなくなるためです。後者は設計の負担が先に来ますが、あとから確認できる状態が保たれます。</p>
+
+  <p>当社は、規制対応の適合性を人手の運用ではなく仕組みとして担保する技術を研究開発し、その成果を特許出願として保有しています。本稿が扱う「本人確認・電子的な識別」の領域についても出願を行っています。詳しくは<a href="../index.html#domains">技術領域</a>をご覧ください。</p>
+
+  <div class="cta">
+    <p>自社が対象になるのか、対象だとして何を記録しておくべきか。判断がつかない段階でのご相談を歓迎します。該当性の判断は当社側で行いますので、現在の仕組みをお聞かせいただくだけで構いません。</p>
+    <a href="../index.html#contact">相談する</a>
+  </div>
+
+  <div class="source">
+    <p><strong>出典</strong></p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>犯罪による収益の移転防止に関する法律（e-Gov）</p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>同法施行規則 第6条（確認方法）・第20条（確認記録の記録事項）</p>
+    <!-- TODO: 出典URL未確認 -->
+    <p>警察庁「犯罪収益移転防止法の概要」</p>
+    <!-- TODO: 出典URL未確認 ― 2026年時点の施行状況を要確認 -->
+    <p>本人確認方法の見直し（対面・非対面の厳格化）に関する政令・規則改正</p>
+    <p>本稿は2026年9月7日時点で確認できた公表資料に基づく整理であり、法的助言ではありません。個別の適用可否については専門家にご確認ください。</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← 解説の一覧へ</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>
