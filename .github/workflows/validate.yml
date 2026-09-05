@@ -30,3 +30,7 @@ jobs:
 
       - name: ビルドとサイト全体の検査
         run: node tools/build.js
+
+      # パンくずは Search Console でしか壊れが見えなかったので、ここで止める
+      - name: パンくず（BreadcrumbList）の検査
+        run: node scripts/check-breadcrumbs.js

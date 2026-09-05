@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node tools/build.js",
     "validate": "node tools/build.js --validate-only",
+    "check:breadcrumbs": "node scripts/check-breadcrumbs.js",
     "analytics": "node tools/analytics.js"
   }
 }
