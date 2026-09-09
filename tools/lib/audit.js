@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { describePage, classify, displayWidth, BASE } = require('./seo');
+const { describePage, classify, displayWidth, todayJst, BASE } = require('./seo');
 
 /* 検索結果での見え方の目安（全角=2, 半角=1）。
    短すぎ・長すぎのどちらも取りこぼすので両側を見る。 */
@@ -238,6 +238,19 @@ function audit(outDir) {
       catch (e) { errors.push(at(`構造化データが JSON として不正です: ${e.message}`)); }
     }
     if (!skipIndexable && ldCount === 0) errors.push(at('構造化データ（JSON-LD）がありません'));
+    /* --- 掲載日が未来でないか ---
+       未来日付は表示・JSON-LD・sitemap の lastmod・RSS の pubDate の4経路すべてに乗る。
+       手書きの規制解説は frontmatter を持たないので build.js の検証を通らず、
+       掲載日を見ている場所が他に無かった。実際、2026-09-05 に10本をまとめて足したとき、
+       日付だけを2〜5日おきに未来へ振った6本がそのまま公開された。
+       datePublished は finish() が全ページに入れるので、日英・手書き・生成の別なく
+       ここ1か所で捕まえられる。予約公開の仕組みは無い（公開は push した時点で走る）。 */
+    {
+      const md = /"datePublished":"(\d{4}-\d{2}-\d{2})/.exec(html);
+      if (md && md[1] > todayJst()) {
+        errors.push(at(`掲載日が未来です（${md[1]}／今日 ${todayJst()}）。先の日付で予約公開はできない`));
+      }
+    }
 
     /* --- 共有カード --- */
     const og = /<meta property="og:image" content="([^"]+)"/.exec(html);
