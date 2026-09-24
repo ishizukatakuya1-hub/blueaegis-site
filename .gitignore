@@ -4,3 +4,8 @@ node_modules/
 
 # 公開できない引継ぎ情報。リポジトリが public なので、手元にだけ置く
 HANDOVER.private.md
+
+# 環境変数・秘密情報（public リポジトリのため絶対にコミットしない）
+.env
+.env.*
+!.env.example
