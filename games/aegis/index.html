@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AEGIS｜盾でコアを守るブラウザゲーム｜Blue Aegis株式会社</title>
+<meta name="description" content="Blue Aegis株式会社が制作したブラウザゲーム「AEGIS」。四方から飛んでくる攻撃を盾で弾き、中央のコアを守ります。登録不要・無料で、スマートフォンでもパソコンでも遊べます。">
+<meta property="og:title" content="AEGIS｜盾でコアを守るブラウザゲーム">
+<meta property="og:description" content="四方から飛んでくる攻撃を盾で弾き、コアを守る。登録不要・無料のブラウザゲーム。今日のチャレンジは世界中で同じ攻撃パターンです。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://blueaegis.co.jp/games/aegis/">
+<link rel="canonical" href="https://blueaegis.co.jp/games/aegis/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../../style.css">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../../blog/index.html">ブログ</a>
+      <a href="../../insights/index.html">規制解説</a>
+      <a href="../../index.html#domains">技術領域</a>
+      <a href="../../index.html#licensing">ライセンス</a>
+      <a href="../../index.html#contact">お問い合わせ</a>
+      <a class="lang" href="../../en/index.html">EN</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">GAME</p>
+  <h1>AEGIS ― 盾でコアを守るブラウザゲーム</h1>
+  <p class="meta">2026年9月29日 公開</p>
+
+  <div class="aegis" id="aegis">
+    <canvas id="aegis-canvas" aria-label="AEGIS のゲーム画面"></canvas>
+    <div class="aegis-ui" id="aegis-ui" hidden></div>
+    <button type="button" class="aegis-sound" id="aegis-sound" aria-pressed="false">音 オフ</button>
+  </div>
+  <noscript><p>このゲームを遊ぶには JavaScript を有効にしてください。</p></noscript>
+
+  <h2>遊び方</h2>
+
+  <p>画面の中央にあるのが守るべきコアです。四方から飛んでくる攻撃を、コアの周りを回る盾で弾いてください。弾いた数がそのまま得点になり、攻撃が一つでもコアに届いたら終わりです。</p>
+
+  <ul>
+    <li>スマートフォン：画面をなぞると、指の方向へ盾が向きます</li>
+    <li>パソコン：マウスを動かした方向へ盾が向きます。キーボードの ← → でも回せます</li>
+    <li>P キーまたは Esc キーで一時停止します</li>
+  </ul>
+
+  <p>時間がたつほど攻撃は速く、多くなり、途中から種類も増えます。</p>
+
+  <ul class="aegis-legend">
+    <li><span class="aegis-dot" style="background:#FF7A66"></span>まっすぐ飛んでくる</li>
+    <li><span class="aegis-dot" style="background:#FFC24D"></span>曲がりながら迫る（30秒〜）</li>
+    <li><span class="aegis-dot" style="background:#D98BFF"></span>途中で二つに割れる（60秒〜）</li>
+    <li><span class="aegis-dot" style="background:#FF4057"></span>速い（90秒〜）</li>
+  </ul>
+
+  <h2>今日のチャレンジ</h2>
+
+  <p>「今日のチャレンジ」では、同じ日（日本時間）であれば、世界中のどの端末でもまったく同じ順番・同じ方向から攻撃が届きます。何度でも挑戦でき、その日の最高記録が残ります。結果は「結果を共有」から送れます。</p>
+
+  <h2>記録の保存について</h2>
+
+  <p>自己ベストと今日の記録、音の設定は、お使いの端末のブラウザの中（ローカルストレージ）にだけ保存します。当社のサーバーへ送ることはなく、Cookieも使いません。登録やログインも必要ありません。</p>
+
+  <p lang="en">AEGIS is a free browser game by Blue Aegis Inc. Drag or move your mouse to turn the shield and keep every shot away from the core. The Daily Challenge sends the same attack pattern to every player on the same day (Japan time). Scores stay on your device only.</p>
+
+  <p class="backlink"><a href="../../index.html">← トップへ戻る</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="../../privacy.html">プライバシーポリシー</a>
+      <a href="../../disclaimer.html">免責事項</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../../script.js"></script>
+<script src="game.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>
