@@ -317,6 +317,55 @@ footer .legal a:hover{color:#B9C8D6; border-bottom-color:#4A5F73}
   .steps li{grid-template-columns:1fr; gap:4px}
 }
 
+/* ================= トップの文字組み =================
+   トップ（日英の index.html、body.home）だけに効かせる。
+   .lead などはブログ・規制解説の一覧とも共有しているので、必ず .home で絞る。
+
+   見出しの明朝は Shippori Mincho 600（OFL）を、トップの見出しに出る字だけに絞って同梱している
+   （fonts/。作り直しは node tools/fontsubset.js。拾う要素は tools/lib/fontchars.js と揃える）。
+   サブセットにない字は後ろの明朝に落ちるだけなので、崩れはしない。 */
+@font-face{
+  font-family:"BA Mincho"; font-weight:600; font-style:normal; font-display:swap;
+  src:url(fonts/shippori-mincho-600-top.woff2) format("woff2");
+}
+.home{--mincho:"BA Mincho","Shippori Mincho","Yu Mincho","YuMincho","Hiragino Mincho ProN","Noto Serif JP",serif; counter-reset:sec}
+
+.home .hero h1, .home .lead, .home .message .pull, .home .creed blockquote, .home .stat b{
+  font-family:var(--mincho); font-weight:600; font-synthesis:none;
+}
+.home .hero h1{letter-spacing:.07em; line-height:1.6}
+.home .lead{letter-spacing:.05em; line-height:1.65}
+.home .message .lead{letter-spacing:.04em; line-height:1.6}
+.home .message .pull, .home .creed blockquote{letter-spacing:.04em}
+.home .stat b{letter-spacing:0}
+
+/* 英字の小見出しに通し番号を振る：「01 — MESSAGE」 */
+.home section{counter-increment:sec}
+.home section h2{font-family:var(--mincho); font-size:14px; letter-spacing:.28em}
+.home section h2::before{content:counter(sec,decimal-leading-zero) "\2002\2014\2002"; letter-spacing:.08em}
+
+/* 背景に敷く大きな英字（data-word）。読ませない装飾なので擬似要素にし、選択もさせない。
+   右上は盾の帯模様（知的財産・お問い合わせ）が使うので、英字は右下に置く。
+   はみ出しは clip で切る（hidden と違いスクロール領域を作らない） */
+.home section[data-word]{position:relative; overflow:hidden; overflow:clip}
+.home section[data-word]::before{
+  content:attr(data-word); position:absolute; right:-.04em; bottom:-.2em; z-index:0;
+  font-family:var(--mincho); font-weight:600; font-size:clamp(54px,11vw,152px); line-height:1;
+  letter-spacing:.04em; white-space:nowrap; color:rgba(10,42,79,.045);
+  pointer-events:none; user-select:none; -webkit-user-select:none;
+}
+.home .creed[data-word]::before{color:rgba(255,255,255,.06)}
+.home section > .wrap{position:relative; z-index:1}
+
+/* 余白と行間を広げ、間で格を出す */
+.home section{padding:clamp(76px,10vw,132px) 0}
+.home .lead{margin-bottom:26px}
+.home .lead + .cards, .home .lead + .domains, .home .lead + .cards3{margin-top:64px}
+.home .intro{margin-bottom:62px}
+.home .message .lead{margin-bottom:46px}
+.home .message p{max-width:34em; line-height:2.15; margin-bottom:26px}
+.home .message .pull{margin-top:54px}
+
 /* ================= 英語版の差分 =================
    本体は日本語版を基準にし、欧文組版で調整が要る箇所だけをここで上書きする。
    ページを増やしてもCSSは1つに保つ。 */
@@ -338,6 +387,8 @@ html[lang="en"] .message p{max-width:36em; line-height:1.95}
 html[lang="en"] .message .pull{font-size:clamp(17px,2.2vw,23px); line-height:1.5; max-width:24em}
 html[lang="en"] th{letter-spacing:.04em}
 html[lang="en"] .mail{letter-spacing:normal}
+/* 明朝の欧文は和文用の字間だと間延びするので、トップの見出しは詰め直す */
+html[lang="en"] .home .lead, html[lang="en"] .home .message .pull, html[lang="en"] .home .creed blockquote{letter-spacing:.005em}
 
 /* ================= 解説記事 ================= */
 /* 記事の main は .wrap と併用する（build.js の <main class="wrap article">）。

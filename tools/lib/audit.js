@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { describePage, classify, displayWidth, todayJst, BASE } = require('./seo');
+const { PAGES: FONT_PAGES, CHARS_FILE, headingChars } = require('./fontchars');
 
 /* 検索結果での見え方の目安（全角=2, 半角=1）。
    短すぎ・長すぎのどちらも取りこぼすので両側を見る。 */
@@ -161,12 +162,29 @@ function auditBotFlow(html, rel, errors, warnings) {
   }
 }
 
+/* トップの見出しに、同梱した明朝のサブセットにない字が出ていないか。
+   足りない字は代替の明朝で描かれるだけで崩れはしないので、警告に留める */
+function auditFontSubset(outDir, warnings) {
+  const charsPath = path.join(outDir, CHARS_FILE);
+  if (!fs.existsSync(charsPath)) {
+    warnings.push(`${CHARS_FILE} がありません（node tools/fontsubset.js で作る）`);
+    return;
+  }
+  const have = new Set([...fs.readFileSync(charsPath, 'utf8').trim()]);
+  const htmls = FONT_PAGES.map(p => fs.readFileSync(path.join(outDir, p), 'utf8'));
+  const missing = [...headingChars(htmls)].filter(c => !have.has(c));
+  if (missing.length) {
+    warnings.push(`見出しの明朝サブセットにない字があります: ${missing.join('')}（node tools/fontsubset.js を実行）`);
+  }
+}
+
 function audit(outDir) {
   const errors = [];
   const warnings = [];
   const files = listHtml(outDir).sort();
 
   auditFadeSelectors(outDir, errors);
+  auditFontSubset(outDir, warnings);
 
   const pages = new Map();      // relPath -> { html, desc, cls, ids }
   for (const rel of files) {
