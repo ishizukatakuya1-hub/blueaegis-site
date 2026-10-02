@@ -162,3 +162,46 @@
 
   start();
 })();
+
+/* トップのヘッダー：Hero の上にいる間だけ header.over を付ける（透明になるのは 881px 以上）。
+   既定は白のヘッダー。印が付かない限り透明にならないので、IntersectionObserver が無い環境や
+   古いスクリプトがキャッシュに残った環境でも、ロゴとナビが見えなくなることはない。 */
+(function(){
+  var hero = document.querySelector('.home .hero');
+  var header = document.querySelector('.home header');
+  if (!hero || !header || !('IntersectionObserver' in window)) return;
+  /* ヘッダーの高さ（92px）ぶん上を削って監視し、ヘッダーの下に Hero が残っている間は透明 */
+  var first = true;
+  new IntersectionObserver(function(entries){
+    /* 開いた直後の1回は色の切り替えを動かさない（白→透明がちらついて見えるため） */
+    if (first) header.classList.add('nofx');
+    header.classList.toggle('over', entries[0].isIntersecting);
+    if (first) { void header.offsetWidth; header.classList.remove('nofx'); first = false; }
+  }, { rootMargin: '-92px 0px 0px 0px' }).observe(hero);
+})();
+
+/* 「140件超」のカウントアップ。HTML の数値はそのまま（JS 無効・検索・動きを望まない人には最初から 140）。
+   動かしている間だけ読み上げから外し、数字が連続して読まれないようにする。 */
+(function(){
+  var el = document.querySelector('.home .stat b');
+  var motionOK = window.matchMedia && window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  if (!el || !motionOK || !('IntersectionObserver' in window) || !window.requestAnimationFrame) return;
+  var target = parseInt(el.textContent, 10);
+  if (!(target > 0)) return;
+  el.textContent = '0';
+  el.setAttribute('aria-hidden', 'true');
+  var io = new IntersectionObserver(function(entries){
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    var t0 = null, DUR = 1400;
+    function step(t){
+      if (t0 === null) t0 = t;
+      var p = Math.min((t - t0) / DUR, 1);
+      el.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) window.requestAnimationFrame(step);
+      else el.removeAttribute('aria-hidden');
+    }
+    window.requestAnimationFrame(step);
+  }, { threshold: 0.6 });
+  io.observe(el);
+})();

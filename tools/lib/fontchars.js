@@ -19,6 +19,7 @@ const TARGETS = [
   /<div class="lead">([\s\S]*?)<\/div>/g,
   /<div class="pull">([\s\S]*?)<\/div>/g,
   /<blockquote>([\s\S]*?)<\/blockquote>/g,
+  /<p class="bandcopy">([\s\S]*?)<\/p>/g,
 ];
 
 /* CSS が足す字：セクション番号（01〜）とダッシュ、数字（.stat b） */
