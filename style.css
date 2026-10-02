@@ -362,6 +362,11 @@ footer .legal a:hover{color:#B9C8D6; border-bottom-color:#4A5F73}
 .home .lead{margin-bottom:26px}
 .home .lead + .cards, .home .lead + .domains, .home .lead + .cards3{margin-top:64px}
 .home .intro{margin-bottom:62px}
+/* 各セクションの説明文は、すぐ下のカード・表と同じ全幅に揃える（2026-10-02 ユーザー指定）。
+   MESSAGE だけは見出しの文字の幅（下の .message の指定）。英語版も同じにするため、
+   英語版の差分の .intro / .creed p の幅指定より強い html[lang] 付きでも外している */
+.home .intro, .home .creed p,
+html[lang] .home .intro, html[lang] .home .creed p{max-width:none}
 .home .message .lead{margin-bottom:46px}
 /* 本文と引用の幅を、見出し（.lead）の文字の幅に揃える（2026-10-02 ユーザー指定。日英とも）。
    列幅を fit-content にし、本文と引用は contain:inline-size で列幅の計算に加わらせない。
