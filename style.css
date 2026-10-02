@@ -36,6 +36,12 @@ a:focus-visible{outline:2px solid var(--cyan); outline-offset:3px}
 
 /* ---- ヒーロー ---- */
 .hero{background:var(--navy); color:var(--white); padding:clamp(58px,8.5vw,96px) 0 clamp(54px,7.5vw,88px)}
+/* 写真は同梱（img/。出典は HANDOVER.md §8-6）。文字が載る左側だけ紺を濃く重ね、右側は空を見せる。
+   狭い画面では文字が全幅に広がるので、重ねを全面で濃くし、軽い 1000px 版に切り替える */
+.hero{background:linear-gradient(90deg,rgba(10,42,79,.94) 0%,rgba(10,42,79,.80) 45%,rgba(10,42,79,.25) 100%),url(img/hero-2000.webp) center/cover var(--navy)}
+@media(max-width:760px){
+  .hero{background:linear-gradient(rgba(10,42,79,.86),rgba(10,42,79,.86)),url(img/hero-1000.webp) center/cover var(--navy)}
+}
 /* 高さだけを指定すると、極端に狭い画面（280px級の折りたたみ端末）で横に溢れる。
    max-width で頭を押さえる。縦横比は保たれる */
 .hero svg{display:block; height:clamp(88px,13vw,156px); width:auto; max-width:100%; margin-bottom:52px}
@@ -124,6 +130,38 @@ h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24
 .creed h2{color:var(--cyan)}
 .creed blockquote{margin:0 0 26px; padding:0 0 0 22px; border-left:3px solid var(--cyan); font-size:clamp(19px,2.5vw,25px); font-weight:600; line-height:1.65}
 .creed p{margin:0; max-width:48em; font-size:15px; color:#C3D2E0}
+/* 白文字を載せるので全面に紺を重ねる。海と空の色味が残る程度に留める */
+.creed{background:linear-gradient(rgba(10,42,79,.84),rgba(10,42,79,.84)),url(img/creed-2000.webp) center/cover var(--navy)}
+@media(max-width:760px){
+  .creed{background:linear-gradient(rgba(10,42,79,.86),rgba(10,42,79,.86)),url(img/creed-1000.webp) center/cover var(--navy)}
+}
+
+/* ---- 写真の帯 ----
+   セクションの間に挟む文字のない写真。装飾なので HTML 側は aria-hidden。
+   フェードイン対象にはしない（script.js の SEL に入れる必要がない）。
+   固定背景（視差）は広い画面かつ動きを望む利用者だけ。iOS は fixed が崩れるため狭い画面では使わない */
+.photoband{height:clamp(200px,30vw,400px); background:center/cover no-repeat var(--paper)}
+.band1{background-image:url(img/band1-2000.webp)}
+.band2{background-image:url(img/band2-2000.webp)}
+@media(max-width:760px){
+  .band1{background-image:url(img/band1-1000.webp)}
+  .band2{background-image:url(img/band2-1000.webp)}
+}
+@media(min-width:881px) and (prefers-reduced-motion:no-preference){
+  .photoband{background-attachment:fixed}
+}
+
+/* ---- 線画アイコン（事業内容・技術領域） ----
+   見出しの前に置く装飾。意味は見出しが担うので aria-hidden。
+   描いてよいのは公開済みの分野だけ（CLAUDE.md ★2） */
+.ico{display:block; width:40px; height:40px; max-width:100%; margin:0 0 14px; color:var(--blue)}
+.domain .ico{width:34px; height:34px; color:var(--cyan)}
+
+/* ---- 盾の帯モチーフ ----
+   ロゴの5層帯を右上に薄く敷く。紙色の面にだけ使う */
+section.portfolio, section.contact{
+  background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 140'%3E%3CclipPath id='c'%3E%3Cpath d='M60 8L108 26V62C108 92 88 116 60 134C32 116 12 92 12 62V26Z'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23c)' fill='%231E5FA8' fill-opacity='.05'%3E%3Crect y='8' width='120' height='22'/%3E%3Crect y='36' width='120' height='22'/%3E%3Crect y='64' width='120' height='22' fill='%234FB3D9' fill-opacity='.12'/%3E%3Crect y='92' width='120' height='22'/%3E%3Crect y='120' width='120' height='20'/%3E%3C/g%3E%3C/svg%3E") right -40px top -30px/clamp(260px,34vw,460px) auto no-repeat;
+}
 
 /* ---- 会社概要 ---- */
 table{border-collapse:collapse; width:100%; font-size:14.5px}

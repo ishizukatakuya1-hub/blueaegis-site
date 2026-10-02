@@ -439,6 +439,25 @@ Web Analytics も GraphQL Analytics API も Free プランに含まれる。追�
 - アクセスが多い期間は標本化がかかる。数値は概算として扱う
 
 
+## 8-6. トップページの写真とアイコン（2026年10月2日 追加）
+
+`/` と `/en/` に背景写真4か所と線画アイコンを足した。CSSは共通（`style.css` の「写真の帯」「線画アイコン」「盾の帯モチーフ」節）。
+
+| 場所 | ファイル | 写真（Unsplash） | 撮影者 |
+|---|---|---|---|
+| Hero 背景 | `img/hero-{2000,1000}.webp` | https://unsplash.com/photos/ht-WIVMGzoI | Robert Stump |
+| 帯1（MESSAGE の後） | `img/band1-{2000,1000}.webp` | https://unsplash.com/photos/WXwQ-wj-g9Q | Vojtech Bruzek |
+| 帯2（LICENSING の前） | `img/band2-{2000,1000}.webp` | https://unsplash.com/photos/T5nXYXCf50I | Maarten Deckers |
+| CREED 背景 | `img/creed-{2000,1000}.webp` | https://unsplash.com/photos/Q2YT0CewXqw | Emiel Maters |
+
+- **ライセンスはすべて Unsplash License（無料・商用可・表記不要）。** 2026-10-02 に API で `premium:false / plus:false` を確認して取得した。**Unsplash+ の写真（透かし入り）は使わない**
+- 取得は `images.unsplash.com/<photo>?fm=webp&q=70&fit=max&w=2000|1000`。変換ツールは使っていない。760px 以下では 1000px 版に切り替わる
+- 写真を差し替えるときも**装置・画面・図解が写ったものは選ばない**（§4-1。仕組みを暗示しない）。建築・空・海に留めている
+- 帯（`.photoband`）は装飾なので `aria-hidden`。フェードイン対象ではないので `script.js` の `SEL` は触っていない。固定背景（視差）は 881px 以上かつ動きを望む利用者だけ
+- アイコン（`.ico`）はインラインSVG。**公開済みの事業4つ・技術領域6つにだけ**付けている。分野を増やすときは §4-2 を先に確認すること
+- 英語版の事業内容はゲームのカードがない（3枚）ので、アイコンも9個
+
+
 ## 9. ユーザーとのやり取りで守ること
 
 - **選択肢は必ず `AskUserQuestion`（ボタンUI）で示す。** 本文に箇条書きで並べて「どれにしますか」と聞くのは禁止（ユーザーのグローバル指示）。過去に2回指摘されている
