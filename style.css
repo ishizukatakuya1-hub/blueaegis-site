@@ -160,7 +160,8 @@ h2,.eyebrow{margin:0 0 12px; font-size:13px; font-weight:600; letter-spacing:.24
 /* ---- 盾の帯モチーフ ----
    ロゴの5層帯を右上に薄く敷く。紙色の面にだけ使う */
 section.portfolio, section.contact{
-  background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 140'%3E%3CclipPath id='c'%3E%3Cpath d='M60 8L108 26V62C108 92 88 116 60 134C32 116 12 92 12 62V26Z'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23c)' fill='%231E5FA8' fill-opacity='.05'%3E%3Crect y='8' width='120' height='22'/%3E%3Crect y='36' width='120' height='22'/%3E%3Crect y='64' width='120' height='22' fill='%234FB3D9' fill-opacity='.12'/%3E%3Crect y='92' width='120' height='22'/%3E%3Crect y='120' width='120' height='20'/%3E%3C/g%3E%3C/svg%3E") right -40px top -30px/clamp(260px,34vw,460px) auto no-repeat;
+  background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 140'%3E%3CclipPath id='c'%3E%3Cpath d='M60 8L108 26V62C108 92 88 116 60 134C32 116 12 92 12 62V26Z'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23c)' fill='%231E5FA8' fill-opacity='.05'%3E%3Crect y='8' width='120' height='22'/%3E%3Crect y='36' width='120' height='22'/%3E%3Crect y='64' width='120' height='22' fill='%234FB3D9' fill-opacity='.12'/%3E%3Crect y='92' width='120' height='22'/%3E%3Crect y='120' width='120' height='20'/%3E%3C/g%3E%3C/svg%3E") right -40px top -30px/clamp(150px,34vw,460px) auto no-repeat;
+  /* スマホでは見出しの背後に大きく重ならないよう、下限を 150px に（元 260px） */
 }
 
 /* ---- 会社概要 ---- */
@@ -334,9 +335,14 @@ footer .legal a:hover{color:#B9C8D6; border-bottom-color:#4A5F73}
   font-family:var(--mincho); font-weight:600; font-synthesis:none;
 }
 .home .hero h1{letter-spacing:.07em; line-height:1.6}
+/* 1文を1行に収める。「プロセスをスマートに。」は字間込みで字の大きさの約11.8倍の幅。
+   320px 級の画面でも3行に折れないよう、画面幅から余白を引いた幅を上限にする */
+.home .hero h1{font-size:min(clamp(26px,4.4vw,42px), calc((100vw - 40px) / 11.9))}
 .home .lead{letter-spacing:.05em; line-height:1.65}
 .home .message .lead{letter-spacing:.04em; line-height:1.6}
 .home .message .pull, .home .creed blockquote{letter-spacing:.04em}
+/* CREED の一文は文の切れ目で折る（英語版で「… Proof / over claim.」と2文目の途中で折れていた） */
+.home .creed blockquote{word-break:auto-phrase; text-wrap:balance}
 .home .stat b{letter-spacing:0}
 
 /* 英字の小見出しに通し番号を振る：「01 — MESSAGE」 */
@@ -477,6 +483,10 @@ html[lang="en"] th{letter-spacing:.04em}
 html[lang="en"] .mail{letter-spacing:normal}
 /* 明朝の欧文は和文用の字間だと間延びするので、トップの見出しは詰め直す */
 html[lang="en"] .home .lead, html[lang="en"] .home .message .pull, html[lang="en"] .home .creed blockquote{letter-spacing:.005em}
+/* 英語の Hero の見出しは1文を1行に収める（狭い画面で「Make the / process smart.」と折れないように）。
+   長い方の文「Make the process smart.」は明朝で字の大きさの約11.7倍の幅。
+   画面幅から左右の余白（計約36px）を引いた幅に収まる大きさを上限にする。広い画面では従来の clamp が効く */
+html[lang="en"] .home .hero h1{font-size:min(clamp(28px,4.6vw,46px), calc((100vw - 40px) / 11.8))}
 /* トップの MESSAGE は日本語版と同じ幅にする（上の .message p / .pull の幅指定を外す）。
    英語の見出しは1行に収まらず折り返すので、見出しからは幅が決まらない。
    列の上限を日本語版の見出しの長さ（日本語の .lead の字の大きさの約22.9倍）にし、
