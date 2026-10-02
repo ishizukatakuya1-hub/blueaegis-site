@@ -473,7 +473,7 @@ function indexHtml(posts, tagPages, lang, alternates) {
     description: t.blogDesc,
     canonical: `${blogUrlOf(lang)}/`,
     ogType: 'website',
-    main: `<section>
+    main: `<section data-word="MEDIA">
   <div class="wrap">
     <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">${t.blogTitle}</h1>
@@ -497,7 +497,7 @@ function tagPageHtml(tag, posts, lang) {
     description: t.tagDesc(tag),
     canonical: `${blogUrlOf(lang)}/tags/${encodeURIComponent(tagSlug(tag))}.html`,
     ogType: 'website',
-    main: `<section>
+    main: `<section data-word="MEDIA">
   <div class="wrap">
     <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">${esc(tag)}</h1>
@@ -645,6 +645,111 @@ ${items}
   `;
 }
 
+/* ---------------- 共通フッター ----------------
+   全ページのフッターは finish() でここに差し替える。手書きページと page() の <footer> は
+   原稿として残っているが、配信物のフッターはこの関数だけで決まる（1か所で直せば全ページに効く）。
+   プライバシーポリシーと免責事項へのリンクは検査（audit.js の POLICY_PAGES）が求めるので外さない。
+   up はサイト直下までの相対（404 だけ '/'）。home はトップ自身か（自ページ内リンクは #id で書く）。 */
+const FOOT = {
+  ja: {
+    label: 'サイト案内',
+    cols: [
+      ['会社', [['事業内容', 'index.html#business'], ['技術領域', 'index.html#domains'],
+                ['知的財産', 'index.html#portfolio'], ['ライセンス', 'index.html#licensing'], ['会社概要', 'index.html#company']]],
+      ['発信', [['ブログ', 'blog/index.html'], ['規制解説', 'insights/index.html'],
+                ['ブログの RSS', 'blog/feed.xml'], ['規制解説の RSS', 'insights/feed.xml']]],
+      ['お問い合わせ', [['お問い合わせ', 'index.html#contact'], ['info@blueaegis.co.jp', 'mailto:info@blueaegis.co.jp']]],
+    ],
+    privacy: 'プライバシーポリシー', disclaimer: '免責事項',
+    other: ['English', 'en/index.html', 'en'],
+  },
+  en: {
+    label: 'Site map',
+    cols: [
+      ['Company', [['What we do', 'index.html#business'], ['Where we work', 'index.html#domains'],
+                   ['Portfolio', 'index.html#portfolio'], ['Working with us', 'index.html#licensing'], ['Company information', 'index.html#company']]],
+      ['Writing', [['Blog', 'blog/index.html'], ['Insights', 'insights/index.html'],
+                   ['Blog RSS', 'blog/feed.xml'], ['Insights RSS', 'insights/feed.xml']]],
+      ['Contact', [['Contact us', 'index.html#contact'], ['info@blueaegis.co.jp', 'mailto:info@blueaegis.co.jp']]],
+    ],
+    privacy: 'Privacy Policy', disclaimer: 'Disclaimer',
+    other: ['日本語', 'index.html', 'ja'],
+  },
+};
+
+/* 白抜きのロゴ。id はヘッダー（sh1/cl1）・トップの大ロゴ（sh2/cl2）・題字と衝突させない */
+const FOOT_LOGO = `<svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+        <defs>
+          <path id="shft" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="clft"><use href="#shft"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#clft)">
+            <rect x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
+            <rect x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
+            <rect x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
+            <rect x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
+            <rect x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
+      </svg>`;
+
+function footerHtml(lang, up, home) {
+  const f = FOOT[lang];
+  const root = langRoot(up, lang);
+  /* トップ自身では「index.html#x」ではなく「#x」。?from= の付与（問い合わせの出所）にも掛からない */
+  const href = to => (/^mailto:/.test(to) ? to
+    : home && to.startsWith('index.html#') ? to.slice('index.html'.length)
+    : root + to);
+  const cols = f.cols.map(([head, items]) => `      <div>
+        <p class="fhead">${head}</p>
+        <ul>
+${items.map(([text, to]) => `          <li><a href="${href(to)}">${text}</a></li>`).join('\n')}
+        </ul>
+      </div>`).join('\n');
+  return `<footer>
+  <div class="wrap">
+    <div class="fbrand">
+      <a href="${home ? '#' : root + 'index.html'}" class="flogo">
+      ${FOOT_LOGO}
+      </a>
+      <p class="ftag">The Shield for the Intelligent Age</p>
+    </div>
+    <nav class="fnav" aria-label="${f.label}">
+${cols}
+    </nav>
+    <div class="fbase">
+      <div>© 2026 Blue Aegis Inc.</div>
+      <div class="legal">
+        <a href="${root}privacy.html">${f.privacy}</a>
+        <a href="${root}disclaimer.html">${f.disclaimer}</a>
+        <a href="${up}${f.other[1]}" hreflang="${f.other[2]}" lang="${f.other[2]}">${f.other[0]}</a>
+      </div>
+    </div>
+  </div>
+</footer>`;
+}
+
+/* ---------------- トップの「最新の記事」 ----------------
+   index.html / en/index.html の <!-- latest --> を、その言語の新しい順3本のカードに置き換える。
+   記事が自動掲載されるたびにビルドが走るので、トップも手を入れずに新しくなる。
+   画像は記事ごとの OGP 画像（finish() が og/ に書く）。装飾なので alt は空。 */
+function latestHtml(posts, lang, up) {
+  return posts.slice(0, 3).map(p => {
+    const rel = `${blogDirOf(lang)}/${p.slug}.html`;
+    return `      <li>
+        <a href="${up}${rel}">
+          <img src="${up}${ogName(rel)}" alt="" width="1200" height="630" loading="lazy" decoding="async">
+          <span class="date">${esc(p.date)}</span>
+          <h3>${esc(p.fm.title)}</h3>
+          <p>${esc(p.fm.description || '')}</p>
+        </a>
+      </li>`;
+  }).join('\n');
+}
+
 function finish(loaded, tagPages) {
   const buildDate = new Date();
   const files = listHtml(OUT).sort();
@@ -718,8 +823,18 @@ function finish(loaded, tagPages) {
       const line = `<p class="subscribe">${L[cls.lang].feedLine}</p>\n\n  `;
       html = cls.kind === 'article'
         ? html.replace('<p class="backlink">', line + '<p class="backlink">')
-        : html.replace('</ul>\n  </div>', `</ul>\n\n    ${line}</div>`);
+        // 手書きの一覧は CRLF なので改行を決め打ちにしない（\n 決め打ちで一覧に入っていなかった）
+        : html.replace(/<\/ul>(\r?\n)\s*<\/div>/, (m, nl) => `</ul>${nl}${nl}    ${line}</div>`);
     }
+
+    /* --- トップの「最新の記事」 --- */
+    if (cls.kind === 'home') {
+      html = html.replace('<!-- latest -->', latestHtml(loaded[cls.lang].posts, cls.lang, upFrom(rel)));
+    }
+
+    /* --- 共通フッター（?from= の付与より前に差し替え、フッターの問い合わせ導線にも出所を付ける） --- */
+    html = html.replace(/<footer>[\s\S]*?<\/footer>/,
+      footerHtml(cls.lang, cls.kind === 'notfound' ? '/' : upFrom(rel), cls.kind === 'home'));
 
     /* --- 問い合わせの出所 ---
        どの記事を読んで相談に至ったのかが、届くメールの本文で分かるようにする。

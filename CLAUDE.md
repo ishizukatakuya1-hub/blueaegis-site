@@ -43,8 +43,9 @@
 
 - **`style.css` でフェードイン対象にしたセレクタは `script.js` の `SEL` にも入れる。**
   片方だけ変えると要素が非表示のまま公開される（過去に全53要素で発生）。ビルドの検査が止める。
-- **全ページのフッターから privacy / disclaimer を引く。** 手書きHTMLと `tools/build.js` の `page()`
-  の2経路にあるので両方直す。抜けると検査が落ちる。
+- **フッターは `tools/build.js` の `footerHtml()` が全ページに差し替える。** 手書きHTMLと `page()` の
+  `<footer>` は原稿で、配信物には出ない。直すのは `footerHtml` / `FOOT` だけ。privacy / disclaimer への
+  リンクは外さない（抜けると検査が落ちる）。
 - **相談ナビの `set` の値は、フォームのラジオの `value` と一字一句同じにする。** 検査が止める。
 - **日付に `toISOString()` を使わない**（UTCで前日になる）。`seo.todayJst()` を使う。
 - `repeat(auto-fit,minmax(300px,1fr))` は書かない。**`minmax(min(300px,100%),1fr)`** と書く。
