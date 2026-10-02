@@ -363,8 +363,91 @@ footer .legal a:hover{color:#B9C8D6; border-bottom-color:#4A5F73}
 .home .lead + .cards, .home .lead + .domains, .home .lead + .cards3{margin-top:64px}
 .home .intro{margin-bottom:62px}
 .home .message .lead{margin-bottom:46px}
-.home .message p{max-width:34em; line-height:2.15; margin-bottom:26px}
+/* 本文と引用の幅を、見出し（.lead）の文字の幅に揃える（2026-10-02 ユーザー指定。日英とも）。
+   列幅を fit-content にし、本文と引用は contain:inline-size で列幅の計算に加わらせない。
+   すると列は見出しの1行の長さで決まり、本文はその幅で折り返す。見出しが折り返す狭い画面では全幅。
+   contain 未対応のブラウザでは本文の長さで列が決まり、全幅になるだけ */
+.home .message .wrap{display:grid; grid-template-columns:fit-content(100%)}
+.home .message p, .home .message .pull{contain:inline-size; max-width:none}
+.home .message p{line-height:2.15; margin-bottom:26px}
+.home .message .pull{word-break:auto-phrase; text-wrap:balance}
 .home .message .pull{margin-top:54px}
+
+/* ================= トップの Hero と細部 =================
+   これも body.home だけ。動きは prefers-reduced-motion: no-preference の中だけで付け、
+   JS が要るもの（透明ヘッダー・カウントアップ）は .js で出し分ける。
+   JS が動かなくても、白いヘッダーと静止した写真で内容はすべて見える。 */
+
+/* Hero を画面いっぱいに。写真は ::before（寄る動き用）、紺の重ねは ::after に分ける。
+   重ねは文字の載る左だけ濃く、右は空を見せる。狭い画面は文字が全幅なので全面に重ねる */
+.home .hero{
+  position:relative; overflow:hidden; background:var(--navy);
+  display:flex; align-items:center; min-height:78svh;
+}
+.home .hero > .wrap{position:relative; z-index:1; width:100%}
+.home .hero::before, .home .hero::after{content:""; position:absolute; inset:0}
+.home .hero::before{background:url(img/hero-2000.webp) center/cover; transform-origin:65% 40%}
+.home .hero::after{background:linear-gradient(90deg,rgba(10,42,79,.86) 0%,rgba(10,42,79,.62) 45%,rgba(10,42,79,.12) 100%)}
+@media(max-width:760px){
+  .home .hero::before{background-image:url(img/hero-1000.webp)}
+  .home .hero::after{background:rgba(10,42,79,.78)}
+}
+@media(min-width:881px){ .home .hero{min-height:100svh} }
+@media(prefers-reduced-motion:no-preference){
+  .home .hero::before{animation:kenburns 18s ease-out forwards}
+  @keyframes kenburns{from{transform:scale(1)} to{transform:scale(1.08)}}
+}
+
+/* 透明ヘッダー（881px 以上＝ヘッダーが1行で固定される幅だけ）。
+   script.js が「Hero の上にいる間」だけ header.over を付け、そのときだけ透明・白抜きのロゴにする。
+   既定は白。逆（既定を透明にして白に戻す印を付ける）にすると、古い script.js がキャッシュに
+   残った利用者には白い背景の上で透明なヘッダー＝ロゴもナビも見えない状態になる。
+   ロゴの色は SVG の fill 属性を CSS で上書きする（白抜き版の配色＝ .hero の大ロゴと同じ） */
+@media(min-width:881px){
+  .js .home header{position:fixed; top:0; left:0; right:0; transition:background-color .35s, border-color .35s}
+  .js .home .hero{padding-top:calc(92px + clamp(58px,8.5vw,96px))}
+  .js .home header.over{background:transparent; border-bottom-color:transparent; backdrop-filter:none}
+  .js .home header svg rect, .js .home header svg text, .js .home header svg tspan{transition:fill .35s}
+  /* 開いた直後の1回だけ script.js が付ける。白→透明の切り替えをちらつかせない */
+  .js .home header.nofx, .js .home header.nofx *{transition:none !important}
+  .js .home header.over svg rect[fill="#0A2A4F"]{fill:#FFFFFF}
+  .js .home header.over svg rect[fill="#1E5FA8"]{fill:#4FB3D9}
+  .js .home header.over svg text{fill:#FFFFFF}
+  .js .home header.over svg tspan{fill:#4FB3D9}
+  .js .home header.over svg text + text{fill:#9FB3C8}
+  .js .home header.over nav a{color:rgba(255,255,255,.88)}
+  .js .home header.over nav a:hover{color:#FFFFFF}
+  .js .home header.over nav a.lang{border-color:rgba(255,255,255,.45)}
+}
+
+/* 帯の上のすりガラスのパネル。文言は MESSAGE 本文の要約（新しい主張を足さない） */
+.home .photoband{display:flex; align-items:center; justify-content:center; padding:0 clamp(18px,4vw,24px); height:auto; min-height:clamp(220px,30vw,400px)}
+.bandcopy{
+  margin:0; max-width:30em; text-align:center;
+  /* 狭い画面で「ではな／く」のように語の途中で折れないよう、文節で折り返す（未対応ブラウザは従来どおり） */
+  word-break:auto-phrase; text-wrap:balance;
+  font-family:var(--mincho); font-weight:600; font-synthesis:none;
+  font-size:clamp(18px,2.6vw,28px); line-height:1.6; letter-spacing:.06em; color:var(--navy);
+  padding:clamp(18px,3vw,30px) clamp(22px,4vw,44px);
+  background:rgba(255,255,255,.55); border:1px solid rgba(255,255,255,.7);
+  -webkit-backdrop-filter:blur(14px) saturate(140%); backdrop-filter:blur(14px) saturate(140%);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .bandcopy{background:rgba(255,255,255,.86)}
+}
+html[lang="en"] .bandcopy{letter-spacing:.005em}
+
+/* 事業カードの浮き上がり。マウスで操作する端末かつ動きを望む利用者だけ。
+   .card はフェードイン対象で .js .in{transform:none !important} がかかるので、
+   transform ではなく独立した translate プロパティで動かし、衝突させない */
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  .home .card{padding:22px 20px 24px; background:var(--white)}
+  .js .home .card{
+    transition:opacity .75s cubic-bezier(.2,.7,.3,1), transform .75s cubic-bezier(.2,.7,.3,1),
+               translate .3s ease, box-shadow .3s ease;
+  }
+  .js .home .card:hover{translate:0 -4px; box-shadow:0 14px 30px -12px rgba(10,42,79,.22); transition-delay:0s}
+}
 
 /* ================= 英語版の差分 =================
    本体は日本語版を基準にし、欧文組版で調整が要る箇所だけをここで上書きする。
@@ -389,6 +472,13 @@ html[lang="en"] th{letter-spacing:.04em}
 html[lang="en"] .mail{letter-spacing:normal}
 /* 明朝の欧文は和文用の字間だと間延びするので、トップの見出しは詰め直す */
 html[lang="en"] .home .lead, html[lang="en"] .home .message .pull, html[lang="en"] .home .creed blockquote{letter-spacing:.005em}
+/* トップの MESSAGE は日本語版と同じ幅にする（上の .message p / .pull の幅指定を外す）。
+   英語の見出しは1行に収まらず折り返すので、見出しからは幅が決まらない。
+   列の上限を日本語版の見出しの長さ（日本語の .lead の字の大きさの約22.9倍）にし、
+   見出しも balance ではなく pretty で、その幅いっぱいまで使って折り返す */
+html[lang="en"] .home .message p, html[lang="en"] .home .message .pull{max-width:none}
+html[lang="en"] .home .message .wrap{grid-template-columns:fit-content(min(100%, calc(22.9 * clamp(23px,3.3vw,35px))))}
+html[lang="en"] .home .message .lead{text-wrap:pretty}
 
 /* ================= 解説記事 ================= */
 /* 記事の main は .wrap と併用する（build.js の <main class="wrap article">）。
