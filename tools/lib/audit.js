@@ -159,6 +159,16 @@ function auditBotFlow(html, rel, errors, warnings) {
   for (const id of Object.keys(nodes)) {
     if (!reached.has(id)) warnings.push(at(`"${id}" へ到達する経路がありません（書いても出ません）`));
   }
+
+  /* 最初の一画面がHTMLに書き出されているか（tools/build.js の botPrerender）。
+     空の箱のまま配信すると、JSが中身を入れた瞬間に箱が 400〜530px 伸びて、
+     下のフォーム以降がまるごとずれる（CLSが最悪値になる）。 */
+  if (!/<div class="bot-log"[^>]*><p class="says">/.test(html)) {
+    errors.push(at('最初の案内がHTMLに書き出されていません（表示されたあとにレイアウトがずれます）'));
+  }
+  if (!/<div class="bot-opts"[^>]*><button\b/.test(html)) {
+    errors.push(at('最初の選択肢がHTMLに書き出されていません（表示されたあとにレイアウトがずれます）'));
+  }
 }
 
 function audit(outDir) {
