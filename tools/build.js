@@ -750,6 +750,40 @@ function latestHtml(posts, lang, up) {
   }).join('\n');
 }
 
+/* 相談ナビ（§8-3）の最初の一画面を、ビルドのときにHTMLへ書き出す。
+
+   `.bot-log` と `.bot-opts` は空の箱で出していて、中身は script.js が後から入れていた。
+   空のまま最初の描画が走ると、JSが動いた瞬間に箱が 400〜530px 伸び、その下にある
+   フォーム・注意書き・フッターがまるごと押し下げられる。Cloudflare の計測で
+   #contact の CLS が 1.000（最悪値）と出ていたのはこれ。
+
+   高さをCSSで見積もって確保する手もあるが、行の折り返しは画面幅と利用者の
+   フォントで変わるので当たらない。中身そのものを先に置けば見積もりが要らない。
+
+   script.js の start() は中を空にしてから同じものを積み直すので、見た目も動きも変わらない。
+   台本が壊れている場合は何もしない（script.js 側が黙って降りるのに合わせる）。 */
+function botPrerender(html) {
+  const src = /<script type="application\/json" id="botflow">([\s\S]*?)<\/script>/.exec(html);
+  if (!src) return html;
+
+  let flow;
+  try { flow = JSON.parse(src[1]); } catch (e) { return html; }
+  const node = flow && flow.nodes && flow.first ? flow.nodes[flow.first] : null;
+  if (!node) return html;
+
+  /* script.js の say() / button() と同じ形にすること。違うと描き直しで高さが動く */
+  const says = t => t ? `<p class="says">${esc(t)}</p>` : '';
+  const log = says(flow.intro) + says(node.q);
+  const opts = node.final
+    ? `<button type="button" class="bot-go">${esc((flow.ui && flow.ui.fill) || 'OK')}</button>`
+    : (node.opts || []).map(o => `<button type="button">${esc(o.label)}</button>`).join('');
+  if (!log || !opts) return html;
+
+  return html
+    .replace(/(<div class="bot-log"[^>]*>)<\/div>/, (m, open) => `${open}${log}</div>`)
+    .replace(/(<div class="bot-opts"[^>]*>)<\/div>/, (m, open) => `${open}${opts}</div>`);
+}
+
 function finish(loaded, tagPages) {
   const buildDate = new Date();
   const files = listHtml(OUT).sort();
@@ -831,6 +865,9 @@ function finish(loaded, tagPages) {
     if (cls.kind === 'home') {
       html = html.replace('<!-- latest -->', latestHtml(loaded[cls.lang].posts, cls.lang, upFrom(rel)));
     }
+
+    /* --- 相談ナビの最初の一画面（表示後にずれないよう先に書き出す。botPrerender を参照） --- */
+    html = botPrerender(html);
 
     /* --- 共通フッター（?from= の付与より前に差し替え、フッターの問い合わせ導線にも出所を付ける） --- */
     html = html.replace(/<footer>[\s\S]*?<\/footer>/,
