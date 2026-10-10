@@ -19,7 +19,6 @@ const path = require('path');
 const crypto = require('crypto');
 
 const seo = require('./lib/seo');
-const { ogCard, logoPng } = require('./lib/ogimage');
 const { audit } = require('./lib/audit');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -575,22 +574,30 @@ const L = {
         feedLine: 'We follow these rules as they come into force. Updates are available by <a href="feed.xml">RSS</a>.' },
 };
 
-const OG_KICKER = {
-  insights: 'Regulatory Insight',
-  blog: 'Blue Aegis Media',
-  tags: 'Blue Aegis Media',
-  null: 'Intellectual Property Licensing',
-};
+/* ---------------- 写真の割り当て ----------------
+   絵は事前に作って同梱してある（img/cover/cNN.webp＝カード用、img/og/cNN.jpg＝共有カード用。
+   同じ番号は同じ写真）。ビルドは「どのページにどの1枚を当てるか」だけを決める。
+   写真の出どころと作り直し方は HANDOVER.md §8-10。 */
+const COVERS = 12;
 
-/** OGP画像のファイル名。タグ名など日本語を含むパスもあるので、必ずASCIIに落とす */
-function ogName(relPath) {
-  const stem = relPath.replace(/\.html$/, '').replace(/\//g, '-');
-  const safe = stem.replace(/[^A-Za-z0-9_-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  if (safe === stem) return `og/${stem}.png`;
-
-  let h = 0x811c9dc5;
-  for (let i = 0; i < stem.length; i++) { h ^= stem.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
-  return `og/${safe || 'page'}-${h.toString(36)}.png`;
+/** ページごとの写真の番号（'01'〜'12'）を返す関数を作る。
+    ブログ記事は言語ごとに古い順の通し番号で回すので、並んだ記事が同じ写真にならず、
+    記事が増えても既存の記事の写真は変わらない。それ以外のページはパスから決める。 */
+function coverPicker(loaded) {
+  const fixed = new Map();
+  for (const lang of ['ja', 'en']) {
+    const posts = loaded[lang].posts;                 // 新しい順
+    posts.forEach((p, i) => fixed.set(`${blogDirOf(lang)}/${p.slug}.html`, (posts.length - 1 - i) % COVERS));
+  }
+  return rel => {
+    let n = fixed.get(rel);
+    if (n === undefined) {
+      let h = 0x811c9dc5;
+      for (let i = 0; i < rel.length; i++) { h ^= rel.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+      n = h % COVERS;
+    }
+    return String(n + 1).padStart(2, '0');
+  };
 }
 
 /** そのページから見た、サイト直下への相対プレフィックス */
@@ -735,13 +742,13 @@ ${cols}
 /* ---------------- トップの「最新の記事」 ----------------
    index.html / en/index.html の <!-- latest --> を、その言語の新しい順3本のカードに置き換える。
    記事が自動掲載されるたびにビルドが走るので、トップも手を入れずに新しくなる。
-   画像は記事ごとの OGP 画像（finish() が og/ に書く）。装飾なので alt は空。 */
-function latestHtml(posts, lang, up) {
+   画像は同梱の写真（共有カードと同じ1枚。紺は CSS で重ねる）。装飾なので alt は空。 */
+function latestHtml(posts, lang, up, coverOf) {
   return posts.slice(0, 3).map(p => {
     const rel = `${blogDirOf(lang)}/${p.slug}.html`;
     return `      <li>
         <a href="${up}${rel}">
-          <img src="${up}${ogName(rel)}" alt="" width="1200" height="630" loading="lazy" decoding="async">
+          <span class="ph"><img src="${up}img/cover/c${coverOf(rel)}.webp" alt="" width="800" height="420" loading="lazy" decoding="async"></span>
           <span class="date">${esc(p.date)}</span>
           <h3>${esc(p.fm.title)}</h3>
           <p>${esc(p.fm.description || '')}</p>
@@ -769,8 +776,7 @@ function finish(loaded, tagPages) {
     return { rel, html, desc: seo.describePage(html, rel), cls: seo.classify(rel) };
   });
 
-  fs.mkdirSync(path.join(OUT, 'og'), { recursive: true });
-  fs.writeFileSync(path.join(OUT, 'og', 'logo.png'), logoPng());
+  const coverOf = coverPicker(loaded);
 
   /* 見た目と挙動のファイルは名前が変わらないので、中身を直しても
      端末とGitHub Pagesの配信面が古いものを使い続ける（記事は新しいURLに
@@ -796,12 +802,7 @@ function finish(loaded, tagPages) {
     /* --- 共有カード --- */
     const post = byPath.get(rel);
     const dateLine = post ? post.date : (seo.isoDate(desc.metaLine) || '');
-    const img = ogName(rel);
-    fs.writeFileSync(path.join(OUT, img), ogCard({
-      kicker: OG_KICKER[cls.section] || OG_KICKER.null,
-      line: dateLine,
-      seed: rel,
-    }));
+    const img = `img/og/c${coverOf(rel)}.jpg`;
 
     /* --- パンくずと関連記事を本文へ --- */
     if (cls.kind === 'article') {
@@ -829,7 +830,7 @@ function finish(loaded, tagPages) {
 
     /* --- トップの「最新の記事」 --- */
     if (cls.kind === 'home') {
-      html = html.replace('<!-- latest -->', latestHtml(loaded[cls.lang].posts, cls.lang, upFrom(rel)));
+      html = html.replace('<!-- latest -->', latestHtml(loaded[cls.lang].posts, cls.lang, upFrom(rel), coverOf));
     }
 
     /* --- 共通フッター（?from= の付与より前に差し替え、フッターの問い合わせ導線にも出所を付ける） --- */
@@ -1015,7 +1016,7 @@ function main() {
   fs.writeFileSync(path.join(OUT, '404.html'), notFoundHtml());
 
   const { pageCount } = finish(loaded, tagPages);
-  console.log(`_site/ を生成（HTML ${pageCount} ページ、タグ一覧 ja:${tagPages.ja.size} en:${tagPages.en.size}、OGP画像 ${pageCount + 1} 枚）`);
+  console.log(`_site/ を生成（HTML ${pageCount} ページ、タグ一覧 ja:${tagPages.ja.size} en:${tagPages.en.size}、OGP画像は同梱の ${COVERS} 枚から割り当て）`);
 
   /* 仕上がりの検査。ここで落ちたら配信しない */
   const result = audit(OUT);

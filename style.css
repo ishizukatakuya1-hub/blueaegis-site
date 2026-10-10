@@ -774,7 +774,10 @@ section:has(.masthead){padding-top:clamp(34px,4.4vw,52px)}
 #journal{background:var(--paper)}
 .journal{list-style:none; margin:56px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr)); gap:28px}
 .journal a{display:block; height:100%; text-decoration:none; color:inherit; background:var(--white); border:1px solid var(--rule)}
-.journal img{display:block; width:100%; height:auto; aspect-ratio:1200/630; object-fit:cover; border-bottom:1px solid var(--rule)}
+/* 写真は同梱の img/cover/。Hero と同じく紺を重ね、彩度を少し落として紙面の色に寄せる */
+.journal .ph{display:block; position:relative; overflow:hidden; aspect-ratio:1200/630; background:var(--navy)}
+.journal .ph::after{content:""; position:absolute; inset:0; background:linear-gradient(200deg,rgba(10,42,79,.10) 0%,rgba(10,42,79,.34) 55%,rgba(10,42,79,.62) 100%)}
+.journal img{display:block; width:100%; height:100%; object-fit:cover; filter:saturate(.85)}
 .journal .date{display:block; margin:18px 20px 6px; font-size:12.5px; letter-spacing:.1em; color:var(--slate)}
 .journal h3{margin:0 20px 8px; font-size:16.5px; font-weight:600; line-height:1.6; color:var(--navy)}
 .journal p{
@@ -785,6 +788,8 @@ section:has(.masthead){padding-top:clamp(34px,4.4vw,52px)}
 @media(hover:hover) and (prefers-reduced-motion:no-preference){
   .journal a{transition:translate .3s ease, box-shadow .3s ease}
   .journal a:hover{translate:0 -4px; box-shadow:0 14px 30px -12px rgba(10,42,79,.22)}
+  .journal img{transition:scale .6s ease}
+  .journal a:hover img{scale:1.04}
 }
 .more{margin:36px 0 0; display:flex; flex-wrap:wrap; gap:4px 32px}
 .more a{display:inline-block; padding:10px 0; font-size:14px; color:var(--blue); text-decoration:none; border-bottom:1px solid transparent}

@@ -185,7 +185,7 @@ function organization(lang) {
       propertyID: '法人番号',
       value: '2010401200286',
     },
-    logo: { '@type': 'ImageObject', url: `${BASE}/og/logo.png`, width: 512, height: 512 },
+    logo: { '@type': 'ImageObject', url: `${BASE}/img/og/logo.png`, width: 512, height: 512 },
     description: lang === 'ja'
       ? '規制対応技術の研究開発と、自ら創出した知的財産の保有・ライセンスを行う会社。'
       : 'Develops regulatory compliance technology and holds and licenses the intellectual property it creates.',
