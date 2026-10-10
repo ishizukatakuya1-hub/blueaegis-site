@@ -59,7 +59,7 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 /blog/feed.xml       RSS（日本語）
 /en/blog/feed.xml    RSS（英語）
 /blog/tags/<タグ>.html  同じタグが3本たまると自動生成
-/og/*.png            ページごとのOGP画像＋発行元ロゴ
+/img/og/             OGP画像（同梱の12枚）＋発行元ロゴ
 ```
 
 `style.css` と `script.js` は全ページ共通。英語版の差分は `html[lang="en"]` で上書きしている。
@@ -272,8 +272,7 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 |---|---|
 | `tools/build.js` | 記事の読込・検証・ページ生成・仕上げの統括 |
 | `tools/lib/seo.js` | 構造化データ、head への注入、サイトマップ、RSS |
-| `tools/lib/ogimage.js` | OGP画像の版面 |
-| `tools/lib/png.js` | PNG書き出しと描画（zlibのみ。外部依存なし） |
+| `tools/ogcover.html` / `tools/ogcover.ps1` | OGP画像の版面と書き出し（ビルド外。§8-10） |
 | `tools/lib/audit.js` | 出来上がったサイトの検査 |
 
 **要点は「仕上げ（`finish()`）が `_site` の全HTMLを1枚ずつ通る」こと。** 手で書いたページも生成したページも同じ経路を通るので、新しいページを足したときに構造化データやOGP画像を付け忘れることがない。ページ一覧はどこにも手で持っていない。
@@ -281,7 +280,7 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 ### 入るもの
 
 - **JSON-LD**: Organization / WebSite / BreadcrumbList / Article・BlogPosting / CollectionPage。記事の出典URLは `citation` に入る
-- **OGP画像**: `/og/` にページごと1枚。1200×630、日付入り、盾の強調帯が slug から決まるので記事ごとに絵が違う
+- **OGP画像**: `/img/og/` に同梱した12枚（1200×630、写真＋紺の重ね＋ロゴ）からページごとに1枚を割り当てる（§8-10）
 - **パンくず**: 記事の冒頭に自動で差し込む（表示・JSON-LD 両方）
 - **関連記事**: 記事の末尾に、タグの重なりが多い順で最大3本
 - **タグ一覧**: 同じタグが**3本**たまった時点で `/blog/tags/` に作られる（`TAG_PAGE_MIN`）。薄いページを量産しないための下限。見送ったタグはビルドログに出る
@@ -335,7 +334,7 @@ canonical の有無と自己一致／title・description の有無と重複／h1
 - `.medialogo.sm` の下限 39px は、最小使用サイズ（ロゴタイプ併記 90px 幅）からの逆算。viewBox 380 のうち字面は x=304 までなので、幅114pxで字面90px。**これ以上小さくしない**
 - SVGの `id`（`shmlg`/`clmlg`/`shmsm`/`clmsm`）はヘッダのロゴ（`sh1`/`cl1`）と衝突しないようにしてある。1ページに同じ size を2つ置くとidが重複するので、置くなら関数側でidを振り分けること
 - 規制解説（`/insights/`）の `.kicker` は英字のまま。CSSは `.medialogo` にしか当たらないので巻き添えにならない
-- 320〜1600pxで実測済み（横スクロールなし、字面91px以上）。OGP画像（`ogimage.js`）の発行元ロゴは**まだ会社ロゴのまま**。ブログ記事のOGPだけMedia版にするかは未判断
+- 320〜1600pxで実測済み（横スクロールなし、字面91px以上）。OGP画像（§8-10）のロゴは**まだ会社ロゴのまま**。ブログ記事のOGPだけMedia版にするかは未判断
 
 
 ## 8-3. 問い合わせの相談ナビ（2026年8月22日 追加）
@@ -495,14 +494,51 @@ Web Analytics も GraphQL Analytics API も Free プランに含まれる。追�
 
 - **明朝の見出しは全ページ**：一覧の `h1.lead`、規制解説の `.eyebrow`、記事の h1・h2、記事末の `.cta` の文。本文と一覧の記事名（`.postlist h3`）はゴシックのまま。見出しは `word-break:auto-phrase` で文節で折る
 - **一覧の余白**はトップと同じ。一覧の記事行はマウスで指すと右へ少し寄る（`translate`。動きを望む利用者・マウス端末のみ）
-- **トップの「最新の記事」**：`index.html` / `en/index.html` の `<section id="journal">` にある `<!-- latest -->` を、`finish()` がその言語の新しい順3本のカードに置き換える。画像は記事ごとの OGP 画像（`og/blog-<slug>.png`）。記事が自動掲載されるたびにトップも新しくなる。手元で `_site` を見ないとカードは出ない（原稿は空の枠）
-  - OGP 画像には記事名が入っていないので、カードの絵は日付と盾の強調帯以外ほぼ同じ。絵を記事ごとに変えたいなら `tools/lib/ogimage.js` 側の課題
+- **トップの「最新の記事」**：`index.html` / `en/index.html` の `<section id="journal">` にある `<!-- latest -->` を、`finish()` がその言語の新しい順3本のカードに置き換える。画像は同梱の写真（`img/cover/cNN.webp`、§8-10）。記事が自動掲載されるたびにトップも新しくなる。手元で `_site` を見ないとカードは出ない（原稿は空の枠）
 - **共通フッター**：全ページの `<footer>…</footer>` を `finish()` が `footerHtml(lang, up, home)` に差し替える。**手書き32ファイルと `page()` の `<footer>` は原稿として残っているが、配信物には出ない。** フッターを直すときは `footerHtml` と `FOOT` だけを直す
   - privacy / disclaimer へのリンクは検査（POLICY_PAGES）が求めるので外さない
   - 差し替えは問い合わせの出所（`?from=`）の付与より前。トップ自身ではページ内リンクを `#id` で書き、`?from=` が付かないようにしている
   - フッターの案内も `<nav>` なので、ヘッダー用の `nav` / `nav a` の指定（右寄せ・中央揃え・折り返し禁止）を `.fnav` で打ち消している。記事のパンくず（これも `<nav>`）が右に寄っていた既存の不具合も同じ原因で、左寄せに直した
 - **ページ切り替え**：`@view-transition{navigation:auto}` で、サイト内の移動時に0.25秒のクロスフェード（対応ブラウザのみ。動きを望まない利用者には付けない）
 - **規制解説一覧の RSS 行**：`finish()` の置換が `\n` 決め打ちで、CRLF の手書き一覧に入っていなかった。`\r?\n` に直して日英とも出るようにした
+
+
+## 8-10. カードと共有カードの写真（2026年10月9日 追加）
+
+トップの「最新の記事」と OGP 画像を、ドット書体の自作 PNG から**写真＋紺の重ね**に替えた（2026-10-09 ユーザー決定）。
+ビルドで絵を描くのをやめ、**事前に作って同梱した12枚から割り当てるだけ**にしている。`tools/lib/ogimage.js` と `tools/lib/png.js` は削除した。
+
+| 用途 | ファイル | 中身 |
+|---|---|---|
+| トップのカード | `img/cover/c01〜c12.webp` | 800×420、文字なし。紺の重ねと彩度は CSS（`.journal .ph`） |
+| 共有カード（og:image） | `img/og/c01〜c12.jpg` | 1200×630。写真＋紺の重ね＋白抜きの会社ロゴ＋タグライン＋ドメインを焼き込み済み |
+| 発行元ロゴ（構造化データ） | `img/og/logo.png` | 512×512、紺地に白抜きロゴ |
+
+- **割り当ては `tools/build.js` の `coverPicker()`。** ブログ記事は言語ごとに古い順の通し番号を12で割った余り（並んだ記事が同じ写真にならず、記事が増えても既存の記事の写真は変わらない）。それ以外のページはパスのハッシュ。カードと共有カードは同じ番号＝同じ写真
+- **記事の途中に過去日付の記事を差し込む・記事を消すと、それより新しい記事の写真が1つずつずれる。** 表示は壊れないが、SNS 側に残った古いカードと食い違う
+- 共有カードにページ固有の文字（区分・日付）は載せていない。記事名は `og:title` で伝わる。ロゴは会社ロゴ（ブログだけ Media 版にするかは §8-2 のとおり未判断）
+- **写真を増やす・減らすときは `COVERS` の数も直す。** 番号は `c01` から連番で欠番を作らない（欠けると og:image の実在検査が落ちる）
+- **作り直し方**（ビルドには組み込んでいない。Windows 専用）：
+  1. カード用を `images.unsplash.com/<photo>?fm=webp&q=70&fit=crop&w=800&h=420` で `img/cover/cNN.webp` に取る
+  2. 合成用を `…?fm=webp&q=82&fit=crop&w=1200&h=630` で、リポジトリの外のフォルダに `cNN.webp` の名前で取る
+  3. `powershell -ExecutionPolicy Bypass -File tools/ogcover.ps1 -Src <2のフォルダ>`。Edge のヘッドレスで `tools/ogcover.html`（版面）を撮り、JPEG にして `img/og/` に書く
+  - `ogcover.ps1` は **BOM 付き UTF-8** で保存する。BOM が無いと Windows PowerShell 5.1 が日本語のコメントを読み違えて構文エラーになる
+- 写真の基準は §8-6 と同じ（**装置・画面・図解・人物は選ばない**。建築・空・海）。すべて Unsplash License。2026-10-09 に検索 API の応答で `premium:false / plus:false` を確認して取得した
+
+| 番号 | 写真（Unsplash） | 撮影者 |
+|---|---|---|
+| c01 | https://unsplash.com/photos/c8hi_P21Rn4 | Parrish Freeman |
+| c02 | https://unsplash.com/photos/IZ01rjX0XQA | Thomas Vimare |
+| c03 | https://unsplash.com/photos/688Fna1pwOQ | Julien Moreau |
+| c04 | https://unsplash.com/photos/29W9RscuUMw | Parrish Freeman |
+| c05 | https://unsplash.com/photos/fYO1T495QCM | Christian Perner |
+| c06 | https://unsplash.com/photos/k0Ynnf2CbKw | Pierre Leverrier |
+| c07 | https://unsplash.com/photos/D1S4F_SKY2I | Joel Filipe |
+| c08 | https://unsplash.com/photos/FIKD9t5_5zQ | Dominik Schröder |
+| c09 | https://unsplash.com/photos/ugcwlC0LQtQ | Florian Krumm |
+| c10 | https://unsplash.com/photos/_XVE6pKGiLE | Yasin Arıbuğa |
+| c11 | https://unsplash.com/photos/b1f10PFTD1U | Willian Justen de Vasconcellos |
+| c12 | https://unsplash.com/photos/nv7WX42LKjU | Paxson Woelber |
 
 
 ## 9. ユーザーとのやり取りで守ること
