@@ -151,12 +151,13 @@
     form.scrollIntoView({ block: 'start' });
   }
 
-  function start(){ say(flow.intro, 'says'); go(flow.first); }
+  /* 最初の一画面は tools/build.js の botPrerender がHTMLに書き出してある。
+     ここで積み直すのは同じ内容なので高さは変わらない。必ず空にしてから積むこと
+     （空にしないと、書き出し済みの挨拶と質問がもう一度並ぶ）。 */
+  function start(){ empty(log); empty(opts); say(flow.intro, 'says'); go(flow.first); }
 
   if (again) again.addEventListener('click', function(){
     picked = {};
-    empty(log);
-    empty(opts);
     start();
   });
 
