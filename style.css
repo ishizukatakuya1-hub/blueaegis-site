@@ -801,7 +801,7 @@ footer{
   background:var(--navy) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 140'%3E%3CclipPath id='c'%3E%3Cpath d='M60 8L108 26V62C108 92 88 116 60 134C32 116 12 92 12 62V26Z'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23c)' fill='%23FFFFFF' fill-opacity='.035'%3E%3Crect y='8' width='120' height='22'/%3E%3Crect y='36' width='120' height='22'/%3E%3Crect y='64' width='120' height='22' fill='%234FB3D9' fill-opacity='.09'/%3E%3Crect y='92' width='120' height='22'/%3E%3Crect y='120' width='120' height='20'/%3E%3C/g%3E%3C/svg%3E") right -60px bottom -90px/clamp(200px,28vw,380px) auto no-repeat;
   color:#9FB3C8; font-size:13px; padding:clamp(56px,7vw,88px) 0 32px;
 }
-footer .wrap{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:44px clamp(24px,4vw,56px); align-items:start}
+footer .wrap{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.618fr); gap:44px clamp(24px,4vw,56px); align-items:start}
 .flogo{display:inline-block}
 .flogo svg{display:block; height:clamp(52px,6vw,72px); width:auto; max-width:100%}
 .ftag{margin:16px 0 0; font-size:12px; letter-spacing:.22em; color:var(--cyan)}
