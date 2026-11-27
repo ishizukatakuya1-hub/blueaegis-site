@@ -868,12 +868,5 @@ html[lang="en"] .fhead{letter-spacing:.04em}
 .tl > div.hit .d{color:var(--blue)}
 .tl .t{display:block; margin-top:5px; font-size:13.5px; line-height:1.75; color:var(--ink)}
 
-/* 書誌の要点を数字で見せる帯（登録済みの特許） */
-.facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr)); gap:18px;
-  margin:0 0 32px; padding:22px 0; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule)}
-.facts b{display:block; font-size:clamp(25px,4vw,33px); font-weight:600; letter-spacing:-.02em;
-  line-height:1.1; color:var(--blue); font-variant-numeric:tabular-nums}
-.facts span{display:block; margin-top:7px; font-size:12.5px; line-height:1.6; color:var(--slate)}
-
 /* 流れ図のSVGは幅に合わせて縮める（高さは指定しない） */
 .dgm-svg{display:block; width:100%; max-width:100%; height:auto}
