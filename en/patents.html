@@ -43,6 +43,7 @@
       <a href="blog/index.html">Blog</a>
       <a href="insights/index.html">Insights</a>
       <a href="index.html#domains">Domains</a>
+      <a href="patents.html">Patents</a>
       <a href="index.html#licensing">Licensing</a>
       <a href="index.html#contact">Contact</a>
       <a class="lang" href="../patents.html" hreflang="ja">日本語</a>
@@ -60,6 +61,12 @@
   <h2>JP Patent No. 7946311</h2>
 
   <p><strong>System, method and program for deriving the executable set of identity verification methods and identifying the undetermined-alternative-route class</strong></p>
+
+  <div class="facts">
+    <div><b>78 days</b><span>From filing to grant</span></div>
+    <div><b>9</b><span>Claims</span></div>
+    <div><b>5 months</b><span>Ahead of the rules change</span></div>
+  </div>
 
   <div class="scroller">
   <table>
@@ -85,7 +92,7 @@
       <div class="hit"><span class="d">29 October 2026</span><span class="t">Granted as JP Patent No. 7946311 (gazette 13 November 2026)</span></div>
       <div><span class="d">1 April 2027</span><span class="t">It takes effect. Document image plus face image is abolished</span></div>
     </div>
-    <figcaption>Roughly a year and ten months from promulgation to effect. We filed on 12 August 2026 and were granted seventeen months before the rules change.</figcaption>
+    <figcaption>Roughly a year and ten months from promulgation to effect. We filed on 12 August 2026 and were granted five months before the rules change.</figcaption>
   </figure>
 
   <p>As a result, <strong>there will structurally be people for whom none of the enumerated methods can be completed</strong>: those without a public electronic credential, those whose device cannot read one, those whose certificate has expired, those who cannot supply the PIN it requires. Whether any method survives for a given person, once several of these apply at once, cannot be known without checking that person&rsquo;s situation against the requirements of each method.</p>
@@ -125,6 +132,44 @@
   <p>Claim 1, in outline: the system obtains information about the person&rsquo;s attributes and about which verification means are available to them (documents, electronic credentials, device capabilities, authentication information). <strong>Before verification is started</strong>, it checks these against the information defining each method&rsquo;s requirements, and derives the set of methods that can be completed for that person.</p>
 
   <p>Where that set is empty, or where the attribute or means information is not settled enough to complete the check, the person is placed in the <strong>undetermined-alternative-route class</strong>. The system also retains a record of the basis for the determination — the version identifier used, paired with the items that were checked — <strong>in a form that allows the identity of that basis to be verified afterwards</strong>, and outputs it on request from an external system.</p>
+
+  <figure class="dgm">
+<svg class="dgm-svg" viewBox="0 0 560 498" role="img" aria-label="The structure of claim 1: acquisition, method rules, derivation, classification, basis retention and output"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1E5FA8"/></marker><marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6B7684"/></marker></defs>
+<rect x="0" y="8" width="268" height="42" rx="21" fill="#FFFFFF" stroke="#DDE3EA"/>
+<text x="134" y="34" font-size="14" fill="#6B7684" text-anchor="middle">The person’s attributes</text>
+<rect x="292" y="8" width="268" height="42" rx="21" fill="#FFFFFF" stroke="#DDE3EA"/>
+<text x="426" y="34" font-size="14" fill="#6B7684" text-anchor="middle">Means available to them</text>
+<line x1="134" y1="50" x2="134" y2="67" stroke="#1E5FA8" stroke-width="1.5" marker-end="url(#ar)"/>
+<line x1="426" y1="50" x2="426" y2="67" stroke="#1E5FA8" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="0" y="76" width="560" height="58" rx="4" fill="#FFFFFF" stroke="#1E5FA8"/>
+<text x="18" y="100" font-size="15" font-weight="700" fill="#0A2A4F">Acquisition</text>
+<text x="18" y="121" font-size="12.5" fill="#6B7684">Takes in both kinds of information</text>
+<line x1="280" y1="134" x2="280" y2="151" stroke="#1E5FA8" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="0" y="160" width="358" height="58" rx="4" fill="#FFFFFF" stroke="#1E5FA8"/>
+<text x="18" y="184" font-size="15" font-weight="700" fill="#0A2A4F">Derivation</text>
+<text x="18" y="205" font-size="12.5" fill="#6B7684">Checks them against the requirements, derives the set</text>
+<rect x="384" y="160" width="176" height="58" rx="4" fill="#FFFFFF" stroke="#DDE3EA" stroke-dasharray="4 3"/>
+<text x="398" y="181" font-size="13" font-weight="700" fill="#6B7684">Method rules</text>
+<text x="398" y="198" font-size="11" fill="#6B7684">Requirements of each permitted method,</text>
+<text x="398" y="212" font-size="11" fill="#6B7684">tagged with the version in force</text>
+<line x1="382" y1="189" x2="369" y2="189" stroke="#6B7684" stroke-width="1.5" marker-end="url(#arg)"/>
+<text x="371" y="154" font-size="11" fill="#6B7684" text-anchor="middle">reads</text>
+<line x1="280" y1="218" x2="280" y2="235" stroke="#1E5FA8" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="0" y="244" width="560" height="58" rx="4" fill="#FFFFFF" stroke="#1E5FA8"/>
+<text x="18" y="268" font-size="15" font-weight="700" fill="#0A2A4F">Classification</text>
+<text x="18" y="289" font-size="12.5" fill="#6B7684">Empty set or unsettled information → undetermined class</text>
+<line x1="280" y1="302" x2="280" y2="319" stroke="#1E5FA8" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="0" y="328" width="560" height="58" rx="4" fill="#FFFFFF" stroke="#1E5FA8"/>
+<text x="18" y="352" font-size="15" font-weight="700" fill="#0A2A4F">Basis retention</text>
+<text x="18" y="373" font-size="12.5" fill="#6B7684">Keeps the version identifier and the items checked, verifiably</text>
+<line x1="280" y1="386" x2="280" y2="403" stroke="#1E5FA8" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="0" y="412" width="560" height="58" rx="4" fill="#FFFFFF" stroke="#1E5FA8"/>
+<text x="18" y="436" font-size="15" font-weight="700" fill="#0A2A4F">Output</text>
+<text x="18" y="457" font-size="12.5" fill="#6B7684">Returns the set, the class and the basis on request</text>
+<text x="560" y="486" font-size="12" fill="#6B7684" text-anchor="end">to an external system →</text>
+</svg>
+    <figcaption>The six parts claim 1 defines, and what moves between them. Only the dashed box is a rule supplied from outside; the rest is the determination itself.</figcaption>
+  </figure>
 
   <p>The dependent claims cover re-running the derivation for existing subjects when a new version of the rules is received and updating the class accordingly; outputting the cause of the classification and which items remain unsettled; generating control information that holds verification back from starting; ordering the presentation or execution of methods by expected completion, time and cost when more than one remains; and applying a hash, an electronic signature or a timestamp to the record of the basis so that tampering can be detected.</p>
 
