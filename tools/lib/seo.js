@@ -18,9 +18,12 @@ const SITE = {
   en: { name: 'Blue Aegis Inc.',    locale: 'en_US', home: 'Home' },
 };
 
+/* パンくずと画面表示で使う区分の名前。
+   「タグ」は入れない。/blog/tags/ に一覧ページが無く、URL を持てない段を
+   パンくずへ足すと ListItem の item が欠けて構造化データが無効になる。 */
 const SECTION = {
-  ja: { insights: '規制解説', blog: 'ブログ', tags: 'タグ' },
-  en: { insights: 'Insights', blog: 'Blog',   tags: 'Tags' },
+  ja: { insights: '規制解説', blog: 'ブログ' },
+  en: { insights: 'Insights', blog: 'Blog'   },
 };
 
 /* ---------------- 文字まわり ---------------- */
@@ -162,25 +165,55 @@ function organization(lang) {
     '@type': 'Organization',
     '@id': ORG_ID,
     name: SITE[lang].name,
-    alternateName: lang === 'ja' ? 'Blue Aegis Inc.' : 'Blue Aegis株式会社',
+    /* 登記上の商号。name は言語ごとに変わる（en では Blue Aegis Inc.）ので、
+       法人格まで含む登記の表記をここで固定する。identifier と同じく、同一商号の
+       別法人と機械的に区別するための手掛かり。§4-5 の伏せる対象ではない。 */
+    legalName: 'Blue Aegis株式会社',
+    /* 商号の読み。katakana の「ブルーイージス」を宣言しておかないと、
+       その表記での検索に対して当サイト側に手掛かりが一切なくなる（実際に順位が付いていなかった）。
+       §4-5 の伏せる対象（代表者名・所在地・法人番号）ではないので、ここに置いてよい。 */
+    alternateName: lang === 'ja'
+      ? ['ブルーイージス', 'Blue Aegis Inc.']
+      : ['Blue Aegis株式会社', 'ブルーイージス'],
     url: BASE + '/',
     email: 'info@blueaegis.co.jp',
-    logo: { '@type': 'ImageObject', url: `${BASE}/og/logo.png`, width: 512, height: 512 },
+    /* 国税庁の法人番号。同一商号の別法人と機械的に区別できる唯一の識別子なので載せる
+       （2026-08-28 ユーザー判断で §4-5 のうちこの1項目だけ解除）。
+       代表者名・所在地は引き続き伏せる。ここに address や founder を足さないこと。 */
+    identifier: {
+      '@type': 'PropertyValue',
+      propertyID: '法人番号',
+      value: '2010401200286',
+    },
+    logo: { '@type': 'ImageObject', url: `${BASE}/img/og/logo.png`, width: 512, height: 512 },
     description: lang === 'ja'
       ? '規制対応技術の研究開発と、自ら創出した知的財産の保有・ライセンスを行う会社。'
       : 'Develops regulatory compliance technology and holds and licenses the intellectual property it creates.',
   };
 }
 
+/**
+ * パンくず。
+ *
+ * ListItem の item は Google の必須項目で、欠けると
+ * 「項目『item』がありません（itemListElement に含まれる）」で無効になる
+ * （2026-09-05 の Search Console で検出。原因は URL を持たない「タグ」の段だった）。
+ * URL を持てない中間階層は段として置かない。/blog/tags/ に一覧ページは無く、
+ * 画面のパンくず（build.js の crumbsHtml）も ホーム / ブログ / タグ名 で「タグ」を挟まない。
+ * ここもそれに合わせる。
+ *
+ * item は必ず絶対URL。終点はそのページの canonical と同じにする。
+ */
 function breadcrumbs(desc, cls) {
   const S = SECTION[cls.lang], root = cls.lang === 'en' ? `${BASE}/en/` : `${BASE}/`;
   const items = [{ name: SITE[cls.lang].home, item: root }];
 
   if (cls.section === 'insights') items.push({ name: S.insights, item: `${root}insights/` });
   if (cls.section === 'blog' || cls.section === 'tags') items.push({ name: S.blog, item: `${root}blog/` });
-  if (cls.section === 'tags') items.push({ name: S.tags, item: null });
-  if (cls.kind === 'article') items.push({ name: desc.h1 || desc.title, item: desc.url });
-  if (cls.kind === 'collection' && cls.section === 'tags') items.push({ name: desc.h1 || desc.title, item: desc.url });
+
+  // /blog/ と /insights/ は上で足した段そのものなので、自分をもう一度重ねない
+  const selfIsSection = cls.kind === 'collection' && (cls.section === 'blog' || cls.section === 'insights');
+  if (!selfIsSection) items.push({ name: desc.h1 || desc.title, item: desc.canonical || desc.url });
 
   return {
     '@type': 'BreadcrumbList',
@@ -188,7 +221,7 @@ function breadcrumbs(desc, cls) {
       '@type': 'ListItem',
       position: i + 1,
       name: it.name,
-      ...(it.item ? { item: it.item } : {}),
+      item: it.item,
     })),
   };
 }
@@ -210,7 +243,9 @@ function structuredData(desc, cls, extra) {
     publisher: { '@id': ORG_ID },
   });
 
-  if (cls.kind !== 'notfound') graph.push(breadcrumbs(desc, cls));
+  // トップページ（/ と /en/）は自分1段だけになるのでパンくず自体を出さない。
+  // 1要素の BreadcrumbList は検索結果に出ないうえ、終点が自分ではなく「ホーム」になってしまう。
+  if (cls.kind !== 'notfound' && cls.kind !== 'home') graph.push(breadcrumbs(desc, cls));
 
   if (cls.kind === 'article') {
     const published = extra.datePublished || isoDate(desc.metaLine);

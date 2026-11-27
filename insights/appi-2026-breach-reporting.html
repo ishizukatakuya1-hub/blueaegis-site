@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>改正個人情報保護法 ― 漏えい等報告の見直し｜Blue Aegis</title>
+<meta name="description" content="2026年7月公布の改正個人情報保護法で、本人通知の例外拡大と報告の合理化が決まりました。現行の要件と改正点、報告・通知を要しないとした判断の記録を整理します。">
+<meta property="og:title" content="令和8年改正個人情報保護法の漏えい等報告——本人通知の例外と「報告しなくてよい」根拠の残し方">
+<meta property="og:description" content="2026年7月に成立した改正法で、本人通知の例外が広がり、速報の一部免除や確報のまとめ提出が規則で定められます。報告・通知をしなかった判断を後から説明できる記録を整理します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/insights/appi-2026-breach-reporting.html">
+<link rel="canonical" href="https://blueaegis.co.jp/insights/appi-2026-breach-reporting.html">
+<link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/insights/appi-2026-breach-reporting.html">
+<link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/insights/appi-2026-breach-reporting.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../blog/index.html">ブログ</a>
+      <a href="index.html">規制解説</a>
+      <a href="../index.html#domains">技術領域</a>
+      <a href="../index.html#licensing">ライセンス</a>
+      <a href="../index.html#contact">お問い合わせ</a>
+      <a class="lang" href="../en/insights/appi-2026-breach-reporting.html" hreflang="en">EN</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>令和8年改正個人情報保護法の漏えい等報告——本人通知の例外と「報告しなくてよい」根拠の残し方</h1>
+  <p class="meta">2026年10月22日</p>
+
+  <h2>誰が、いつから、何を示す必要があるか</h2>
+
+  <p>個人情報取扱事業者は、個人データの漏えい等のうち一定の事態が生じたとき、個人情報保護委員会に報告し、本人に通知する義務を負っています（個人情報保護法 第26条）。この規律を見直す改正法が2026年7月10日に成立し、7月17日に公布されました（令和8年法律第56号）。</p>
+
+  <p>改正の大部分の施行は「公布の日から起算して2年を超えない範囲内で政令で定める日」とされ、漏えい等報告の具体的な線引きは今後の委員会規則の改正で定まります。委員会は2026年9月から10月にかけて規則改正の「基本的な考え方」を順次公表しており、意見募集はその後の予定です。つまり、現時点で適用されているのは現行の規則で、改正の中身は「方向は決まったが線はまだ引かれていない」段階にあります。</p>
+
+  <h2>現行の規則と、改正で加わるもの</h2>
+
+  <ul>
+    <li>報告対象事態（現行規則第7条）：要配慮個人情報、財産的被害のおそれ、不正の目的によるおそれ、本人の数が1,000人超、の4類型</li>
+    <li>報告期限（現行規則第8条）：速報は「速やかに」（ガイドライン上の目安は知った時点から概ね3〜5日）、確報は30日以内（不正の目的によるおそれがある事態は60日以内）</li>
+    <li>本人通知の例外の拡大（改正後の第26条第2項ただし書）：現行の「通知が困難な場合」に加え、通知がなくても本人の権利利益の保護に欠けるおそれが少ない場合として規則で定める場合が加わる。いずれも代替措置が条件</li>
+    <li>報告の合理化（第26条第1項、内容は規則に委任）：第三者が事業者の体制を確認していることを前提とした速報の一部免除、誤送付など本人1名の事案の確報を一定期間ごとにまとめて提出できる仕組み</li>
+    <li>報告対象の追加：違法な第三者提供を報告対象事態に加える方向</li>
+  </ul>
+
+  <p>同じ改正法には、課徴金制度の新設（不適正利用・不正取得・第三者提供制限違反などのうち大規模な事案が対象）、16歳未満の子どもの個人情報に関する規律、顔特徴データ等の規律も含まれています。衆参両院の附帯決議は、本人通知の例外について対象範囲と判断基準を規則で明記するよう求めました。</p>
+
+  <h2>実務で詰まる点</h2>
+
+  <ol>
+    <li>例外が広がるほど「報告・通知をしなかった」判断が増えます。後から委員会や本人に問われたとき、その時点でどの事実を把握し、どの要件に当たらないと判断したのかを示す記録がなければ、例外に依拠したことを説明できません</li>
+    <li>速報の期限の起点は「知った時点」です。委託先や現場からの第一報がいつ、誰に届いたかが記録されていないと、期限を守ったことを示せません</li>
+    <li>確報のまとめ提出を使うには、本人1名の誤送付などの小規模事案を、発生の都度、同じ粒度で記録しておく必要があります。部署ごとにメールや表計算で管理していると、期間ごとの集計の段階で漏れが生じます</li>
+    <li>施行までの間は現行規則、施行後は改正規則と、判断の基準が切り替わります。個々の判断がどの時点の基準に基づくのかを残しておかないと、境目の事案を説明できません</li>
+  </ol>
+
+  <h2>運用でしのぐか、仕組みで担保するか</h2>
+
+  <p>この種の要請には、二通りの向き合い方があります。ひとつは、手順書を整備し、担当者が確認と記録を行う運用でしのぐ方法。もうひとつは、求められたときに示せる記録が自動的に残る仕組みを組み込む方法です。</p>
+
+  <p>前者は着手が早い反面、対象となる手続や担当者が増えるほど破綻します。例外対応が積み重なるうちに記録の粒度が揃わなくなり、後から範囲を特定できなくなるためです。後者は設計の負担が先に来ますが、あとから確認できる状態が保たれます。</p>
+
+  <p>当社は、規制対応の適合性を人手の運用ではなく仕組みとして担保する技術を研究開発し、その成果を特許出願として保有しています。詳しくは<a href="../index.html#domains">技術領域</a>をご覧ください。</p>
+
+  <div class="cta">
+    <p>自社が対象になるのか、対象だとして何を記録しておくべきか。判断がつかない段階でのご相談を歓迎します。該当性の判断は当社側で行いますので、現在の仕組みをお聞かせいただくだけで構いません。</p>
+    <a href="../index.html#contact">相談する</a>
+  </div>
+
+  <div class="source">
+    <p><strong>出典</strong></p>
+    <p>個人情報の保護に関する法律等の一部を改正する法律（令和8年法律第56号）参議院 議案情報（閣法第221回国会第54号）<br>
+    <a href="https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221080221054.htm" rel="noopener">https://www.sangiin.go.jp/japanese/joho1/kousei/gian/221/meisai/m221080221054.htm</a></p>
+    <p>個人情報保護委員会「令和8年改正個人情報保護法について」<br>
+    <a href="https://www.ppc.go.jp/personalinfo/legal/r8kaiseihogohou" rel="noopener">https://www.ppc.go.jp/personalinfo/legal/r8kaiseihogohou</a></p>
+    <p>個人情報保護委員会「改正法の概要」（2026年7月17日）<br>
+    <a href="https://www.ppc.go.jp/files/pdf/260717_kaiseihounitsuite.pdf" rel="noopener">https://www.ppc.go.jp/files/pdf/260717_kaiseihounitsuite.pdf</a></p>
+    <p>個人情報保護委員会「新旧対照表」<br>
+    <a href="https://www.ppc.go.jp/files/pdf/260717_sinkyutaisyohyo.pdf" rel="noopener">https://www.ppc.go.jp/files/pdf/260717_sinkyutaisyohyo.pdf</a></p>
+    <p>個人情報保護委員会「漏えい等の対応とお役立ち資料」（現行の報告対象事態・速報・確報）<br>
+    <a href="https://www.ppc.go.jp/personalinfo/legal/leakAction/" rel="noopener">https://www.ppc.go.jp/personalinfo/legal/leakAction/</a></p>
+    <p>本稿は2026年10月22日時点で確認できた公表資料に基づく整理であり、法的助言ではありません。個別の適用可否については専門家にご確認ください。</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← 解説の一覧へ</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>

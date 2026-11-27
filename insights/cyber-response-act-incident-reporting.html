@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>サイバー対処能力強化法の届出・報告義務｜Blue Aegis</title>
+<meta name="description" content="能動的サイバー防御を定めた法律の届出・報告義務が2026年10月1日に施行。特別社会基盤事業者の届出事項と期限、第一報と30日以内の詳報、記録の要点を整理します。">
+<meta property="og:title" content="サイバー対処能力強化法の届出とインシデント報告——基幹インフラ事業者が10月1日から求められていること">
+<meta property="og:description" content="能動的サイバー防御を定めた法律の届出・報告義務が2026年10月1日に始まりました。特定重要電子計算機の届出期限、第一報と30日以内の詳報、報告に足る記録を整理します。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://blueaegis.co.jp/insights/cyber-response-act-incident-reporting.html">
+<link rel="canonical" href="https://blueaegis.co.jp/insights/cyber-response-act-incident-reporting.html">
+<link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/insights/cyber-response-act-incident-reporting.html">
+<link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/insights/cyber-response-act-incident-reporting.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="../index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis株式会社">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="../blog/index.html">ブログ</a>
+      <a href="index.html">規制解説</a>
+      <a href="../index.html#domains">技術領域</a>
+      <a href="../index.html#licensing">ライセンス</a>
+      <a href="../index.html#contact">お問い合わせ</a>
+      <a class="lang" href="../en/insights/cyber-response-act-incident-reporting.html" hreflang="en">EN</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGULATORY INSIGHT</p>
+  <h1>サイバー対処能力強化法の届出とインシデント報告——基幹インフラ事業者が10月1日から求められていること</h1>
+  <p class="meta">2026年10月22日</p>
+
+  <h2>誰が、いつから、何を示す必要があるか</h2>
+
+  <p>いわゆる能動的サイバー防御を定めた「重要電子計算機に対する不正な行為による被害の防止に関する法律」（令和7年法律第42号、2025年5月公布）のうち、基幹インフラ事業者に対する届出・報告義務が2026年10月1日に施行されました。</p>
+
+  <p>対象は「特別社会基盤事業者」です。経済安全保障推進法に基づいて主務大臣が指定した特定社会基盤事業者のうち、「特定重要電子計算機」を使用する事業者がこれに当たります（法第2条）。義務は二つあり、使っている特定重要電子計算機の製品名や製造者を届け出ること（法第4条）と、その電子計算機に関する侵害事象を報告すること（法第5条）です。</p>
+
+  <h2>法令と命令が定めていること</h2>
+
+  <ul>
+    <li>届出事項：事業者の概要、特定重要設備の区分、特定重要電子計算機の区分、製品名、製造者名</li>
+    <li>届出期限：新たに導入したものは導入から4か月以内。施行時点で導入済みのものは施行から6か月以内（2027年3月末まで）。届出事項に変更があれば変更から4か月以内</li>
+    <li>届出の対象外：グループ内でのみ使う専用設計品や、汎用品として指定された製品（一般的なOS等）</li>
+    <li>報告対象：特定侵害事象（マルウェアの供用、不正アクセス、業務妨害など）と、その原因となり得る事象（不正な指令を与える電磁的記録の受信、他人の識別符号の不正入力、それらの痕跡の記録など）</li>
+    <li>報告先と期限：事業所管大臣と内閣総理大臣に、認知後速やかに第一報、認知から30日以内に詳報。様式は告示で定められ、DDoS、ランサムウェア、その他で分かれる</li>
+    <li>報告事項：報告の種別、事業者の概要、事象の概要、影響を受けた電子計算機、技術的事項、対応措置など</li>
+    <li>是正：届出・報告義務に違反した場合、事業所管大臣は是正を命じることができ、命令違反には罰則がある</li>
+  </ul>
+
+  <p>EUのサイバーレジリエンス法やNIS2指令のような「24時間」「72時間」の時間単位の期限は置かれていません。ただし「速やかに」の解釈は、事象の類型ごとに目安が示される方向で整理されています。</p>
+
+  <h2>実務で詰まる点</h2>
+
+  <ol>
+    <li>報告対象が「侵害事象」だけでなく「原因となり得る事象」まで及ぶため、検知した事象のうち何を報告し、何を報告しなかったかの判断が日常的に発生します。報告しなかった判断の根拠が残っていないと、後から妥当性を示せません</li>
+    <li>報告対象は特定重要電子計算機に関する事象に限られます。届出台帳と、監視対象の資産台帳・ログの紐付けがないと、検知した事象が報告対象の機器に関係するのかを即座に判断できません</li>
+    <li>届出は導入・変更から4か月以内です。機器の入替えや製品の版の変更を調達・運用部門が把握していても、届出担当に伝わる経路がなければ期限を過ぎます</li>
+    <li>第一報と詳報の間で事実認識が変わることは避けられません。各時点で把握していた事実と報告内容の版を残しておかないと、変遷を説明できません</li>
+  </ol>
+
+  <h2>運用でしのぐか、仕組みで担保するか</h2>
+
+  <p>この種の要請には、二通りの向き合い方があります。ひとつは、手順書を整備し、担当者が確認と記録を行う運用でしのぐ方法。もうひとつは、求められたときに示せる記録が自動的に残る仕組みを組み込む方法です。</p>
+
+  <p>前者は着手が早い反面、対象となる手続や担当者が増えるほど破綻します。例外対応が積み重なるうちに記録の粒度が揃わなくなり、後から範囲を特定できなくなるためです。後者は設計の負担が先に来ますが、あとから確認できる状態が保たれます。</p>
+
+  <p>当社は、規制対応の適合性を人手の運用ではなく仕組みとして担保する技術を研究開発し、その成果を特許出願として保有しています。詳しくは<a href="../index.html#domains">技術領域</a>をご覧ください。</p>
+
+  <div class="cta">
+    <p>自社が対象になるのか、対象だとして何を記録しておくべきか。判断がつかない段階でのご相談を歓迎します。該当性の判断は当社側で行いますので、現在の仕組みをお聞かせいただくだけで構いません。</p>
+    <a href="../index.html#contact">相談する</a>
+  </div>
+
+  <div class="source">
+    <p><strong>出典</strong></p>
+    <p>重要電子計算機に対する不正な行為による被害の防止に関する法律（令和7年法律第42号）第2条・第4条・第5条（衆議院 制定法律）<br>
+    <a href="https://www.shugiin.go.jp/internet/itdb_housei.nsf/html/housei/21720250523042.htm" rel="noopener">https://www.shugiin.go.jp/internet/itdb_housei.nsf/html/housei/21720250523042.htm</a></p>
+    <p>内閣府「法律の概要」<br>
+    <a href="https://www.cao.go.jp/cybersecurity/pdf/setsumei.pdf" rel="noopener">https://www.cao.go.jp/cybersecurity/pdf/setsumei.pdf</a></p>
+    <p>内閣府「施行期日を定める政令」<br>
+    <a href="https://www.cao.go.jp/cybersecurity/pdf/sekoukijitsu.pdf" rel="noopener">https://www.cao.go.jp/cybersecurity/pdf/sekoukijitsu.pdf</a></p>
+    <p>内閣府「特別社会基盤事業者による特定侵害事象等の報告等に関する命令」<br>
+    <a href="https://www.cao.go.jp/cybersecurity/pdf/meirei.pdf" rel="noopener">https://www.cao.go.jp/cybersecurity/pdf/meirei.pdf</a></p>
+    <p>内閣府「報告様式（告示）」<br>
+    <a href="https://www.cao.go.jp/cybersecurity/pdf/youshiki.pdf" rel="noopener">https://www.cao.go.jp/cybersecurity/pdf/youshiki.pdf</a></p>
+    <p>内閣府「汎用品の指定」<br>
+    <a href="https://www.cao.go.jp/cybersecurity/pdf/hanyouhin.pdf" rel="noopener">https://www.cao.go.jp/cybersecurity/pdf/hanyouhin.pdf</a></p>
+    <p>本稿は2026年10月22日時点で確認できた公表資料に基づく整理であり、法的助言ではありません。個別の適用可否については専門家にご確認ください。</p>
+  </div>
+
+  <p class="backlink"><a href="index.html">← 解説の一覧へ</a></p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="../privacy.html">プライバシーポリシー</a>
+      <a href="../disclaimer.html">免責事項</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>

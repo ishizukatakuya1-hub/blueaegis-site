@@ -16,9 +16,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const seo = require('./lib/seo');
-const { ogCard, logoPng } = require('./lib/ogimage');
 const { audit } = require('./lib/audit');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -39,7 +39,12 @@ const RELATED_MAX = 3;
 
 /* ビルド出力に含めない（生成物・道具・設定） */
 const SKIP = new Set(['content', 'tools', '_site', 'node_modules', '.git', '.github',
-                      'package.json', 'package-lock.json', 'PUBLISHING.md', 'HANDOVER.md', '.claude']);
+                      'package.json', 'package-lock.json', '.claude']);
+
+/* 直下の .md は社内向けの文書なので配信しない。記事は content/ から HTML にして出すので、
+   ここを通る .md に配信すべきものは無い。名前で数え上げると足したときに漏れる
+   （実際 CLAUDE.md を足したとき、そのまま /CLAUDE.md として配信される状態になった）。 */
+const SKIP_TOP = /\.md$/i;
 
 const errors = [];
 const warnings = [];
@@ -467,7 +472,7 @@ function indexHtml(posts, tagPages, lang, alternates) {
     description: t.blogDesc,
     canonical: `${blogUrlOf(lang)}/`,
     ogType: 'website',
-    main: `<section>
+    main: `<section data-word="MEDIA">
   <div class="wrap">
     <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">${t.blogTitle}</h1>
@@ -491,7 +496,7 @@ function tagPageHtml(tag, posts, lang) {
     description: t.tagDesc(tag),
     canonical: `${blogUrlOf(lang)}/tags/${encodeURIComponent(tagSlug(tag))}.html`,
     ogType: 'website',
-    main: `<section>
+    main: `<section data-word="MEDIA">
   <div class="wrap">
     <p class="masthead">${mediaLogo('lg')}</p>
     <h1 class="lead">${esc(tag)}</h1>
@@ -540,7 +545,7 @@ function notFoundHtml() {
 function copyDir(from, to, top = true) {
   fs.mkdirSync(to, { recursive: true });
   for (const name of fs.readdirSync(from)) {
-    if (top && SKIP.has(name)) continue;
+    if (top && (SKIP.has(name) || SKIP_TOP.test(name))) continue;
     if (name.startsWith('.') && name !== '.nojekyll') continue;
     const s = path.join(from, name), d = path.join(to, name);
     if (fs.statSync(s).isDirectory()) copyDir(s, d, false);
@@ -569,22 +574,30 @@ const L = {
         feedLine: 'We follow these rules as they come into force. Updates are available by <a href="feed.xml">RSS</a>.' },
 };
 
-const OG_KICKER = {
-  insights: 'Regulatory Insight',
-  blog: 'Blue Aegis Media',
-  tags: 'Blue Aegis Media',
-  null: 'Intellectual Property Licensing',
-};
+/* ---------------- 写真の割り当て ----------------
+   絵は事前に作って同梱してある（img/cover/cNN.webp＝カード用、img/og/cNN.jpg＝共有カード用。
+   同じ番号は同じ写真）。ビルドは「どのページにどの1枚を当てるか」だけを決める。
+   写真の出どころと作り直し方は HANDOVER.md §8-10。 */
+const COVERS = 12;
 
-/** OGP画像のファイル名。タグ名など日本語を含むパスもあるので、必ずASCIIに落とす */
-function ogName(relPath) {
-  const stem = relPath.replace(/\.html$/, '').replace(/\//g, '-');
-  const safe = stem.replace(/[^A-Za-z0-9_-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  if (safe === stem) return `og/${stem}.png`;
-
-  let h = 0x811c9dc5;
-  for (let i = 0; i < stem.length; i++) { h ^= stem.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
-  return `og/${safe || 'page'}-${h.toString(36)}.png`;
+/** ページごとの写真の番号（'01'〜'12'）を返す関数を作る。
+    ブログ記事は言語ごとに古い順の通し番号で回すので、並んだ記事が同じ写真にならず、
+    記事が増えても既存の記事の写真は変わらない。それ以外のページはパスから決める。 */
+function coverPicker(loaded) {
+  const fixed = new Map();
+  for (const lang of ['ja', 'en']) {
+    const posts = loaded[lang].posts;                 // 新しい順
+    posts.forEach((p, i) => fixed.set(`${blogDirOf(lang)}/${p.slug}.html`, (posts.length - 1 - i) % COVERS));
+  }
+  return rel => {
+    let n = fixed.get(rel);
+    if (n === undefined) {
+      let h = 0x811c9dc5;
+      for (let i = 0; i < rel.length; i++) { h ^= rel.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+      n = h % COVERS;
+    }
+    return String(n + 1).padStart(2, '0');
+  };
 }
 
 /** そのページから見た、サイト直下への相対プレフィックス */
@@ -639,6 +652,111 @@ ${items}
   `;
 }
 
+/* ---------------- 共通フッター ----------------
+   全ページのフッターは finish() でここに差し替える。手書きページと page() の <footer> は
+   原稿として残っているが、配信物のフッターはこの関数だけで決まる（1か所で直せば全ページに効く）。
+   プライバシーポリシーと免責事項へのリンクは検査（audit.js の POLICY_PAGES）が求めるので外さない。
+   up はサイト直下までの相対（404 だけ '/'）。home はトップ自身か（自ページ内リンクは #id で書く）。 */
+const FOOT = {
+  ja: {
+    label: 'サイト案内',
+    cols: [
+      ['会社', [['事業内容', 'index.html#business'], ['技術領域', 'index.html#domains'],
+                ['知的財産', 'index.html#portfolio'], ['ライセンス', 'index.html#licensing'], ['会社概要', 'index.html#company']]],
+      ['発信', [['ブログ', 'blog/index.html'], ['規制解説', 'insights/index.html'],
+                ['ブログの RSS', 'blog/feed.xml'], ['規制解説の RSS', 'insights/feed.xml']]],
+      ['お問い合わせ', [['お問い合わせ', 'index.html#contact'], ['info@blueaegis.co.jp', 'mailto:info@blueaegis.co.jp']]],
+    ],
+    privacy: 'プライバシーポリシー', disclaimer: '免責事項',
+    other: ['English', 'en/index.html', 'en'],
+  },
+  en: {
+    label: 'Site map',
+    cols: [
+      ['Company', [['What we do', 'index.html#business'], ['Where we work', 'index.html#domains'],
+                   ['Portfolio', 'index.html#portfolio'], ['Working with us', 'index.html#licensing'], ['Company information', 'index.html#company']]],
+      ['Writing', [['Blog', 'blog/index.html'], ['Insights', 'insights/index.html'],
+                   ['Blog RSS', 'blog/feed.xml'], ['Insights RSS', 'insights/feed.xml']]],
+      ['Contact', [['Contact us', 'index.html#contact'], ['info@blueaegis.co.jp', 'mailto:info@blueaegis.co.jp']]],
+    ],
+    privacy: 'Privacy Policy', disclaimer: 'Disclaimer',
+    other: ['日本語', 'index.html', 'ja'],
+  },
+};
+
+/* 白抜きのロゴ。id はヘッダー（sh1/cl1）・トップの大ロゴ（sh2/cl2）・題字と衝突させない */
+const FOOT_LOGO = `<svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+        <defs>
+          <path id="shft" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="clft"><use href="#shft"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#clft)">
+            <rect x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
+            <rect x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
+            <rect x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
+            <rect x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
+            <rect x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
+      </svg>`;
+
+function footerHtml(lang, up, home) {
+  const f = FOOT[lang];
+  const root = langRoot(up, lang);
+  /* トップ自身では「index.html#x」ではなく「#x」。?from= の付与（問い合わせの出所）にも掛からない */
+  const href = to => (/^mailto:/.test(to) ? to
+    : home && to.startsWith('index.html#') ? to.slice('index.html'.length)
+    : root + to);
+  const cols = f.cols.map(([head, items]) => `      <div>
+        <p class="fhead">${head}</p>
+        <ul>
+${items.map(([text, to]) => `          <li><a href="${href(to)}">${text}</a></li>`).join('\n')}
+        </ul>
+      </div>`).join('\n');
+  return `<footer>
+  <div class="wrap">
+    <div class="fbrand">
+      <a href="${home ? '#' : root + 'index.html'}" class="flogo">
+      ${FOOT_LOGO}
+      </a>
+      <p class="ftag">The Shield for the Intelligent Age</p>
+    </div>
+    <nav class="fnav" aria-label="${f.label}">
+${cols}
+    </nav>
+    <div class="fbase">
+      <div>© 2026 Blue Aegis Inc.</div>
+      <div class="legal">
+        <a href="${root}privacy.html">${f.privacy}</a>
+        <a href="${root}disclaimer.html">${f.disclaimer}</a>
+        <a href="${up}${f.other[1]}" hreflang="${f.other[2]}" lang="${f.other[2]}">${f.other[0]}</a>
+      </div>
+    </div>
+  </div>
+</footer>`;
+}
+
+/* ---------------- トップの「最新の記事」 ----------------
+   index.html / en/index.html の <!-- latest --> を、その言語の新しい順3本のカードに置き換える。
+   記事が自動掲載されるたびにビルドが走るので、トップも手を入れずに新しくなる。
+   画像は同梱の写真（共有カードと同じ1枚。紺は CSS で重ねる）。装飾なので alt は空。 */
+function latestHtml(posts, lang, up, coverOf) {
+  return posts.slice(0, 3).map(p => {
+    const rel = `${blogDirOf(lang)}/${p.slug}.html`;
+    return `      <li>
+        <a href="${up}${rel}">
+          <span class="ph"><img src="${up}img/cover/c${coverOf(rel)}.webp" alt="" width="800" height="420" loading="lazy" decoding="async"></span>
+          <span class="date">${esc(p.date)}</span>
+          <h3>${esc(p.fm.title)}</h3>
+          <p>${esc(p.fm.description || '')}</p>
+        </a>
+      </li>`;
+  }).join('\n');
+}
+
 function finish(loaded, tagPages) {
   const buildDate = new Date();
   const files = listHtml(OUT).sort();
@@ -658,8 +776,22 @@ function finish(loaded, tagPages) {
     return { rel, html, desc: seo.describePage(html, rel), cls: seo.classify(rel) };
   });
 
-  fs.mkdirSync(path.join(OUT, 'og'), { recursive: true });
-  fs.writeFileSync(path.join(OUT, 'og', 'logo.png'), logoPng());
+  const coverOf = coverPicker(loaded);
+
+  /* 見た目と挙動のファイルは名前が変わらないので、中身を直しても
+     端末とGitHub Pagesの配信面が古いものを使い続ける（記事は新しいURLに
+     なるので出るが、CSSの修正だけは何時間も反映されないことがある）。
+     中身から作った版番号を問い合わせに付け、変えたときだけ別のURLにする。
+     検査のリンク照合は ? の手前だけを見るので、これで切れることはない。 */
+  const assetV = {};
+  for (const file of ['style.css', 'script.js']) {
+    assetV[file] = crypto.createHash('sha256')
+      .update(fs.readFileSync(path.join(OUT, file))).digest('hex').slice(0, 8);
+  }
+  /* 404 はどの階層で表示されるか決まらないので絶対パスで書いてある。相対と両方を見る */
+  const stampAssets = html => html.replace(
+    /(href|src)="(\/|(?:\.\.\/)*)(style\.css|script\.js)"/g,
+    (m, attr, up, file) => `${attr}="${up}${file}?v=${assetV[file]}"`);
 
   const sitemap = [];
 
@@ -670,12 +802,7 @@ function finish(loaded, tagPages) {
     /* --- 共有カード --- */
     const post = byPath.get(rel);
     const dateLine = post ? post.date : (seo.isoDate(desc.metaLine) || '');
-    const img = ogName(rel);
-    fs.writeFileSync(path.join(OUT, img), ogCard({
-      kicker: OG_KICKER[cls.section] || OG_KICKER.null,
-      line: dateLine,
-      seed: rel,
-    }));
+    const img = `img/og/c${coverOf(rel)}.jpg`;
 
     /* --- パンくずと関連記事を本文へ --- */
     if (cls.kind === 'article') {
@@ -697,8 +824,18 @@ function finish(loaded, tagPages) {
       const line = `<p class="subscribe">${L[cls.lang].feedLine}</p>\n\n  `;
       html = cls.kind === 'article'
         ? html.replace('<p class="backlink">', line + '<p class="backlink">')
-        : html.replace('</ul>\n  </div>', `</ul>\n\n    ${line}</div>`);
+        // 手書きの一覧は CRLF なので改行を決め打ちにしない（\n 決め打ちで一覧に入っていなかった）
+        : html.replace(/<\/ul>(\r?\n)\s*<\/div>/, (m, nl) => `</ul>${nl}${nl}    ${line}</div>`);
     }
+
+    /* --- トップの「最新の記事」 --- */
+    if (cls.kind === 'home') {
+      html = html.replace('<!-- latest -->', latestHtml(loaded[cls.lang].posts, cls.lang, upFrom(rel), coverOf));
+    }
+
+    /* --- 共通フッター（?from= の付与より前に差し替え、フッターの問い合わせ導線にも出所を付ける） --- */
+    html = html.replace(/<footer>[\s\S]*?<\/footer>/,
+      footerHtml(cls.lang, cls.kind === 'notfound' ? '/' : upFrom(rel), cls.kind === 'home'));
 
     /* --- 問い合わせの出所 ---
        どの記事を読んで相談に至ったのかが、届くメールの本文で分かるようにする。
@@ -706,6 +843,8 @@ function finish(loaded, tagPages) {
        トップ自身の導線は「#contact」なので、ここでは書き換わらない。 */
     html = html.replace(/href="([^"]*index\.html)#contact"/g,
       (m, to) => `href="${to}?from=${rel.split('/').map(encodeURIComponent).join('/')}#contact"`);
+
+    html = stampAssets(html);
 
     /* --- head --- */
     html = seo.enhanceHead(html, desc, cls, {
@@ -877,7 +1016,7 @@ function main() {
   fs.writeFileSync(path.join(OUT, '404.html'), notFoundHtml());
 
   const { pageCount } = finish(loaded, tagPages);
-  console.log(`_site/ を生成（HTML ${pageCount} ページ、タグ一覧 ja:${tagPages.ja.size} en:${tagPages.en.size}、OGP画像 ${pageCount + 1} 枚）`);
+  console.log(`_site/ を生成（HTML ${pageCount} ページ、タグ一覧 ja:${tagPages.ja.size} en:${tagPages.en.size}、OGP画像は同梱の ${COVERS} 枚から割り当て）`);
 
   /* 仕上がりの検査。ここで落ちたら配信しない */
   const result = audit(OUT);

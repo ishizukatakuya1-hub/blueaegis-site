@@ -2,6 +2,15 @@
 
 作成: 2026年8月22日 / 前セッション（Claude Code）から新規セッションへ
 
+**このリポジトリは public。** 公開すると実害が出る部分（出願と記事の対応、未出願案件の分野、
+同一商号の別法人、ローカル環境、下流の運用システム、社内の作業待ち）は `HANDOVER.private.md` に
+分離してある。**リポジトリには入らない**（`.gitignore` 済み）ので、手元の作業フォルダ直下に置くこと。
+ここに書き戻さないこと。
+
+**要点は `CLAUDE.md`（リポジトリ直下）にもある。** あちらはセッション開始時に自動で読まれるので、
+§4 の地雷と触るときの決まりだけを抜き出してある。**このファイルが正本**なので、方針を変えたときは
+両方を直すこと。
+
 未着手の依頼は **§8 SEO自動化** です。それ以外は現状の把握と、踏んではいけない地雷の共有が目的です。
 
 ---
@@ -14,7 +23,6 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 |---|---|
 | 公開URL | https://blueaegis.co.jp/ |
 | リポジトリ | https://github.com/ishizukatakuya1-hub/blueaegis-site |
-| ローカル | `C:\Users\user\Desktop\Clodecodeapp\blueaegis-site` |
 | デフォルトブランチ | `main` |
 | ビルド | `node tools/build.js` → `_site/`（依存パッケージなし） |
 | 配信 | `.github/workflows/pages.yml`（mainへのpushで自動） |
@@ -51,7 +59,7 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 /blog/feed.xml       RSS（日本語）
 /en/blog/feed.xml    RSS（英語）
 /blog/tags/<タグ>.html  同じタグが3本たまると自動生成
-/og/*.png            ページごとのOGP画像＋発行元ロゴ
+/img/og/             OGP画像（同梱の12枚）＋発行元ロゴ
 ```
 
 `style.css` と `script.js` は全ページ共通。英語版の差分は `html[lang="en"]` で上書きしている。
@@ -77,27 +85,32 @@ Blue Aegis株式会社（知的財産のライセンス事業＋規制対応技�
 
 ### 下流：Media Empire OS への展開（2026年8月22日）
 
-公開した記事は `Clodecodeapp/模擬会社/事業開発部/メディア統合運用システム`（Media Empire OS）が
-**RSS経由で取り込み**、X・note・LinkedIn など12媒体へリパーパスする。
+公開した記事は、社内の運用システムが**RSS経由で取り込み**、複数のSNS・記事媒体へリパーパスする。
+取り込む側の所在と設定は `HANDOVER.private.md` にある。
 
-- 連携は**一方向（サイト → OS）**。OSはlocalhostでしか動かず外から到達できないので、OS側から
+- 連携は**一方向（サイト → 運用システム）**。向こうは社内でしか動かないので、向こうから
   フィードを取りに行く。**このリポジトリ側には何も要らない**
-- OSは要約＋記事リンクだけを各媒体へ流す（本文は転載しない）。正規URLをこのサイトに集めるため
-- **フィードのURL・形式を変えるとこの連携が黙って止まる。** 変えるときはOS側の
-  `lib/siteimport.js` の `FEEDS` も直すこと
+- 流すのは要約＋記事リンクだけで、本文は転載しない。正規URLをこのサイトに集めるため
+- **フィードのURL・形式を変えるとこの連携が黙って止まる。** 変えるときは取り込む側の登録も直すこと
 
 **フィードは系統ごとに4本ある。** 読者が違うので混ぜていない。
 
-| フィード | 中身 | OS側の登録 |
+| フィード | 中身 | 取り込み側の登録 |
 |---|---|---|
 | `/blog/feed.xml` | AI活用・生産性（日次・自動掲載） | 済 |
 | `/en/blog/feed.xml` | 同・英語 | 済 |
-| `/insights/feed.xml` | 規制解説（日本語） | **★未登録。足すこと** |
-| `/en/insights/feed.xml` | 規制解説（英語） | **★未登録。足すこと** |
+| `/insights/feed.xml` | 規制解説（日本語） | 済（2026-08-22） |
+| `/en/insights/feed.xml` | 規制解説（英語） | 済（2026-08-22） |
 
-規制解説のフィードは2026年8月22日に新設した。**それまで12媒体へ流れていたのはブログだけで、
+規制解説のフィードは2026年8月22日に新設した。**それまで流れていたのはブログだけで、
 ライセンスを検討しうる法務・知財・コンプライアンス層に届く規制解説は1本も流れていなかった。**
-OS側の `lib/siteimport.js` の `FEEDS` に上記2本を足すと、そこが埋まる。
+同日、取り込む側にも2本を登録して埋めた。
+
+**規制解説には `<category>` が無い。** ブログのタグはfrontmatter由来だが、規制解説は手書きHTMLで
+タグを持たないため。そのままだと全記事が既定の分類に落ちるので、**取り込む側がフィード単位で
+分類とハッシュタグを宣言している**。記事ごとに内容から言い当てているのではない。
+ここにタグを出すようにするなら、記事の `<category>` が向こうの宣言より優先されるので、
+先に取り込む側の想定を確かめること。
 
 規制解説は手書きだが、フィードは出力したHTMLから数え上げて作る（`tools/build.js` の
 `writeFeeds`）。記事を1本足せばフィードにも載るので、載せ忘れる経路がない。
@@ -110,26 +123,22 @@ OS側の `lib/siteimport.js` の `FEEDS` に上記2本を足すと、そこが�
 
 ### 4-1. 自社の将来出願に対する先行技術
 
-**これが最重要。** この会社は特許出願を149件保有し（2026年11月27日時点、うち1件が登録済み）、多くが国内優先権・分割・PCTの選択肢を残したまま係属中。
+**これが最重要。** この会社は多数の特許出願を保有し、その多くが国内優先権・分割・PCTの選択肢を残したまま係属中。
 
 **記事に「解決の仕組み」を書くと、自社公開が将来の追加出願に対する先行技術になる。** 国内優先権で新たな内容を追加する場合、追加部分は後の出願日で判断されるため。
 
 **確立した方針：規制の内容と事業者が直面する課題までを書き、解決の仕組みは書かない。** 締めは「運用でしのぐか、仕組みで担保するか」という一般論に統一している。
 
-実際に一度違反しており、EU AI法の記事から「確認できなかった状態を成功とも失敗とも区別して記録する」という記述を削除した（CP01・特願2026-082900の国優期限2027-05-15の選択肢を守るため）。
+実際に一度違反しており、EU AI法の記事から、係属中の出願の選択肢を狭めうる記述を1文削除した。
 
-関係する出願と期限：
-
-| 記事 | 対応する出願 | 守るべき期限 |
-|---|---|---|
-| EU AI法 | CP01 特願2026-082900 | 国優 2027-05-15 |
-| 犯収法 | KY01 特願2026-187663 | 国優 2027-08-12 |
-| 住宅SN法 | LV06 特願2026-187529 | 国優 2027-08-11 |
-| EUDIウォレット | DI01 特願2026-188326 | PCT 2027-08-13（EP移行前提） |
+**どの記事がどの出願に対応し、いつまでに何を守るのかは `HANDOVER.private.md` にある。**
+記事を書くとき・既存の記事を直すときは、必ずそちらを先に開くこと。出願番号と期限をここに書き戻さない。
 
 ### 4-2. 未出願案件の分野を書かない
 
-未送信の出願が4件ある（物流実績報告・クロスメディア視聴者測定・リコール・廃棄検証）。**これらの分野は技術領域にも記事にも一切書いていない。** 引例を作られる、または先に出願される実害があるため。
+未送信の出願が4件ある。**該当する分野は技術領域にも記事にも一切書いていない。** 引例を作られる、または先に出願される実害があるため。
+
+**分野名は `HANDOVER.private.md` にある。ここにも記事にも書かない。**
 
 ### 4-3. 事実の裏取り
 
@@ -161,7 +170,7 @@ preview_start { name: "blueaegis-build" }  → http://localhost:4891（_site/）
 preview_start { name: "blueaegis-build-4892" } → http://localhost:4892
 ```
 
-`launch.json` の実体は `Clodecodeapp/.claude/launch.json`（リポジトリの中ではない）。
+`launch.json` の実体はリポジトリの外（作業フォルダの親の `.claude/launch.json`）にある。
 別のチャットが同じ名前・同じポートでサーバーを動かしていると `preview_start` は失敗するので、名前とポートを変えた項目を足す。
 
 **リンク切れ・重複・構造化データ・OGP画像の実在・フェードイン対象のずれは、`node tools/build.js` の検査が見る。**
@@ -224,14 +233,15 @@ gh api repos/ishizukatakuya1-hub/blueaegis-site/pages   # 証明書状態の確�
 gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=true
 ```
 
-`gh` は `C:\Program Files\GitHub CLI\gh.exe`。認証済み（`ishizukatakuya1-hub`）。
+`gh` は認証済み（`ishizukatakuya1-hub`）。実行ファイルの場所は `HANDOVER.private.md`。
 
 ### ユーザー作業待ち
 
-1. GitHubトークンをCowork側に受け渡し、テストPRで通し確認（期限2026-11-20）
-2. 契約書・取締役決定書の押印（3点）
-3. 名刺の入稿（電話番号を載せるかの判断が先）
-4. Search Consoleの所有権確認 — TXTレコードは反映済み。サイトマップは送信済みとのこと
+サイトに関するもの（Search Console の所有権確認・サイトマップ送信）は対応済み。
+社内側の手続き（トークンの受け渡し、押印、名刺）は `HANDOVER.private.md` に移した。
+
+残っているのは Cloudflare の解析用APIトークンの発行と、環境変数 `CF_API_TOKEN` への設定
+（`tools/analytics.js` を動かすのに要る。§8-5）。
 
 ### 私（Claude）側の残作業
 
@@ -262,8 +272,7 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 |---|---|
 | `tools/build.js` | 記事の読込・検証・ページ生成・仕上げの統括 |
 | `tools/lib/seo.js` | 構造化データ、head への注入、サイトマップ、RSS |
-| `tools/lib/ogimage.js` | OGP画像の版面 |
-| `tools/lib/png.js` | PNG書き出しと描画（zlibのみ。外部依存なし） |
+| `tools/ogcover.html` / `tools/ogcover.ps1` | OGP画像の版面と書き出し（ビルド外。§8-10） |
 | `tools/lib/audit.js` | 出来上がったサイトの検査 |
 
 **要点は「仕上げ（`finish()`）が `_site` の全HTMLを1枚ずつ通る」こと。** 手で書いたページも生成したページも同じ経路を通るので、新しいページを足したときに構造化データやOGP画像を付け忘れることがない。ページ一覧はどこにも手で持っていない。
@@ -271,7 +280,7 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 ### 入るもの
 
 - **JSON-LD**: Organization / WebSite / BreadcrumbList / Article・BlogPosting / CollectionPage。記事の出典URLは `citation` に入る
-- **OGP画像**: `/og/` にページごと1枚。1200×630、日付入り、盾の強調帯が slug から決まるので記事ごとに絵が違う
+- **OGP画像**: `/img/og/` に同梱した12枚（1200×630、写真＋紺の重ね＋ロゴ）からページごとに1枚を割り当てる（§8-10）
 - **パンくず**: 記事の冒頭に自動で差し込む（表示・JSON-LD 両方）
 - **関連記事**: 記事の末尾に、タグの重なりが多い順で最大3本
 - **タグ一覧**: 同じタグが**3本**たまった時点で `/blog/tags/` に作られる（`TAG_PAGE_MIN`）。薄いページを量産しないための下限。見送ったタグはビルドログに出る
@@ -281,7 +290,7 @@ gh api -X PUT repos/ishizukatakuya1-hub/blueaegis-site/pages -F https_enforced=t
 
 ### 検査（ここで落ちたら配信されない）
 
-canonical の有無と自己一致／title・description の有無と重複／h1 が1個／img の alt／JSON-LD が壊れていないこと／og:image の実在／サイト内リンク切れ／言語版の相互参照／**CSSとJSのフェードイン対象のずれ**。
+canonical の有無と自己一致／title・description の有無と重複／h1 が1個／img の alt／JSON-LD が壊れていないこと／og:image の実在／サイト内リンク切れ／言語版の相互参照／**CSSとJSのフェードイン対象のずれ**／**相談ナビの台本とフォームのずれ**（§8-3）。
 
 最後の1つは §5 が警告している事故（全53要素が非表示のまま公開されかけた）を機械化したもの。`style.css` で `opacity:0` にした要素が `script.js` の対象に入っていなければビルドが落ちる。
 
@@ -325,7 +334,7 @@ canonical の有無と自己一致／title・description の有無と重複／h1
 - `.medialogo.sm` の下限 39px は、最小使用サイズ（ロゴタイプ併記 90px 幅）からの逆算。viewBox 380 のうち字面は x=304 までなので、幅114pxで字面90px。**これ以上小さくしない**
 - SVGの `id`（`shmlg`/`clmlg`/`shmsm`/`clmsm`）はヘッダのロゴ（`sh1`/`cl1`）と衝突しないようにしてある。1ページに同じ size を2つ置くとidが重複するので、置くなら関数側でidを振り分けること
 - 規制解説（`/insights/`）の `.kicker` は英字のまま。CSSは `.medialogo` にしか当たらないので巻き添えにならない
-- 320〜1600pxで実測済み（横スクロールなし、字面91px以上）。OGP画像（`ogimage.js`）の発行元ロゴは**まだ会社ロゴのまま**。ブログ記事のOGPだけMedia版にするかは未判断
+- 320〜1600pxで実測済み（横スクロールなし、字面91px以上）。OGP画像（§8-10）のロゴは**まだ会社ロゴのまま**。ブログ記事のOGPだけMedia版にするかは未判断
 
 
 ## 8-3. 問い合わせの相談ナビ（2026年8月22日 追加）
@@ -353,12 +362,17 @@ canonical の有無と自己一致／title・description の有無と重複／h1
 ### 台本を書き足すときの決まり
 
 - **選択肢の文は「困っている状況」までにする。解決の仕組みは書かない**（§4-1）
-- **未出願案件の分野を出さない**（§4-2）。物流実績報告・クロスメディア視聴者測定・リコール・廃棄検証
+- **未出願案件の分野を出さない**（§4-2。分野名は `HANDOVER.private.md`）
 - **日付・条番号を書かない。** 一次資料で裏を取る責任が生じる（§4-3）。実際、EU AI法の執行開始日は意図的に落としてある
-- `set` の値は**フォームのラジオの `value` と一字一句同じ**にすること。違うと黙って何も選ばれない。
-  ビルドの検査はここまで見ないので、`node tools/build.js` が通っても安心しないこと
+- `set` の値は**フォームのラジオの `value` と一字一句同じ**にすること。違うと黙って何も選ばれない
 - `body` を持たせた選択肢だけが自由記述欄に入る。「まだ具体的には決まっていない」には持たせていない
 - `next` の飛び先が `nodes` に無いと、その先へ進めなくなる
+
+**上の3つはビルドの検査が見るようになった（2026年8月30日）。** `audit.js` の `auditBotFlow()` が、
+`#botflow` を持つページごとに台本を読み、`set` の値をフォームのラジオの `value` と突き合わせ、
+`next` の飛び先・`first`・`final` への到達を確かめる。合わないと配信は止まる。
+フォームへ移るのは `kind` と `area` だけ（`script.js` の `fill()` が名前を直に持っている）なので、
+台本に別の名前を書くと検査が落ちる。どこからも辿れない節は警告として出る（止めない）。
 
 ### そのほか
 
@@ -367,6 +381,164 @@ canonical の有無と自己一致／title・description の有無と重複／h1
 - 台本が壊れていた場合、ナビは黙って出ない。フォーム単体で完結するので実害はない
 - JSが無効なら出ない（`.bot` は既定で `display:none`）
 - 280〜1280pxで実測済み（横スクロールなし、ボタンは44px以上）。日英とも通し動作を確認済み
+
+
+## 8-4. 指名検索「ブルーイージス」対策（2026年8月28日）
+
+同一商号の別法人が先行しており、Googleの「ブルーイージス」で当サイトが10位以内に出ていなかった。
+相手の詳細は `HANDOVER.private.md` にある。**サイトにもこのリポジトリにも書かない。**
+
+### 原因（実測）
+
+**サイト内に「ブルーイージス」という文字列が1件も無かった。** Google自身が「ブルーイージス株式会社」の検索結果に `含まれない: ブルー` と表示していた。インデックス自体は正常（`site:` で主要ページが出る）。Bingでは同じクエリで当サイトが1位だったので、Googleが語彙一致をより強く見ていると考えられる。
+
+### 入れたもの
+
+- トップの `title` `description` `og:title` に読みを併記。**title は表示幅66**（目安68）。ここを超える語を足さないこと
+- 会社概要に「読み：ブルーイージス」と法人番号の行
+- `seo.js` の `organization()` に `alternateName`（配列）と `identifier`（法人番号）。`finish()` が全HTMLを通るので404を除く**全49ページ**に乗る
+
+### ★§4-5 との関係
+
+**法人番号 `2010401200286` の掲載は 2026-08-28 のユーザー判断による、§4-5 の部分解除。** 同一商号の別法人と機械的に区別できる唯一の識別子であるため、この1項目だけ解禁した。**代表者名・所在地は引き続き伏せる。** `organization()` に `address` や `founder` を足さないこと。
+
+### やっていないこと（意図的）
+
+- 同名の別法人への言及は**サイトにもこのリポジトリにも書かない**（2026-08-28 ユーザー判断）
+- 相手の商号を狙ったページや比較コンテンツは作らない。会社法8条・不正競争防止法2条1項1号/2号のリスクが出る側なので、自社の指名検索を取り返す範囲に留める
+
+### 残り（ユーザー側）
+
+Search Console で `https://blueaegis.co.jp/` をURL検査 → インデックス登録をリクエストすると、変えた title の反映が早い。順位の実測も Search Console の検索クエリで見るのが正確（このセッションの順位確認はブラウザ実測なので地域・パーソナライズの影響を受けている可能性がある）。
+
+## 8-5. アクセス数の読み出し（2026年9月2日 追加）
+
+サイトの計測は Cloudflare Web Analytics（beacon）。**数値は Cloudflare 側にしか無く、リポジトリには一切保存していない。** 読み出し口が `tools/analytics.js`。
+
+```bash
+node tools/analytics.js            # 直近7日。日別・ページ別・参照元・国
+node tools/analytics.js --days=30  # 期間を変える
+node tools/analytics.js --json     # 他の処理に渡す用
+node tools/analytics.js --schema   # 項目名の食い違いを疑うとき
+```
+
+Web Analytics も GraphQL Analytics API も Free プランに含まれる。追加料金は発生しない。
+
+### 動かすのに要るもの
+
+環境変数 `CF_API_TOKEN` のみ（権限は アカウント → Analytics → 読み取り だけで足りる）。`CF_ACCOUNT_ID` と `CF_SITE_TAG` は省略時に自動で引く。
+
+**このAPIトークンは §4-4 の例外にあたらない。** 例外は beacon に埋め込む公開値のほうで、こちらはアカウントの解析を読める資格情報。会話に貼らず、環境変数に直接設定すること。
+
+### 触るときの注意
+
+- beacon のトークンは `tools/build.js` の `ANALYTICS` が唯一の出どころ。`analytics.js` はそこから読むので、**二重に書かないこと**
+- beacon に入っているのは `site_token`。GraphQL の絞り込みに使う `site_tag` は別の値なので、`rum/site_info/list` で突き合わせている
+- Cookie を使わない集計なので、個人単位の行動は元々記録されていない（privacy.html の記載と揃えること）
+- アクセスが多い期間は標本化がかかる。数値は概算として扱う
+
+
+## 8-6. トップページの写真とアイコン（2026年10月2日 追加）
+
+`/` と `/en/` に背景写真4か所と線画アイコンを足した。CSSは共通（`style.css` の「写真の帯」「線画アイコン」「盾の帯モチーフ」節）。
+
+| 場所 | ファイル | 写真（Unsplash） | 撮影者 |
+|---|---|---|---|
+| Hero 背景 | `img/hero-{2000,1000}.webp` | https://unsplash.com/photos/ht-WIVMGzoI | Robert Stump |
+| 帯1（MESSAGE の後） | `img/band1-{2000,1000}.webp` | https://unsplash.com/photos/WXwQ-wj-g9Q | Vojtech Bruzek |
+| 帯2（LICENSING の前） | `img/band2-{2000,1000}.webp` | https://unsplash.com/photos/T5nXYXCf50I | Maarten Deckers |
+| CREED 背景 | `img/creed-{2000,1000}.webp` | https://unsplash.com/photos/Q2YT0CewXqw | Emiel Maters |
+
+- **ライセンスはすべて Unsplash License（無料・商用可・表記不要）。** 2026-10-02 に API で `premium:false / plus:false` を確認して取得した。**Unsplash+ の写真（透かし入り）は使わない**
+- 取得は `images.unsplash.com/<photo>?fm=webp&q=70&fit=max&w=2000|1000`。変換ツールは使っていない。760px 以下では 1000px 版に切り替わる
+- 写真を差し替えるときも**装置・画面・図解が写ったものは選ばない**（§4-1。仕組みを暗示しない）。建築・空・海に留めている
+- 帯（`.photoband`）は装飾なので `aria-hidden`。フェードイン対象ではないので `script.js` の `SEL` は触っていない。固定背景（視差）は 881px 以上かつ動きを望む利用者だけ
+- アイコン（`.ico`）はインラインSVG。**公開済みの事業4つ・技術領域6つにだけ**付けている。分野を増やすときは §4-2 を先に確認すること
+- 英語版の事業内容はゲームのカードがない（3枚）ので、アイコンも9個
+
+
+## 8-7. 見出しの明朝体（2026年10月2日 追加、同日 全ページ化）
+
+見出しを明朝にし、余白を広げた。最初はトップ（`body.home`）だけだったが、同日 §8-9 でブログ・規制解説にも広げた。
+
+- 書体は **Shippori Mincho 600（SIL Open Font License 1.1）**。Google Fonts が配信している「字の範囲（unicode-range）ごとの分割 woff2」122 個（計 約3.6MB）を `fonts/shippori-mincho-600/` に**そのまま同梱**。ブラウザは表示する字が入っている分割だけを読む（実測：記事1ページで29ファイル・約124KB）。実行時に外部から読まない
+- `style.css` の `/* mincho:begin */ 〜 /* mincho:end */` の間は **`node tools/fontsubset.js` が書き換える**。手で直さない。記事が増えても作り直しは不要（書体を変えるときだけ実行する）。ビルドには組み込んでいない
+- 当初の「トップの見出しの字だけのサブセット＋足りない字の警告」（`fontchars.js` / `auditFontSubset`）は、自動掲載で字が毎日増えるブログに広げられないので撤去した
+- **かなの詰め（palt）はこの書体には無い**（指定しても幅が変わらないことを実測）。約物の詰めは `text-spacing-trim` で行っている
+- 英字の小見出しの「01 —」は CSS カウンター（トップのみ）。背景の大きな英字は `data-word` を持つ section の擬似要素（トップの各節、ブログ一覧・タグ一覧は MEDIA、規制解説一覧は INSIGHTS）。読み上げ・選択の対象外
+- 背景の英字は右下。右上は §8-6 の盾の帯模様が使っている
+
+
+## 8-8. トップの Hero と細部の動き（2026年10月2日 追加）
+
+`style.css` の「トップの Hero と細部」節と、`script.js` 末尾の2つの IIFE。すべて `body.home` だけ。
+
+- **Hero**：画面いっぱい（881px 以上 `100svh`、それ未満 `78svh`）。写真は `.hero::before`、紺の重ねは `::after`。写真は18秒かけて1.08倍まで寄る（ケンバーンズ。動きを望む利用者のみ）
+- **透明ヘッダー（881px 以上のみ）**：`script.js` が Hero の上にいる間だけ `header.over` を付け、そのときだけ透明・白抜きロゴになる
+  - **既定は白。逆にしないこと。** 「既定を透明にして、抜けたら白に戻す印を付ける」作りだと、古い `script.js` がキャッシュに残った利用者に、白い背景の上で透明なヘッダー（ロゴもナビも見えない）が出る。実装中に実際に起きた
+  - 開いた直後の1回だけ `header.nofx` を付けて、白→透明の切り替えをちらつかせない
+  - 880px 以下はナビが折り返して背が高いので、重ねずに従来の白いヘッダーのまま
+- **140 のカウントアップ**：HTML は 140 のまま。動きを望む利用者だけ、0 から 1.4 秒で上げる。動いている間は `aria-hidden`
+- **事業カードの浮き上がり**：マウス操作の端末かつ動きを望む利用者だけ。`.card` はフェードインで `.js .in{transform:none !important}` がかかるため、**`transform` ではなく `translate` プロパティ**で動かしている
+- **帯のすりガラスのパネル**（`.bandcopy`）：文言は MESSAGE 本文の要約（2026-10-02 ユーザー選定）。新しい主張や仕組みの説明は載せない（§4-1）
+  - 帯1「立証を、運用ではなく仕組みで。」／ Proof by design, not by procedure.
+  - 帯2「権利を行使するのではなく、実施を可能にする。」／ We earn by enabling use, not by enforcing rights.
+  - 明朝は分割フォント（§8-7）なので、文言を変えてもフォントの作り直しは要らない
+- **MESSAGE の本文・引用の幅は見出しの文字の幅に揃える**（2026-10-02 ユーザー指定）。`.message .wrap` を `fit-content` の1列グリッドにし、本文と引用は `contain:inline-size` で列幅の計算に加えない
+  - 英語の見出しは1行に収まらないので、英語版は列の上限を日本語版の見出しの長さ（日本語 `.lead` の字の大きさ×22.9）にして日本語版と同じ幅にしている。日本語の見出しを変えたらこの係数も見直す
+
+
+## 8-9. サイト全体の質感・最新の記事・共通フッター（2026年10月2日 追加）
+
+トップで作った質感をブログ・規制解説にも広げ、トップに最新の記事、全ページに共通フッターを足した。`style.css` 末尾の「サイト全体の質感」節と、`tools/build.js` の `footerHtml` / `latestHtml`（`finish()` の中で使う）。
+
+- **明朝の見出しは全ページ**：一覧の `h1.lead`、規制解説の `.eyebrow`、記事の h1・h2、記事末の `.cta` の文。本文と一覧の記事名（`.postlist h3`）はゴシックのまま。見出しは `word-break:auto-phrase` で文節で折る
+- **一覧の余白**はトップと同じ。一覧の記事行はマウスで指すと右へ少し寄る（`translate`。動きを望む利用者・マウス端末のみ）
+- **トップの「最新の記事」**：`index.html` / `en/index.html` の `<section id="journal">` にある `<!-- latest -->` を、`finish()` がその言語の新しい順3本のカードに置き換える。画像は同梱の写真（`img/cover/cNN.webp`、§8-10）。記事が自動掲載されるたびにトップも新しくなる。手元で `_site` を見ないとカードは出ない（原稿は空の枠）
+- **共通フッター**：全ページの `<footer>…</footer>` を `finish()` が `footerHtml(lang, up, home)` に差し替える。**手書き32ファイルと `page()` の `<footer>` は原稿として残っているが、配信物には出ない。** フッターを直すときは `footerHtml` と `FOOT` だけを直す
+  - privacy / disclaimer へのリンクは検査（POLICY_PAGES）が求めるので外さない
+  - 差し替えは問い合わせの出所（`?from=`）の付与より前。トップ自身ではページ内リンクを `#id` で書き、`?from=` が付かないようにしている
+  - フッターの案内も `<nav>` なので、ヘッダー用の `nav` / `nav a` の指定（右寄せ・中央揃え・折り返し禁止）を `.fnav` で打ち消している。記事のパンくず（これも `<nav>`）が右に寄っていた既存の不具合も同じ原因で、左寄せに直した
+- **ページ切り替え**：`@view-transition{navigation:auto}` で、サイト内の移動時に0.25秒のクロスフェード（対応ブラウザのみ。動きを望まない利用者には付けない）
+- **規制解説一覧の RSS 行**：`finish()` の置換が `\n` 決め打ちで、CRLF の手書き一覧に入っていなかった。`\r?\n` に直して日英とも出るようにした
+
+
+## 8-10. カードと共有カードの写真（2026年10月9日 追加）
+
+トップの「最新の記事」と OGP 画像を、ドット書体の自作 PNG から**写真＋紺の重ね**に替えた（2026-10-09 ユーザー決定）。
+ビルドで絵を描くのをやめ、**事前に作って同梱した12枚から割り当てるだけ**にしている。`tools/lib/ogimage.js` と `tools/lib/png.js` は削除した。
+
+| 用途 | ファイル | 中身 |
+|---|---|---|
+| トップのカード | `img/cover/c01〜c12.webp` | 800×420、文字なし。紺の重ねと彩度は CSS（`.journal .ph`） |
+| 共有カード（og:image） | `img/og/c01〜c12.jpg` | 1200×630。写真＋紺の重ね＋白抜きの会社ロゴ＋タグライン＋ドメインを焼き込み済み |
+| 発行元ロゴ（構造化データ） | `img/og/logo.png` | 512×512、紺地に白抜きロゴ |
+
+- **割り当ては `tools/build.js` の `coverPicker()`。** ブログ記事は言語ごとに古い順の通し番号を12で割った余り（並んだ記事が同じ写真にならず、記事が増えても既存の記事の写真は変わらない）。それ以外のページはパスのハッシュ。カードと共有カードは同じ番号＝同じ写真
+- **記事の途中に過去日付の記事を差し込む・記事を消すと、それより新しい記事の写真が1つずつずれる。** 表示は壊れないが、SNS 側に残った古いカードと食い違う
+- 共有カードにページ固有の文字（区分・日付）は載せていない。記事名は `og:title` で伝わる。ロゴは会社ロゴ（ブログだけ Media 版にするかは §8-2 のとおり未判断）
+- **写真を増やす・減らすときは `COVERS` の数も直す。** 番号は `c01` から連番で欠番を作らない（欠けると og:image の実在検査が落ちる）
+- **作り直し方**（ビルドには組み込んでいない。Windows 専用）：
+  1. カード用を `images.unsplash.com/<photo>?fm=webp&q=70&fit=crop&w=800&h=420` で `img/cover/cNN.webp` に取る
+  2. 合成用を `…?fm=webp&q=82&fit=crop&w=1200&h=630` で、リポジトリの外のフォルダに `cNN.webp` の名前で取る
+  3. `powershell -ExecutionPolicy Bypass -File tools/ogcover.ps1 -Src <2のフォルダ>`。Edge のヘッドレスで `tools/ogcover.html`（版面）を撮り、JPEG にして `img/og/` に書く
+  - `ogcover.ps1` は **BOM 付き UTF-8** で保存する。BOM が無いと Windows PowerShell 5.1 が日本語のコメントを読み違えて構文エラーになる
+- 写真の基準は §8-6 と同じ（**装置・画面・図解・人物は選ばない**。建築・空・海）。すべて Unsplash License。2026-10-09 に検索 API の応答で `premium:false / plus:false` を確認して取得した
+
+| 番号 | 写真（Unsplash） | 撮影者 |
+|---|---|---|
+| c01 | https://unsplash.com/photos/c8hi_P21Rn4 | Parrish Freeman |
+| c02 | https://unsplash.com/photos/IZ01rjX0XQA | Thomas Vimare |
+| c03 | https://unsplash.com/photos/688Fna1pwOQ | Julien Moreau |
+| c04 | https://unsplash.com/photos/29W9RscuUMw | Parrish Freeman |
+| c05 | https://unsplash.com/photos/fYO1T495QCM | Christian Perner |
+| c06 | https://unsplash.com/photos/k0Ynnf2CbKw | Pierre Leverrier |
+| c07 | https://unsplash.com/photos/D1S4F_SKY2I | Joel Filipe |
+| c08 | https://unsplash.com/photos/FIKD9t5_5zQ | Dominik Schröder |
+| c09 | https://unsplash.com/photos/ugcwlC0LQtQ | Florian Krumm |
+| c10 | https://unsplash.com/photos/_XVE6pKGiLE | Yasin Arıbuğa |
+| c11 | https://unsplash.com/photos/b1f10PFTD1U | Willian Justen de Vasconcellos |
+| c12 | https://unsplash.com/photos/nv7WX42LKjU | Paxson Woelber |
 
 
 ## 9. ユーザーとのやり取りで守ること
@@ -382,8 +554,6 @@ canonical の有無と自己一致／title・description の有無と重複／h1
 
 | 内容 | 場所 |
 |---|---|
-| 会社の全体像・特許ポートフォリオ | `C:\Users\user\.claude\projects\C--Users-user-Desktop-Clodecodeapp\memory\MEMORY.md` |
-| 統括顧問契約・名刺・メール設定 | 同上 `project_blueaegis_mandate_advisor_2026_08_21.md` |
-| ブランドガイドライン | `法人設立_BlueAegis/02_企業イメージ_ブランドガイドライン.md` |
-| 特許ポートフォリオ正典 | `模擬会社/知財部/特許/CLAUDE.md` |
-| 記事連携の契約 | `blueaegis-site/PUBLISHING.md` |
+| 記事連携の契約 | `PUBLISHING.md`（このリポジトリ） |
+| セッション開始時に読まれる要点 | `CLAUDE.md`（このリポジトリ） |
+| 出願・契約・ブランド・ローカル環境の正本の所在 | `HANDOVER.private.md`（リポジトリには入らない） |

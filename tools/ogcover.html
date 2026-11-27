@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>OGP cover</title>
+<!--
+  OGP画像（img/og/cNN.jpg）と発行元ロゴ（img/og/logo.png）の版面。
+  ビルドには組み込んでいない。tools/ogcover.ps1 が Edge のヘッドレスでこのページを撮る。
+
+    ?src=<写真のURL>   1200×630 の共有カード（写真＋紺の重ね＋白抜きロゴ）
+    ?logo=1            512×512 の発行元ロゴ（紺地に白抜き）
+
+  ロゴは tools/build.js の LOGO と同じ形。色は style.css の header.over（白抜き）と同じ値。
+  ページ固有の文字（記事名・日付）は載せない。記事名は og:title で伝わる。
+-->
+<style>
+  html,body{margin:0; background:#0A2A4F}
+  body{font-family:Arial,Helvetica,sans-serif; color:#FFFFFF; overflow:hidden}
+
+  .card{position:relative; width:1200px; height:630px; overflow:hidden; background:#0A2A4F}
+  .card .ph{position:absolute; inset:0; background:center/cover no-repeat; filter:saturate(.85)}
+  /* トップの Hero と同じ向きの重ね。字を置く左を濃く、右に写真を残す */
+  .card::after{content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(90deg,rgba(10,42,79,.95) 0%,rgba(10,42,79,.88) 42%,rgba(10,42,79,.38) 100%),
+      linear-gradient(0deg,rgba(7,30,58,.45) 0%,rgba(7,30,58,0) 45%)}
+  .card .in{position:absolute; z-index:1; left:88px; right:88px; top:0; bottom:0;
+    display:flex; flex-direction:column; justify-content:center}
+  .card svg{display:block; width:520px; height:auto; margin-left:-16px}
+  .card .tag{margin:26px 0 0; font-size:21px; letter-spacing:.3em; color:#C9D8E8}
+  .card .foot{position:absolute; left:0; right:0; bottom:60px; padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.28);
+    font-size:18px; letter-spacing:.22em; color:#9FB3C8}
+
+  .logo{width:512px; height:512px; display:flex; align-items:center; justify-content:center; background:#0A2A4F}
+  /* viewBox の右に余白があるので、絵の中心が正方形の中心に来るよう寄せる */
+  .logo svg{display:block; width:400px; height:auto; translate:34px 0}
+</style>
+</head>
+<body>
+<template id="mark">
+  <svg viewBox="0 0 380 130" aria-hidden="true">
+    <defs>
+      <path id="sh" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+      <clipPath id="cl"><use href="#sh"/></clipPath>
+    </defs>
+    <g transform="translate(0,6) scale(0.82)">
+      <g clip-path="url(#cl)">
+        <rect x="0" y="8" width="120" height="22" fill="#FFFFFF"/>
+        <rect x="0" y="36" width="120" height="22" fill="#FFFFFF"/>
+        <rect x="0" y="64" width="120" height="22" fill="#4FB3D9"/>
+        <rect x="0" y="92" width="120" height="22" fill="#FFFFFF"/>
+        <rect x="0" y="120" width="120" height="20" fill="#FFFFFF"/>
+      </g>
+    </g>
+    <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#FFFFFF">blue<tspan fill="#4FB3D9">aegis</tspan></text>
+    <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#9FB3C8">Blue Aegis Inc.</text>
+  </svg>
+</template>
+<script>
+  var q = new URLSearchParams(location.search);
+  var mark = document.getElementById('mark').innerHTML;
+  if (q.get('logo')) {
+    document.body.insertAdjacentHTML('beforeend', '<div class="logo">' + mark + '</div>');
+  } else {
+    document.body.insertAdjacentHTML('beforeend',
+      '<div class="card"><div class="ph"></div><div class="in">' + mark +
+      '<p class="tag">THE SHIELD FOR THE INTELLIGENT AGE</p>' +
+      '<div class="foot">BLUEAEGIS.CO.JP</div></div></div>');
+    document.querySelector('.ph').style.backgroundImage = 'url("' + (q.get('src') || '') + '")';
+  }
+</script>
+</body>
+</html>
