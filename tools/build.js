@@ -663,9 +663,11 @@ const FOOT = {
     label: 'サイト案内',
     cols: [
       ['会社', [['事業内容', 'index.html#business'], ['技術領域', 'index.html#domains'],
-                ['知的財産', 'index.html#portfolio'], ['ライセンス', 'index.html#licensing'], ['会社概要', 'index.html#company']]],
+                ['知的財産', 'index.html#portfolio'], ['登録済みの特許', 'patents.html'],
+                ['ライセンス', 'index.html#licensing'], ['会社概要', 'index.html#company']]],
       ['発信', [['ブログ', 'blog/index.html'], ['規制解説', 'insights/index.html'],
-                ['ブログの RSS', 'blog/feed.xml'], ['規制解説の RSS', 'insights/feed.xml']]],
+                ['ブログの RSS', 'blog/feed.xml'], ['規制解説の RSS', 'insights/feed.xml'],
+                ['登録済みの特許の RSS', 'patents/feed.xml']]],
       ['お問い合わせ', [['お問い合わせ', 'index.html#contact'], ['info@blueaegis.co.jp', 'mailto:info@blueaegis.co.jp']]],
     ],
     privacy: 'プライバシーポリシー', disclaimer: '免責事項',
@@ -675,9 +677,11 @@ const FOOT = {
     label: 'Site map',
     cols: [
       ['Company', [['What we do', 'index.html#business'], ['Where we work', 'index.html#domains'],
-                   ['Portfolio', 'index.html#portfolio'], ['Working with us', 'index.html#licensing'], ['Company information', 'index.html#company']]],
+                   ['Portfolio', 'index.html#portfolio'], ['Patents', 'patents.html'],
+                   ['Working with us', 'index.html#licensing'], ['Company information', 'index.html#company']]],
       ['Writing', [['Blog', 'blog/index.html'], ['Insights', 'insights/index.html'],
-                   ['Blog RSS', 'blog/feed.xml'], ['Insights RSS', 'insights/feed.xml']]],
+                   ['Blog RSS', 'blog/feed.xml'], ['Insights RSS', 'insights/feed.xml'],
+                   ['Patents RSS', 'patents/feed.xml']]],
       ['Contact', [['Contact us', 'index.html#contact'], ['info@blueaegis.co.jp', 'mailto:info@blueaegis.co.jp']]],
     ],
     privacy: 'Privacy Policy', disclaimer: 'Disclaimer',
@@ -908,6 +912,36 @@ function writeFeeds(loaded, pages, buildDate) {
       }));
     write(lang === 'en' ? 'en/insights' : 'insights',
           seo.buildFeed(insightItems, buildDate, lang, 'insights'));
+
+    /* 登録済みの特許。1枚のページに登録の順で積み上げるので、見出しの data- 属性から
+       数え上げる。特許を1件足せばフィードにも載るので、載せ忘れる経路がない。
+       data-pubdate を持たない見出し（まえがきなど）は item にしない。 */
+    const patRel = lang === 'en' ? 'en/patents.html' : 'patents.html';
+    const patPage = pages.find(p => p.rel === patRel);
+    if (patPage) {
+      const items = [];
+      const re = /<h2 id="([^"]+)"([^>]*)>([\s\S]*?)<\/h2>/g;
+      let m;
+      while ((m = re.exec(patPage.html)) !== null) {
+        const attr = n => (m[2].match(new RegExp(`${n}="([^"]*)"`)) || [, ''])[1];
+        const date = attr('data-pubdate');
+        if (!date) continue;
+        const name = seo.unesc(attr('data-name'));
+        const head = seo.unesc(m[3].replace(/<[^>]*>/g, '').trim());
+        items.push({
+          title: name ? `${head} ― ${name}` : head,
+          url: `${BASE}/${patRel}#${m[1]}`,
+          date,
+          description: seo.unesc(attr('data-summary')),
+          categories: [],
+        });
+      }
+      items.sort((a, b) => (a.date < b.date ? 1 : -1));
+      if (items.length) {
+        write(lang === 'en' ? 'en/patents' : 'patents',
+              seo.buildFeed(items, buildDate, lang, 'patents'));
+      }
+    }
   }
 }
 
