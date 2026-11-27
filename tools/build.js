@@ -263,7 +263,7 @@ const ANALYTICS = `<!-- Cloudflare Web Analytics --><script defer src='https://s
 const T = {
   ja: {
     htmlLang: 'ja',
-    navBlog: 'ブログ', navInsights: '規制解説', navLicensing: 'ライセンス', navContact: 'お問い合わせ',
+    navBlog: 'ブログ', navInsights: '規制解説', navPatents: '登録済みの特許', navLicensing: 'ライセンス', navContact: 'お問い合わせ',
     navPrivacy: 'プライバシーポリシー', navDisclaimer: '免責事項',
     siteSuffix: '｜Blue Aegis Media',
     blogTitle: 'ブログ',
@@ -286,7 +286,7 @@ const T = {
   },
   en: {
     htmlLang: 'en',
-    navBlog: 'Blog', navInsights: 'Insights', navLicensing: 'Licensing', navContact: 'Contact',
+    navBlog: 'Blog', navInsights: 'Insights', navPatents: 'Patents', navLicensing: 'Licensing', navContact: 'Contact',
     navPrivacy: 'Privacy Policy', navDisclaimer: 'Disclaimer',
     siteSuffix: ' | Blue Aegis Media',
     blogTitle: 'Blog',
@@ -363,6 +363,7 @@ ${alt}<link rel="icon" href="${up}favicon.svg" type="image/svg+xml">
     <nav>
       <a href="${L}blog/index.html">${t.navBlog}</a>
       <a href="${L}insights/index.html">${t.navInsights}</a>
+      <a href="${L}patents.html">${t.navPatents}</a>
       <a href="${L}index.html#licensing">${t.navLicensing}</a>
       <a href="${L}index.html#contact">${t.navContact}</a>
     </nav>
