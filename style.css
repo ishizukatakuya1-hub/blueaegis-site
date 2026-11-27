@@ -825,3 +825,45 @@ html[lang="en"] .fhead{letter-spacing:.04em}
   @view-transition{navigation:auto}
   ::view-transition-old(root), ::view-transition-new(root){animation-duration:.25s}
 }
+
+/* ---- 図解（登録済みの特許）----
+   公報の中身を文章だけで読ませると長いので、流れと時系列だけ図にする。
+   フェードイン対象にはしない（script.js の SEL に入れる必要がない）。
+   SVGではなくHTMLで組んでいるのは、狭い画面で文字が潰れないようにするため */
+.dgm{margin:0 0 42px}
+.dgm figcaption{margin:0 0 16px; font-size:13px; line-height:1.8; color:var(--slate)}
+.dgm-cols{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr)); gap:18px}
+.dgm-col{background:var(--white); border:1px solid var(--rule); border-radius:4px; padding:22px 22px 24px; align-self:start}
+.dgm-col.now{border-color:var(--blue)}
+.dgm-col h3{margin:0 0 16px; font-size:12.5px; font-weight:600; letter-spacing:.14em; color:var(--slate)}
+.dgm-col.now h3{color:var(--blue)}
+.dgm-col ol{list-style:none; margin:0; padding:0}
+.dgm-col li{position:relative; margin:0; padding:0 0 18px 26px; font-size:14px; line-height:1.75; color:var(--ink)}
+.dgm-col li:last-child{padding-bottom:0}
+.dgm-col li::before{
+  content:""; position:absolute; left:2px; top:7px; width:9px; height:9px;
+  border-radius:50%; background:var(--white); border:2px solid var(--rule);
+}
+.dgm-col.now li::before{border-color:var(--blue)}
+.dgm-col li:not(:last-child)::after{
+  content:""; position:absolute; left:6px; top:20px; bottom:0; width:1px; background:var(--rule);
+}
+.dgm-col li.fail{color:var(--slate)}
+.dgm-col li .sub{display:block; margin-top:5px; font-size:12.5px; font-weight:400; line-height:1.7; color:var(--slate)}
+.dgm-col li.start{padding-top:4px; padding-bottom:16px}
+.dgm-col li.start::before, .dgm-col li.start::after{content:none}
+.dgm-col li.start span{
+  display:block; padding-top:7px; border-top:1px dashed var(--blue);
+  font-size:11.5px; font-weight:600; letter-spacing:.12em; color:var(--blue);
+}
+.dgm-col li.end{font-weight:600; color:var(--navy)}
+
+.tl{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr)); gap:0;
+    border-top:2px solid var(--rule); margin:0 0 14px}
+.tl > div{position:relative; padding:18px 20px 0 0}
+.tl > div::before{content:""; position:absolute; top:-7px; left:0; width:12px; height:12px;
+  border-radius:50%; background:var(--paper); border:2px solid var(--rule)}
+.tl > div.hit::before{background:var(--blue); border-color:var(--blue)}
+.tl .d{display:block; font-size:12px; font-weight:600; letter-spacing:.06em; color:var(--slate)}
+.tl > div.hit .d{color:var(--blue)}
+.tl .t{display:block; margin-top:5px; font-size:13.5px; line-height:1.75; color:var(--ink)}

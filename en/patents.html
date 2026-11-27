@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registered patents｜Blue Aegis Inc.</title>
+<meta name="description" content="Patents we hold whose gazette is published. JP 7946311 derives, before verification starts, which identity verification methods a person can complete, and flags those for whom none is established.">
+<meta property="og:title" content="Registered patents｜Blue Aegis Inc.">
+<meta property="og:description" content="What each granted patent solves and where it applies, described within what the published gazette states.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://blueaegis.co.jp/en/patents.html">
+<link rel="canonical" href="https://blueaegis.co.jp/en/patents.html">
+<link rel="alternate" hreflang="en" href="https://blueaegis.co.jp/en/patents.html">
+<link rel="alternate" hreflang="ja" href="https://blueaegis.co.jp/patents.html">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap headbar">
+    <a href="index.html" style="display:block">
+      <svg viewBox="0 0 380 130" role="img" aria-label="Blue Aegis Inc.">
+        <defs>
+          <path id="sh1" d="M60 8 L108 26 V62 C108 92 88 116 60 134 C32 116 12 92 12 62 V26 Z"/>
+          <clipPath id="cl1"><use href="#sh1"/></clipPath>
+        </defs>
+        <g transform="translate(0,6) scale(0.82)">
+          <g clip-path="url(#cl1)">
+            <rect x="0" y="8" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="36" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="64" width="120" height="22" fill="#1E5FA8"/>
+            <rect x="0" y="92" width="120" height="22" fill="#0A2A4F"/>
+            <rect x="0" y="120" width="120" height="20" fill="#0A2A4F"/>
+          </g>
+        </g>
+        <text x="110" y="68" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="bold" letter-spacing="-1" fill="#0A2A4F">blue<tspan fill="#1E5FA8">aegis</tspan></text>
+        <text x="112" y="96" font-family="Arial,Helvetica,sans-serif" font-size="14" letter-spacing="3" fill="#6B7684">Blue Aegis Inc.</text>
+      </svg>
+    </a>
+    <nav>
+      <a href="blog/index.html">Blog</a>
+      <a href="insights/index.html">Insights</a>
+      <a href="index.html#domains">Domains</a>
+      <a href="index.html#licensing">Licensing</a>
+      <a href="index.html#contact">Contact</a>
+      <a class="lang" href="../patents.html" hreflang="ja">日本語</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">REGISTERED PATENTS</p>
+  <h1>Registered patents</h1>
+  <p class="meta">As of 27 November 2026</p>
+
+  <p>This page lists the rights we hold <strong>whose patent gazette has been published</strong>. Pending and unpublished applications are not listed here. What follows reflects the published gazette; the scope of the right is determined by the claims as published.</p>
+
+  <h2>JP Patent No. 7946311</h2>
+
+  <p><strong>System, method and program for deriving the executable set of identity verification methods and identifying the undetermined-alternative-route class</strong></p>
+
+  <div class="scroller">
+  <table>
+    <tr><th>Patent number</th><td>JP 7946311</td></tr>
+    <tr><th>Application</th><td>JP 2026-187663, filed 12 August 2026</td></tr>
+    <tr><th>Examination</th><td>Requested 17 September 2026 (accelerated examination)</td></tr>
+    <tr><th>Registered</th><td>29 October 2026</td></tr>
+    <tr><th>Gazette</th><td>13 November 2026</td></tr>
+    <tr><th>Claims</th><td>9</td></tr>
+    <tr><th>IPC</th><td>G06Q 50/26, G06Q 50/10</td></tr>
+  </table>
+  </div>
+
+  <h2>The problem it addresses</h2>
+
+  <p>Under Article 4 of Japan&rsquo;s Act on Prevention of Transfer of Criminal Proceeds, obliged businesses must verify customers at the time of a transaction. The permitted methods are <strong>exhaustively enumerated</strong> in Article 6 of the enforcement regulation, and a method outside that list cannot be used to fill a gap.</p>
+
+  <p>That list is being rewritten. An amending order promulgated on 24 June 2025 and effective 1 April 2027 abolishes the non-face-to-face method that combines an image of a photo identity document with an image of the person&rsquo;s face, on the ground that forged or altered documents make it too easy to impersonate someone. The remaining methods shift away from document images and towards reading the data recorded on an IC chip.</p>
+
+  <figure class="dgm">
+    <div class="tl">
+      <div><span class="d">24 June 2025</span><span class="t">The amending order is promulgated, reworking the non-face-to-face methods</span></div>
+      <div class="hit"><span class="d">29 October 2026</span><span class="t">Granted as JP Patent No. 7946311 (gazette 13 November 2026)</span></div>
+      <div><span class="d">1 April 2027</span><span class="t">It takes effect. Document image plus face image is abolished</span></div>
+    </div>
+    <figcaption>Roughly a year and ten months from promulgation to effect. We filed on 12 August 2026 and were granted seventeen months before the rules change.</figcaption>
+  </figure>
+
+  <p>As a result, <strong>there will structurally be people for whom none of the enumerated methods can be completed</strong>: those without a public electronic credential, those whose device cannot read one, those whose certificate has expired, those who cannot supply the PIN it requires. Whether any method survives for a given person, once several of these apply at once, cannot be known without checking that person&rsquo;s situation against the requirements of each method.</p>
+
+  <p>Conventional verification systems present the list of methods, let the person choose, and switch to another method when one fails partway. Under that design, the fact that no method can be completed <strong>only emerges after a sequence of failures</strong>. Where the rules do not allow a failed attempt to be supplemented, that late discovery means repeated procedures, tangled verification records, customers abandoning the process, and transactions left in limbo.</p>
+
+  <p>And because the list itself is amended repeatedly, unless you can later establish <strong>which version of the rules a given determination was made under</strong>, you cannot demonstrate that it was correct to an auditor or a regulator.</p>
+
+  <h2>What the patent covers</h2>
+
+  <figure class="dgm">
+    <div class="dgm-cols">
+      <div class="dgm-col">
+        <h3>CONVENTIONAL SYSTEM</h3>
+        <ol>
+          <li>Present the list of methods; the person picks one</li>
+          <li class="start"><span>VERIFICATION STARTS HERE</span></li>
+          <li class="fail">Run the chosen method — it fails</li>
+          <li class="fail">Switch to another method — it fails</li>
+          <li class="end">Only now: no method can be completed<span class="sub">Repeated procedures, tangled records, customers abandoning, transactions in limbo</span></li>
+        </ol>
+      </div>
+      <div class="dgm-col now">
+        <h3>THIS PATENT</h3>
+        <ol>
+          <li>Obtain the person's attributes and the means available to them</li>
+          <li>Check them against each method's requirements, recording which version of the rules applied</li>
+          <li>Derive the set of methods that can be completed. If it is empty, or the information is unsettled, place the person in the undetermined-alternative-route class<span class="sub">The basis for the determination is retained in a verifiable form</span></li>
+          <li class="start"><span>VERIFICATION STARTS HERE</span></li>
+          <li class="end">Run only a method that can actually be completed</li>
+        </ol>
+      </div>
+    </div>
+    <figcaption>The difference is when you learn that no method will work: after starting and failing, or before starting at all.</figcaption>
+  </figure>
+
+  <p>Claim 1, in outline: the system obtains information about the person&rsquo;s attributes and about which verification means are available to them (documents, electronic credentials, device capabilities, authentication information). <strong>Before verification is started</strong>, it checks these against the information defining each method&rsquo;s requirements, and derives the set of methods that can be completed for that person.</p>
+
+  <p>Where that set is empty, or where the attribute or means information is not settled enough to complete the check, the person is placed in the <strong>undetermined-alternative-route class</strong>. The system also retains a record of the basis for the determination — the version identifier used, paired with the items that were checked — <strong>in a form that allows the identity of that basis to be verified afterwards</strong>, and outputs it on request from an external system.</p>
+
+  <p>The dependent claims cover re-running the derivation for existing subjects when a new version of the rules is received and updating the class accordingly; outputting the cause of the classification and which items remain unsettled; generating control information that holds verification back from starting; ordering the presentation or execution of methods by expected completion, time and cost when more than one remains; and applying a hash, an electronic signature or a timestamp to the record of the basis so that tampering can be detected.</p>
+
+  <h2>Where it applies</h2>
+
+  <ul>
+    <li>Pre-flight determination for obliged businesses under the Act — banks and other financial institutions, crypto asset exchange providers, mobile carriers, second-hand dealers, real estate businesses</li>
+    <li>Working out, ahead of the 1 April 2027 effective date, where the current verification flow breaks and which customer segments can no longer be verified</li>
+    <li>Showing an auditor or a regulator which version of the rules a determination was made under, and which items were examined</li>
+    <li>Re-running past determinations against a new version of the rules when they are amended, and updating the classification</li>
+  </ul>
+
+  <h2>The full gazette</h2>
+
+  <p>The full text is available free of charge on the Industrial Property Digital Library operated by INPIT (the National Center for Industrial Property Information and Training).</p>
+
+  <p><a href="https://www.j-platpat.inpit.go.jp/c1801/PU/JP-7946311/15/en" target="_blank" rel="noopener">View JP Patent No. 7946311 on J-PlatPat (INPIT) →</a></p>
+
+  <h2>Licensing</h2>
+
+  <p>We license, assign, or develop jointly. Tell us the scope and scale of the operation you have in mind and we will explain how far the right reaches and how we think about terms. You do not need to send us anything confidential at that stage.</p>
+
+  <p><a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a></p>
+
+  <p class="backlink"><a href="index.html#licensing">How licensing works →</a><br>
+  <a href="index.html">← Back to the top page</a></p>
+</main>
+
+<div class="photoband band2" aria-hidden="true"></div>
+
+<footer>
+  <div class="wrap">
+    <div>© 2026 Blue Aegis Inc.</div>
+    <div class="legal">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="disclaimer.html">Disclaimer</a>
+      <a href="mailto:info@blueaegis.co.jp">info@blueaegis.co.jp</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../script.js"></script>
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d0e128ca55ff42f8b920003d57f49159"}'></script><!-- End Cloudflare Web Analytics -->
+
+</body>
+</html>
