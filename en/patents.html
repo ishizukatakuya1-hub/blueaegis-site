@@ -79,6 +79,15 @@
 
   <p>That list is being rewritten. An amending order promulgated on 24 June 2025 and effective 1 April 2027 abolishes the non-face-to-face method that combines an image of a photo identity document with an image of the person&rsquo;s face, on the ground that forged or altered documents make it too easy to impersonate someone. The remaining methods shift away from document images and towards reading the data recorded on an IC chip.</p>
 
+  <figure class="dgm">
+    <div class="tl">
+      <div><span class="d">24 June 2025</span><span class="t">The amending order is promulgated, reworking the non-face-to-face methods</span></div>
+      <div class="hit"><span class="d">29 October 2026</span><span class="t">Granted as JP Patent No. 7946311 (gazette 13 November 2026)</span></div>
+      <div><span class="d">1 April 2027</span><span class="t">It takes effect. Document image plus face image is abolished</span></div>
+    </div>
+    <figcaption>Roughly a year and ten months from promulgation to effect. We filed on 12 August 2026 and were granted seventeen months before the rules change.</figcaption>
+  </figure>
+
   <p>As a result, <strong>there will structurally be people for whom none of the enumerated methods can be completed</strong>: those without a public electronic credential, those whose device cannot read one, those whose certificate has expired, those who cannot supply the PIN it requires. Whether any method survives for a given person, once several of these apply at once, cannot be known without checking that person&rsquo;s situation against the requirements of each method.</p>
 
   <p>Conventional verification systems present the list of methods, let the person choose, and switch to another method when one fails partway. Under that design, the fact that no method can be completed <strong>only emerges after a sequence of failures</strong>. Where the rules do not allow a failed attempt to be supplemented, that late discovery means repeated procedures, tangled verification records, customers abandoning the process, and transactions left in limbo.</p>
@@ -86,6 +95,32 @@
   <p>And because the list itself is amended repeatedly, unless you can later establish <strong>which version of the rules a given determination was made under</strong>, you cannot demonstrate that it was correct to an auditor or a regulator.</p>
 
   <h2>What the patent covers</h2>
+
+  <figure class="dgm">
+    <div class="dgm-cols">
+      <div class="dgm-col">
+        <h3>CONVENTIONAL SYSTEM</h3>
+        <ol>
+          <li>Present the list of methods; the person picks one</li>
+          <li class="start"><span>VERIFICATION STARTS HERE</span></li>
+          <li class="fail">Run the chosen method — it fails</li>
+          <li class="fail">Switch to another method — it fails</li>
+          <li class="end">Only now: no method can be completed<span class="sub">Repeated procedures, tangled records, customers abandoning, transactions in limbo</span></li>
+        </ol>
+      </div>
+      <div class="dgm-col now">
+        <h3>THIS PATENT</h3>
+        <ol>
+          <li>Obtain the person's attributes and the means available to them</li>
+          <li>Check them against each method's requirements, recording which version of the rules applied</li>
+          <li>Derive the set of methods that can be completed. If it is empty, or the information is unsettled, place the person in the undetermined-alternative-route class<span class="sub">The basis for the determination is retained in a verifiable form</span></li>
+          <li class="start"><span>VERIFICATION STARTS HERE</span></li>
+          <li class="end">Run only a method that can actually be completed</li>
+        </ol>
+      </div>
+    </div>
+    <figcaption>The difference is when you learn that no method will work: after starting and failing, or before starting at all.</figcaption>
+  </figure>
 
   <p>Claim 1, in outline: the system obtains information about the person&rsquo;s attributes and about which verification means are available to them (documents, electronic credentials, device capabilities, authentication information). <strong>Before verification is started</strong>, it checks these against the information defining each method&rsquo;s requirements, and derives the set of methods that can be completed for that person.</p>
 
@@ -117,6 +152,8 @@
   <p class="backlink"><a href="index.html#licensing">How licensing works →</a><br>
   <a href="index.html">← Back to the top page</a></p>
 </main>
+
+<div class="photoband band2" aria-hidden="true"></div>
 
 <footer>
   <div class="wrap">
