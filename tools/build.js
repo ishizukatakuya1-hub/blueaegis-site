@@ -856,7 +856,13 @@ function finish(loaded, tagPages) {
 
     fs.writeFileSync(path.join(OUT, rel), html);
 
-    if (cls.kind !== 'notfound') {
+    /* noindex を宣言したページはサイトマップに載せない。
+       「索引に入れるな」と書きながら索引への掲載を申告するのは矛盾で、
+       Google はサイトマップ側の申告を無視する。個別にパスを除外すると
+       足したときに漏れるので、出来上がった HTML の宣言を見て一元的に弾く。
+       2026-11-22 にゲームを導線から外した際に必要になった。 */
+    const noindex = /<meta name="robots" content="[^"]*noindex/i.test(html);
+    if (cls.kind !== 'notfound' && !noindex) {
       sitemap.push({ desc, lastmod: cls.kind === 'article' ? (dateLine || null) : seo.todayJst(buildDate) });
     }
   }
