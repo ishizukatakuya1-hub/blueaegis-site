@@ -398,6 +398,12 @@ const FEED = {
     en: { path: '/en/blog/', title: 'Blue Aegis Media',
           desc: 'Notes on working with AI and on productivity, written from facts checked against their primary sources.' },
   },
+  patents: {
+    ja: { path: '/patents.html', feedPath: '/patents/', title: 'Blue Aegis 登録済みの特許',
+          desc: '特許公報が発行され、内容が公開された権利を、登録の順に掲載しています。何を解決する権利かと、想定される利用場面を公報の範囲でまとめています。' },
+    en: { path: '/en/patents.html', feedPath: '/en/patents/', title: 'Blue Aegis Registered Patents',
+          desc: 'Our rights whose patent gazette has been published, in order of grant: what each one solves and where it applies, within what the gazette states.' },
+  },
   insights: {
     ja: { path: '/insights/', title: 'Blue Aegis 規制解説',
           desc: '規制の施行と改正について、事業者が何を求められ、何を記録しておくべきかを、公表資料に当たって整理しています。' },
@@ -406,9 +412,11 @@ const FEED = {
   },
 };
 
-/** そのページに出すフィードのURL。読者が違うので系統ごとに分ける */
+/** そのページに出すフィードのURL。読者が違うので系統ごとに分ける。
+ *  登録済みの特許は1枚のページに積み上げる形なので、本体と置き場所が違う（feedPath） */
 function feedUrl(lang, section = 'blog') {
-  return `${BASE}${FEED[section][lang].path}feed.xml`;
+  const ch = FEED[section][lang];
+  return `${BASE}${ch.feedPath || ch.path}feed.xml`;
 }
 
 /**
